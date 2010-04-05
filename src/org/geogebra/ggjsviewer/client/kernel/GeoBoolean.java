@@ -1,0 +1,358 @@
+/* 
+ GeoGebra - Dynamic Mathematics for Everyone
+ http://www.geogebra.org
+
+ This file is part of GeoGebra.
+
+ This program is free software; you can redistribute it and/or modify it 
+ under the terms of the GNU General Public License as published by 
+ the Free Software Foundation.
+ 
+ */
+
+
+package org.geogebra.ggjsviewer.client.kernel;
+
+
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.BooleanValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyBoolean;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
+
+/**
+ * 
+ * @author Markus
+ * @version
+ */
+public class GeoBoolean extends GeoElement implements BooleanValue, NumberValue,
+AbsoluteScreenLocateable {			
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private boolean value = false;
+	private boolean isDefined = true;	
+	private boolean checkboxFixed = false;
+	
+	private ArrayList condListenersShowObject;
+		
+	public GeoBoolean(Construction c) {
+		super(c);			
+		setEuclidianVisible(false);
+	}
+
+	protected String getClassName() {
+		return "GeoBoolean";
+	}
+	
+    protected String getTypeString() {
+		return "Boolean";
+	}
+    
+    public int getGeoClassType() {
+    	return GEO_CLASS_BOOLEAN;
+    }
+    
+    public void setValue(boolean val) {
+    	value = val;
+    }
+    
+    final public boolean getBoolean() {
+    	return value;
+    }
+    
+    final public MyBoolean getMyBoolean() {
+    	return new MyBoolean(value);
+    }
+
+	public GeoElement copy() {
+		GeoBoolean ret = new GeoBoolean(cons);
+		ret.setValue(value);		
+		return ret;
+	}
+	
+	/**
+	 * Registers geo as a listener for updates
+	 * of this boolean object. If this object is
+	 * updated it calls geo.updateConditions()
+	 * @param geo
+	 */
+	public void registerConditionListener(GeoElement geo) {
+		if (condListenersShowObject == null)
+			condListenersShowObject = new ArrayList();
+		condListenersShowObject.add(geo);
+	}
+	
+	public void unregisterConditionListener(GeoElement geo) {
+		if (condListenersShowObject != null) {
+			condListenersShowObject.remove(geo);
+		}
+	}
+	
+	
+	/**
+	 * Calls super.update() and update() for all registered condition listener geos.	 
+	 */
+	public void update() {  	
+		super.update();
+				
+		// update all registered locatables (they have this point as start point)
+		if (condListenersShowObject != null) {
+			for (int i=0; i < condListenersShowObject.size(); i++) {
+				GeoElement geo = (GeoElement) condListenersShowObject.get(i);		
+				kernel.notifyUpdate(geo);					
+			}		
+		}
+	}
+	
+	/**
+	 * Tells conidition listeners that their condition is removed
+	 * and calls super.remove()
+	 */
+	protected void doRemove() {
+		if (condListenersShowObject != null) {
+			// copy conditionListeners into array
+			Object [] geos = condListenersShowObject.toArray();	
+			condListenersShowObject.clear();
+			
+			// tell all condition listeners 
+			for (int i=0; i < geos.length; i++) {		
+				GeoElement geo = (GeoElement) geos[i];
+				geo.removeCondition(this);				
+				kernel.notifyUpdate(geo);			
+			}			
+		}
+		
+		super.doRemove();
+	}
+	
+	public void resolveVariables() {     
+    }
+		
+	public boolean showInEuclidianView() {
+		return isIndependent();
+	}
+
+	public final boolean showInAlgebraView() {		
+		return true;
+	}
+	
+	public boolean isFixable() {
+		// visible checkbox should not be fixable
+		return isIndependent() && !isSetEuclidianVisible();
+	}
+
+	public void set(GeoElement geo) {
+		GeoBoolean b = (GeoBoolean) geo;
+		setValue(b.value);
+		isDefined = b.isDefined;
+	}
+
+	final public void setUndefined() {
+		isDefined = false;
+	}
+	
+	final public void setDefined() {
+		isDefined = true;
+	}
+
+	final public boolean isDefined() {
+		return isDefined;
+	}			
+	
+	// dummy implementation of mode
+	final public void setMode(int mode) {
+	}
+
+	final public int getMode() {
+		return -1;
+	}
+	
+	final public String toValueString() {
+		switch (kernel.getCASPrintForm()) {
+			case ExpressionNode.STRING_TYPE_MATH_PIPER:
+				return value ? "True" : "False";							
+		
+			default:
+				return value ? "true" : "false";
+		}
+	}
+	
+	final public String toString() {
+		StringBuilder sbToString = getSbToString();
+		sbToString.setLength(0);
+		sbToString.append(label);
+		sbToString.append(" = ");
+		sbToString.append(toValueString());
+		return sbToString.toString();
+	}
+	
+	private StringBuilder sbToString;
+	private StringBuilder getSbToString() {
+		if (sbToString == null)
+			sbToString = new StringBuilder();
+		return sbToString;
+	}
+
+	/**
+	 * interface BooleanValue
+	 */
+	final public boolean isConstant() {
+		return false;
+	}
+
+	final public boolean isLeaf() {
+		return true;
+	}
+
+	final public HashSet getVariables() {
+		HashSet varset = new HashSet();
+		varset.add(this);
+		return varset;
+	}
+
+	final public ExpressionValue evaluate() {
+		return this;
+	}		
+	
+	
+	/**
+	 * returns all class-specific xml tags for saveXML
+	 */
+	protected String getXMLtags() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\t<value val=\"");
+		sb.append(value);
+		sb.append("\"/>\n");				
+				
+		sb.append(getXMLvisualTags(isIndependent()));
+		sb.append(getXMLfixedTag());
+		//AGsb.append(getAuxiliaryXML());
+		
+		// checkbox fixed
+		if (checkboxFixed) {			
+			sb.append("\t<checkbox fixed=\"");
+			sb.append(checkboxFixed);
+			sb.append("\"/>\n");	
+		}
+		
+		return sb.toString();
+	}	
+
+	public boolean isBooleanValue() {
+		return true;
+	}
+	
+	public boolean isGeoBoolean() {
+		return true;
+	}	
+
+	public boolean isVectorValue() {
+		return false;
+	}
+
+	public boolean isPolynomialInstance() {
+		return false;
+	}
+
+	public boolean isTextValue() {
+		return false;
+	}
+
+	
+
+	public double getRealWorldLocX() {
+		return 0;
+	}
+
+	public double getRealWorldLocY() {		
+		return 0;
+	}
+
+	public boolean isAbsoluteScreenLocActive() {		
+		return true;
+	}
+	
+	public boolean isAbsoluteScreenLocateable() {
+		return isIndependent();
+	}
+
+	public void setAbsoluteScreenLoc(int x, int y) {		
+		if (checkboxFixed) return;
+		
+		labelOffsetX = x;
+		labelOffsetY = y;		
+	}
+
+	public int getAbsoluteScreenLocX() {	
+		return labelOffsetX;
+	}
+
+	public int getAbsoluteScreenLocY() {		
+		return labelOffsetY;
+	}
+
+	public void setAbsoluteScreenLocActive(boolean flag) {				
+	}
+
+	public void setRealWorldLoc(double x, double y) {				
+	}
+
+	public final boolean isCheckboxFixed() {
+		return checkboxFixed;
+	}
+
+	public final void setCheckboxFixed(boolean checkboxFixed) {
+		this.checkboxFixed = checkboxFixed;
+	}
+	
+    // Michael Borcherds 2008-04-30
+	final public boolean isEqual(GeoElement geo) {
+		// return false if it's a different type, otherwise use equals() method
+		if (geo.isGeoBoolean()) return equals((GeoBoolean)geo); else return false;
+	}
+
+	public boolean isVector3DValue() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+	public boolean isNumberValue() {
+		return true;
+	}
+	
+	
+	/**
+	 * Returns 1 for true and 0 for false.
+	 */
+	public double getDouble() {		
+		return value ? 1 : 0;
+	}
+
+	public MyDouble getNumber() {
+		return new MyDouble(kernel, getDouble() );
+	}
+
+	/**
+	 * Returns whether the value (e.g. equation) should be shown
+	 * as part of the label description
+	 */
+	final public boolean isLabelValueShowable() {
+		return false;
+	}
+
+	@Override
+	public String getXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
