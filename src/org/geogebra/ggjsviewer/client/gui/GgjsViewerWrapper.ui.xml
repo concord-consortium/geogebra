@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:ggjs="urn:import:org.geogebra.ggjsviewer.client.gui">
+	<ui:style>
+		.euclidianview {
+			
+		}
+		.euclidianwrapper {
+			margin:50px auto;
+			width:700px;
+			border:1px solid black;		
+		}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
+		<ggjs:EuclidianView styleName="{style.euclidianview}" ui:field="euclidianview">
+		</ggjs:EuclidianView>
+	</g:VerticalPanel>
+	
+</ui:UiBinder> 
