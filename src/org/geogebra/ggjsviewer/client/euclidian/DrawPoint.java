@@ -18,7 +18,6 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.euclidian;
 
-import org.geogebra.ggjsviewer.client.gui.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
@@ -28,6 +27,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.GeneralPath;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Line2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.widgetideas.graphics.client.Color;
 
 
@@ -90,6 +90,10 @@ public final class DrawPoint extends Drawable {
         if (coords[0] > view.getOffsetWidth() + P.pointSize || coords[0] < -P.pointSize ||
         	coords[1] > view.getOffsetHeight() + P.pointSize || coords[1] < -P.pointSize)  
         {
+        	GWT.log(String.valueOf(coords[0] > view.getOffsetWidth()+P.pointSize)+" "+String.valueOf(coords[0])+" "+String.valueOf(view.getOffsetWidth()));
+        	GWT.log(String.valueOf(coords[0] < -P.pointSize)+" "+String.valueOf(coords[0])+" "+String.valueOf(P.pointSize));
+        	GWT.log(String.valueOf(coords[1] > view.getOffsetHeight() + P.pointSize)+" "+String.valueOf(coords[1])+" "+String.valueOf(view.getOffsetHeight()));
+        	GWT.log(String.valueOf(coords[1] < -P.pointSize)+" "+String.valueOf(coords[1])+" "+String.valueOf(P.pointSize));
         	isVisible = false;
         	// don't return here to make sure that getBounds() works for offscreen points too
         }

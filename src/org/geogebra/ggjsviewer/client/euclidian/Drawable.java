@@ -18,7 +18,6 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.euclidian;
 
-import org.geogebra.ggjsviewer.client.gui.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;

@@ -20,7 +20,6 @@ package org.geogebra.ggjsviewer.client.euclidian;
 
 import java.util.ArrayList;
 
-import org.geogebra.ggjsviewer.client.gui.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;

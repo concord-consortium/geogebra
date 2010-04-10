@@ -1,5 +1,7 @@
 package org.geogebra.ggjsviewer.client.gui;
 
+import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -22,9 +24,13 @@ public class GgjsViewerWrapper extends Composite {
 	@UiField
 	EuclidianView euclidianview;
 
-	public GgjsViewerWrapper(/*Possible parameters String firstName*/) {
+	public GgjsViewerWrapper(/*Possible parameters*/) {
 		initWidget(uiBinder.createAndBindUi(this));
 		//view.methodToCall(possibleParameters);
+	}
+	
+	public EuclidianView getEuclidianView() {
+		return euclidianview;		
 	}
 	/*Eventhandlers will be assigned in EuclidianView and
 	Handled by EuclidianController

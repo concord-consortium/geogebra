@@ -1,15 +1,8 @@
-package org.geogebra.ggjsviewer.client.gui;
+package org.geogebra.ggjsviewer.client.euclidian;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-import org.geogebra.ggjsviewer.client.euclidian.DrawLine;
-import org.geogebra.ggjsviewer.client.euclidian.DrawPoint;
-import org.geogebra.ggjsviewer.client.euclidian.Drawable;
-import org.geogebra.ggjsviewer.client.euclidian.DrawableList;
-import org.geogebra.ggjsviewer.client.euclidian.EuclidianConstants;
-import org.geogebra.ggjsviewer.client.euclidian.EuclidianController;
-import org.geogebra.ggjsviewer.client.euclidian.Hits;
-import org.geogebra.ggjsviewer.client.euclidian.Previewable;
 import org.geogebra.ggjsviewer.client.euclidian.DrawableList.DrawableIterator;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
@@ -340,16 +333,22 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		  }
 	
 		initView(false);
-		euclidianController.setEuclidianView(this);
-		addMouseDownHandler(euclidianController);
+		
+		//addMouseDownHandler(euclidianController);
+		
+		/*euclidianController.setEuclidianView(this);
 		kernel = new Kernel(new BaseApplication());
-		kernel.attach(this);
-		euclidianController.setKernel(kernel);
+		///kernel.attach(this);
 		attachView();
+		euclidianController.setKernel(kernel);*/
+		
 		
 		setLineWidth(1);
 		//drawAxes();
 		hits = new Hits();
+		
+		
+		
 		
 	}
 	
@@ -1405,6 +1404,12 @@ final public void setHits(Point p){
 
 	@Override
 	public void updateAuxiliaryObject(GeoElement geo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEuclidianController(EuclidianController ec) {
+		euclidianController = ec;
 		// TODO Auto-generated method stub
 		
 	}

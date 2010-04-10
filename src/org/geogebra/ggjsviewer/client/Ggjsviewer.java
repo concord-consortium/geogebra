@@ -1,6 +1,7 @@
 package org.geogebra.ggjsviewer.client;
 
 import org.geogebra.ggjsviewer.client.gui.GgjsViewerWrapper;
+import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -34,8 +35,7 @@ public class Ggjsviewer implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		//Attach the mainwrapper to the <body>
-		GgjsViewerWrapper wrapper = new GgjsViewerWrapper();
-		RootPanel.get().add(wrapper);	
+		Application app = new Application();
 		
 	}
 }

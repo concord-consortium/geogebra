@@ -6270,6 +6270,6 @@ public class Kernel {
 
 	public BaseApplication getBaseApplication() {
 		// TODO Auto-generated method stub
-		return null;
+		return bApp;
 	}
 }
