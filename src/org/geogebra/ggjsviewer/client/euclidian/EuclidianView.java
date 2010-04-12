@@ -1398,8 +1398,11 @@ final public void setHits(Point p){
 
 	@Override
 	public void update(GeoElement geo) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
+		Object d = DrawableMap.get(geo);
+		if (d != null) {
+			((Drawable) d).update();
+		}
 	}
 
 	@Override

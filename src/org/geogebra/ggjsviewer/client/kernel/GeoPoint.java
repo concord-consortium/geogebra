@@ -65,7 +65,7 @@ GeoPointInterface {
     
     // list of Locateables (GeoElements) that this point is start point of
     // if this point is removed, the Locateables have to be notified
-    //AGprivate LocateableList locateableList;         
+    private LocateableList locateableList;         
     
     public GeoPoint(Construction c) {     	 
     	super(c);
@@ -918,10 +918,10 @@ GeoPointInterface {
 	public void update() {  	
 		super.update();
 						
-		// update all registered locatables (they have this point as start point)
-	/*AG	if (locateableList != null) {	
+		//update all registered locatables (they have this point as start point)
+		if (locateableList != null) {	
 			GeoElement.updateCascade(locateableList, getTempSet());
-		}*/			
+		}			
 	}
 	
 	private static TreeSet tempSet;	

@@ -27,24 +27,25 @@ public class Application extends BaseApplication {
 		GeoElement geo_point1 = null;
 		GeoElement geo_point2 = null;
 		GeoElement geo_line = null;
+		String label1 = "A";
+		String label2 = "B";
 		
 		LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
 		attributes.put("x", "-2.0813120395521345");
 		attributes.put("y", "4.8832399507533975");
 		attributes.put("z", "1.0");
 		geo_point1 = kernel.createGeoElement(kernel.getConstruction(), "point");
-		//geo.forceEuclidianVisible(true);
+		geo_point1.setLoadedLabel(label1);
 		kernel.handleCoords(geo_point1, attributes);
 		attributes.clear();
 		geo_point2 = kernel.createGeoElement(kernel.getConstruction(), "point");
+		geo_point2.setLoadedLabel(label2);
 		attributes.put("x", "6.0813120395521345");
 		attributes.put("y", "0.8832399507533975");
 		attributes.put("z", "1.0");
 		kernel.handleCoords(geo_point2, attributes);
 		kernel.updateConstruction();
 		kernel.setNotifyViewsActive(true);
-		euclidianview.add(geo_point1);
-		euclidianview.add(geo_point2);
 		kernel.notifyRepaint();
 	}
 	
