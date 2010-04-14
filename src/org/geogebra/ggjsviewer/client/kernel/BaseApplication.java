@@ -62,4 +62,9 @@ public class BaseApplication {
 		return 0;
 	}
 
+	public String getPlain(String string, String label, String label2) {
+		// TODO Auto-generated method stub
+		return "Line through: "+string+" Point 1: "+label+"Point 2: "+label2+" must be implemented AlgoJoinPoints";
+	}
+
 }

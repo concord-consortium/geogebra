@@ -7,6 +7,8 @@ import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.gui.GgjsViewerWrapper;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -44,6 +46,7 @@ public class Application extends BaseApplication {
 		attributes.put("y", "0.8832399507533975");
 		attributes.put("z", "1.0");
 		kernel.handleCoords(geo_point2, attributes);
+		geo_line = kernel.Line("a", (GeoPoint) geo_point1, (GeoPoint) geo_point2);
 		kernel.updateConstruction();
 		kernel.setNotifyViewsActive(true);
 		kernel.notifyRepaint();

@@ -315,7 +315,7 @@ public final class DrawLine extends Drawable implements Previewable {
                 /*g2.setPaint(geo.getSelColor());
                 g2.setStroke(selStroke);            
                 g2.draw(line);*/
-        		view.setStrokeStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen(),geo.getAlphaValue()));
+        		view.setStrokeStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*AG something wrong here I must look after it,geo.getAlphaValue()*/));
         		view.beginPath();
         		view.moveTo(line.x1, line.y1);
         		view.lineTo(line.x2, line.y2);
@@ -326,7 +326,7 @@ public final class DrawLine extends Drawable implements Previewable {
            /* g2.setPaint(geo.getObjectColor());
             g2.setStroke(objStroke);            
 			g2.draw(line);*/    
-            view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+            view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen()/*geo.getObjectColor().getAlpha()*/));
     		view.beginPath();
     		view.moveTo(line.x1, line.y1);
     		view.lineTo(line.x2, line.y2);

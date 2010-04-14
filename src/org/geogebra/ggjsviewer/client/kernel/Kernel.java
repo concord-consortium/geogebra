@@ -789,7 +789,7 @@ public class Kernel {
     		
     		case 'l': // line, list, locus
     			if (type.equals("line"))
-    				return null;//AGnew GeoLine(cons);
+    				return new GeoLine(cons);
     			else if (type.equals("list"))
     				return null; //AGnew GeoList(cons);    			
     			else 
@@ -1493,7 +1493,7 @@ public class Kernel {
 	}
 	*/
 	/** Line a x + b y + c = 0 named label */
-	/*AG
+	
 	final public GeoLine Line(
 		String label,
 		double a,
@@ -1502,7 +1502,7 @@ public class Kernel {
 		GeoLine line = new GeoLine(cons, label, a, b, c);
 		return line;
 	}
-	*/
+
 	/** Conic label with equation ax� + bxy + cy� + dx + ey + f = 0  */
 	/*AG
 	final public GeoConic Conic(
@@ -1721,12 +1721,12 @@ public class Kernel {
 	/** Line dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. y = k x + d
 	 */
-	/*final public GeoLine DependentLine(String label, Equation equ) {
+	/*AGfinal public GeoLine DependentLine(String label, Equation equ) {
 		AlgoDependentLine algo = new AlgoDependentLine(cons, label, equ);
 		GeoLine line = algo.getLine();
 		return line;
-	}
-	*/
+	}*/
+	
 	/** Conic dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. y� = 2 p x 
 	 */
@@ -2110,12 +2110,11 @@ public class Kernel {
 	/** 
 	 * Line named label through Points P and Q
 	 */
-	/*AGfinal public GeoLine Line(String label, GeoPoint P, GeoPoint Q) {
+	final public GeoLine Line(String label, GeoPoint P, GeoPoint Q) {
 		AlgoJoinPoints algo = new AlgoJoinPoints(cons, label, P, Q);
 		GeoLine g = algo.getLine();
 		return g;
 	}
-	*/
 	/** 
 	 * Line named label through Point P with direction of vector v
 	 */
@@ -2149,7 +2148,6 @@ public class Kernel {
 		GeoLine g = algo.getLine();
 		return g;
 	}
-	*/
 	/** 
 	* Line named label through Point P orthogonal to vector v
 	*/
@@ -2161,12 +2159,11 @@ public class Kernel {
 			new AlgoOrthoLinePointVector(cons, label, P, v);
 		GeoLine g = algo.getLine();
 		return g;
-	}
-	*/
+	}*/
 	/** 
 	 * Line named label through Point P orthogonal to line l
 	 */
-	/*AGfinal public GeoLine OrthogonalLine(
+	/*final public GeoLine OrthogonalLine(
 		String label,
 		GeoPoint P,
 		GeoLine l) {

@@ -398,7 +398,7 @@ public final class DrawPoint extends Drawable {
         			g2.draw(circle);*/
             		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue(),geo.getObjectColor().getAlpha()));
             		view.beginPath();
-            		view.arc(circle.x, circle.y, circle.height/2,  0, Math.PI*2, false);
+            		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);
             		view.stroke();
            		break;
             	
@@ -407,7 +407,7 @@ public final class DrawPoint extends Drawable {
             		// draw a dot            			
             		
             		view.beginPath();
-            		view.arc(circle.x, circle.y, circle.height/2,  0, Math.PI*2, false);                    
+            		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);                    
                     // black stroke   
             		view.setFillStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue()/*geo.getObjectColor().getAlpha()*/));
                     view.setStrokeStyle(Color.BLACK);
