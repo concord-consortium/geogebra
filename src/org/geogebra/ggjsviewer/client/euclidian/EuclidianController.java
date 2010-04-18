@@ -14,10 +14,12 @@ import org.geogebra.ggjsviewer.client.kernel.Region;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -73,7 +75,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	public static final int MOVE_ROTATE_VIEW = 120; // for 3D 
 
-	//AGprotected Application app;
+	protected Application app;
 
 	//AGprotected Kernel kernel;
 
@@ -200,13 +202,21 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	
 	public EuclidianController() {
 		// TODO Auto-generated constructor stub
-		//FOR DEBUG!
-		mode =1;
+		//FOR DEFAULT!
+		mode =EuclidianView.MODE_MOVE;
 	}
 	
 	public EuclidianController(Kernel kernel) {
 		this.kernel = kernel;
 		
+	}
+	
+	public void setApplication(Application app) {
+		this.app=app;
+	}
+
+	public Application getApplication() {
+		return app;
 	}
 	
 	public void setKernel(Kernel kernel) {
@@ -224,10 +234,11 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	public EuclidianView getEuclidianView() {
 		return view;
 	}
-	protected void setMouseLocation(MouseDownEvent e) {
+	protected void setMouseLocation(MouseEvent e) {
 		//NOT FULLY VALID IF SCROLLBAR EXISTS AG
 		int screen_x = e.getClientX() - view.getAbsoluteLeft();
 		int screen_y = e.getClientY() - view.getAbsoluteTop();
+		//GWT.log(String.valueOf(screen_x)+" : "+String.valueOf(screen_y));
 		mouseLoc = new Point(screen_x,screen_y);
 
 		altDown = e.isAltKeyDown();
@@ -492,11 +503,12 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			break;
 
 			// move an object
+			 */
 		case EuclidianView.MODE_MOVE:	
 		case EuclidianView.MODE_VISUAL_STYLE:	
-			handleMousePressedForMoveMode(e, false);			
+			//handleMousePressedForMoveMode(event, false);			
 			break;
-
+		/*
 			// move drawing pad or axis
 		case EuclidianView.MODE_TRANSLATEVIEW:		
 
@@ -966,6 +978,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	@Override
 	public void onMouseMove(MouseMoveEvent event) {
+		setMouseLocation(event);
+		processMouseMoved(event);
 		
 		// TODO Auto-generated method stub
 		//JUST FOR DEBUG PURPOSES AG (FOR NOW
@@ -973,6 +987,580 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		
 	}
 
+	protected void processMouseMoved(MouseMoveEvent event) {
+		// TODO Auto-generated method stub
+		//GWT.log("move");
+		view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 10, 10);
+		boolean repaintNeeded = false; //AG or false should be here?
+		// standard handling
+		Hits hits = new Hits();
+		boolean noHighlighting = false;		
+		altDown=event.isAltKeyDown();		
+		
+		if (moveMode(mode)) {
+			GeoElement geo = view.getLabelHit(mouseLoc);
+			if (geo != null) {				
+				//Application.debug("hop");
+				noHighlighting = true;
+				tempArrayList.clear();
+				tempArrayList.add(geo);
+				hits = tempArrayList;				
+			}
+		}
+		else if (mode == EuclidianView.MODE_POINT || mode == EuclidianView.MODE_POINT_IN_REGION) {
+			// include polygons in hits
+			view.setHits(mouseLoc);
+			hits = view.getHits();
+		}
+		if (hits.isEmpty()){
+			view.setHits(mouseLoc);
+			hits = view.getHits();switchModeForRemovePolygons(hits);
+
+		}
+		if (hits.isEmpty()) {
+			//AG Not implemented yet view.setToolTipText(null);
+			//AG Not implemented yet view.setDefaultCursor();	
+		}	
+		//AGelse
+			//AG not implemented yet view.setHitCursor();
+		
+		repaintNeeded = noHighlighting ?  refreshHighlighting(null) : refreshHighlighting(hits) 
+				|| repaintNeeded;
+		
+		// set tool tip text
+		// the tooltips are only shown if algebra view is visible
+		//if (app.isUsingLayout() && app.getGuiManager().showAlgebraView()) {
+			//hits = view.getTopHits(hits);
+			/*AG isn't implemented yet hits = hits.getTopHits();
+			if (!hits.isEmpty()) {
+				String text = GeoElement.getToolTipDescriptionHTML(hits,
+						true, true);				
+				view.setToolTipText(text);
+			} else
+				view.setToolTipText(null);*/
+		// update previewable
+		if (view.getPreviewDrawable() != null) {			
+			view.updatePreviewable();
+			repaintNeeded = true;
+		}
+		
+		// show Mouse coordinates
+		if (view.getShowMouseCoords()) {
+			transformCoords();
+			repaintNeeded = true;
+		}		
+
+		if (repaintNeeded) {
+			kernel.notifyRepaint();
+		}
+
+		
+	}
+	
+	final boolean refreshHighlighting(Hits hits) {
+		boolean repaintNeeded = false;
+
+		//	clear old highlighting
+		if (highlightedGeos.size() > 0) {
+			setHighlightedGeos(false);
+			repaintNeeded = true;
+		}
+
+		// find new objects to highlight
+		highlightedGeos.clear();	
+		selectionPreview = true; // only preview selection, see also
+		// mouseReleased()
+		processMode(hits, null); // build highlightedGeos List
+		selectionPreview = false; // reactivate selection in mouseReleased()
+
+		// set highlighted objects
+		if (highlightedGeos.size() > 0) {
+			setHighlightedGeos(true); 
+			repaintNeeded = true;
+		}		
+		return repaintNeeded;
+	}
+	
+	protected boolean move(Hits hits) {		
+		addSelectedGeo(hits.getMoveableHits(), 1, false);	
+		return false;
+	}
+	
+	// dummy function for highlighting:
+	// used only in preview mode, see mouseMoved() and selectionPreview
+	final protected boolean point(Hits hits) {
+		addSelectedGeo(hits.getHits(Path.class, tempArrayList), 1, false);
+		return false;
+	}
+	
+	final protected int addSelectedGeo(Hits hits, int max,
+			boolean addMoreThanOneAllowed) {
+		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedGeos, GeoElement.class);
+	}		
+	
+	protected int handleAddSelected(Hits hits, int max, boolean addMore, ArrayList list, Class geoClass) {	
+		
+		
+		if (selectionPreview)
+			return addToHighlightedList(list, hits.getHits(geoClass, handleAddSelectedArrayList) , max);
+		else
+			return addToSelectionList(list, hits.getHits(geoClass, handleAddSelectedArrayList), max, addMore);
+	}
+	protected Hits handleAddSelectedArrayList = new Hits();
+
+	// selectionList may only contain max objects
+	// a choose dialog will be shown if not all objects can be added
+	// @param addMoreThanOneAllowed: it's possible to add several objects
+	// without choosing
+	final protected int addToSelectionList(ArrayList selectionList,
+			ArrayList geos, int max, boolean addMoreThanOneAllowed) {
+		
+		if (geos == null)
+			return 0;
+		//GeoElement geo;
+
+		// ONLY ONE ELEMENT
+		if (geos.size() == 1)
+			return addToSelectionList(selectionList, (GeoElement) geos.get(0), max);
+
+		//	SEVERAL ELEMENTS
+		// here nothing should be removed
+		//  too many objects -> choose one
+		if (!addMoreThanOneAllowed || geos.size() + selectionList.size() > max){
+			return addToSelectionList(selectionList, chooseGeo(geos, true), max);
+		}
+
+		// already selected objects -> choose one
+		boolean contained = false;
+		for (int i = 0; i < geos.size(); i++) {
+			if (selectionList.contains(geos.get(i)))
+				contained = true;
+		}
+		if (contained)
+			return addToSelectionList(selectionList, chooseGeo(geos, true), max);
+
+		// add all objects to list
+		int count = 0;
+		for (int i = 0; i < geos.size(); i++) {
+			count += addToSelectionList(selectionList, (GeoElement) geos.get(i), max);
+		}
+		return count;
+	}
+
+	//	selectionList may only contain max objects
+	// an already selected objects is deselected
+	final protected int addToSelectionList(ArrayList selectionList,
+			GeoElement geo, int max) {
+		if (geo == null)
+			return 0;
+
+		int ret = 0;
+		if (selectionList.contains(geo)) { // remove from selection
+			selectionList.remove(geo);
+			if (selectionList != selectedGeos)
+				selectedGeos.remove(geo);
+			ret =  -1;
+		} else { // new element: add to selection
+			if (selectionList.size() < max) {
+				selectionList.add(geo);
+				if (selectionList != selectedGeos)
+					selectedGeos.add(geo);
+				ret = 1;
+			} 
+		}
+		if (ret != 0) app.toggleSelectedGeo(geo);
+		return ret;
+	}
+	
+	
+	// selectionList may only contain max objects
+	final protected int addToHighlightedList(ArrayList selectionList,
+			ArrayList geos, int max) {
+		if (geos == null)
+			return 0;
+
+		Object geo;
+		int ret = 0;
+		for (int i = 0; i < geos.size(); i++) {
+			geo = geos.get(i);
+			if (selectionList.contains(geo)) {
+				ret = (ret == 1) ? 1 : -1;
+			} else {
+				if (selectionList.size() < max) {
+					highlightedGeos.add(geo); // add hit
+					ret = 1;
+				}
+			}
+		}
+		//Application.printStacktrace("addtohighlightedlist");
+		return ret;
+	}
+	final protected int addSelectedPoint(Hits hits, int max,
+			boolean addMoreThanOneAllowed) {
+		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedPoints, GeoPointInterface.class);
+		//ggb3D 2009-06-26 //return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedPoints, GeoPoint.class);
+	}
+	
+	// get two points and create line through them
+	final protected boolean join(Hits hits) {
+		if (hits.isEmpty())
+			return false;
+
+		// points needed
+		addSelectedPoint(hits, 2, false);
+		//Application.debug("addSelectedPoint : "+hits+"\nselectedPoints = "+selectedPoints);
+		if (selPoints() == 2) {
+			// fetch the two selected points
+			join();
+
+			return true;
+		}
+		return false;
+	}
+	
+	protected final int selPoints() {
+		return selectedPoints.size();
+	}
+
+	// fetch the two selected points
+	protected void join(){
+		GeoPoint[] points = getSelectedPoints();
+		GeoLine line = kernel.Line(null, points[0], points[1]);
+	}
+	
+	final protected GeoPoint[] getSelectedPoints() {		
+
+		GeoPoint[] ret = new GeoPoint[selectedPoints.size()];
+		getSelectedPointsInterface(ret);
+
+		return ret;
+
+	}
+	
+	final protected void getSelectedPointsInterface(GeoPointInterface[] result) {	
+
+		for (int i = 0; i < selectedPoints.size(); i++) {		
+			result[i] = (GeoPointInterface) selectedPoints.get(i);
+		}
+		clearSelection(selectedPoints);
+
+	}
+	
+	final protected void clearSelection(ArrayList selectionList) {
+		// unselect
+		selectionList.clear();
+		selectedGeos.clear();
+		app.clearSelectedGeos();	
+		view.repaintEuclidianView();
+	}
+	
+	
+protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
+		
+		boolean changedKernel = false;
+		
+		switch (mode) {
+		case EuclidianView.MODE_VISUAL_STYLE:
+		case EuclidianView.MODE_MOVE:
+			// move() is for highlighting and selecting
+			if (selectionPreview) {		
+				move(hits.getTopHits());				
+			} else {
+				if (DRAGGING_OCCURED && app.selectedGeosSize() == 1)
+					app.clearSelectedGeos();
+
+			}
+			break;			
+
+		case EuclidianView.MODE_MOVE_ROTATE:
+			// moveRotate() is a dummy function for highlighting only
+			if (selectionPreview) {				
+		//AG		moveRotate(hits.getTopHits());
+			}
+			break;
+
+		case EuclidianView.MODE_RECORD_TO_SPREADSHEET:
+			//if (selectionPreview) 
+		{
+			//AGchangedKernel = record(hits.getTopHits(), e);
+		}
+		break;
+
+		case EuclidianView.MODE_POINT:
+		case EuclidianView.MODE_POINT_IN_REGION:
+			// point() is dummy function for highlighting only
+			if (selectionPreview) {
+				if (mode==EuclidianView.MODE_POINT)
+					hits.keepOnlyHitsForNewPointMode();
+				point(hits);
+			}
+			break;
+
+			// copy geo to algebra input
+		case EuclidianView.MODE_SELECTION_LISTENER:
+			//AGboolean addToSelection = e != null && (Application.isControlDown(e));
+			//AGgeoElementSelected(hits.getTopHits(), addToSelection);
+			break;
+
+			// new line through two points
+		case EuclidianView.MODE_JOIN:
+			changedKernel = join(hits);
+			break;
+
+			// new segment through two points
+		case EuclidianView.MODE_SEGMENT:
+			//AGchangedKernel = segment(hits);
+			break;
+
+			// segment for point and number
+		case EuclidianView.MODE_SEGMENT_FIXED:
+			//AGchangedKernel = segmentFixed(hits);
+			break;
+
+			//	angle for two points and number
+		case EuclidianView.MODE_ANGLE_FIXED:
+			//AGchangedKernel = angleFixed(hits);
+			break;
+
+		case EuclidianView.MODE_MIDPOINT:
+			//AGchangedKernel = midpoint(hits);
+			break;
+
+			// new ray through two points or point and vector
+		case EuclidianView.MODE_RAY:
+			//AGchangedKernel = ray(hits);
+			break;
+
+			// new polygon through points
+		case EuclidianView.MODE_POLYGON:
+			//AGchangedKernel = polygon(hits);
+			break;
+
+			// new vector between two points
+		case EuclidianView.MODE_VECTOR:
+			//AGchangedKernel = vector(hits);
+			break;
+
+			// intersect two objects
+		case EuclidianView.MODE_INTERSECT:
+			//AGchangedKernel = intersect(hits);
+			break;
+
+			// new line through point with direction of vector or line
+		case EuclidianView.MODE_PARALLEL:
+			//AGchangedKernel = parallel(hits);
+			break;
+
+			// Michael Borcherds 2008-04-08
+		case EuclidianView.MODE_PARABOLA:
+			//AGchangedKernel = parabola(hits);
+			break;
+
+			// new line through point orthogonal to vector or line
+		case EuclidianView.MODE_ORTHOGONAL:
+			//AGchangedKernel = orthogonal(hits);
+			break;
+
+			// new line bisector
+		case EuclidianView.MODE_LINE_BISECTOR:
+			//AGchangedKernel = lineBisector(hits);
+			break;
+
+			// new angular bisector
+		case EuclidianView.MODE_ANGULAR_BISECTOR:
+			//AGchangedKernel = angularBisector(hits);
+			break;
+
+			// new circle (2 points)
+		case EuclidianView.MODE_CIRCLE_TWO_POINTS:
+			// new semicircle (2 points)
+		case EuclidianView.MODE_SEMICIRCLE:
+			//AGchangedKernel = circleOrSphere2(hits, mode);
+			break;
+
+		case EuclidianView.MODE_LOCUS:
+			//AGchangedKernel = locus(hits);
+			break;
+
+			// new circle (3 points)
+		case EuclidianView.MODE_CIRCLE_THREE_POINTS:
+		case EuclidianView.MODE_ELLIPSE_THREE_POINTS:
+		case EuclidianView.MODE_HYPERBOLA_THREE_POINTS:
+		case EuclidianView.MODE_CIRCLE_ARC_THREE_POINTS:
+		case EuclidianView.MODE_CIRCLE_SECTOR_THREE_POINTS:
+		case EuclidianView.MODE_CIRCUMCIRCLE_ARC_THREE_POINTS:
+		case EuclidianView.MODE_CIRCUMCIRCLE_SECTOR_THREE_POINTS:
+			//AGchangedKernel = threePoints(hits, mode);
+			break;
+
+			// new conic (5 points)
+		case EuclidianView.MODE_CONIC_FIVE_POINTS:
+			//AGchangedKernel = conic5(hits);
+			break;
+
+			// relation query
+		case EuclidianView.MODE_RELATION:
+			//AGrelation(hits.getTopHits());			
+			break;
+
+			// new tangents
+		case EuclidianView.MODE_TANGENTS:
+			//AGchangedKernel = tangents(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_POLAR_DIAMETER:
+			//AGchangedKernel = polarLine(hits.getTopHits());
+			break;
+
+			// delete selected object
+		case EuclidianView.MODE_DELETE:
+			//AGchangedKernel = delete(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_SHOW_HIDE_OBJECT:
+			//AGif (showHideObject(hits.getTopHits()))
+				//AGtoggleModeChangedKernel = true;
+			break;
+
+		case EuclidianView.MODE_SHOW_HIDE_LABEL:
+			//AGif (showHideLabel(hits.getTopHits()))
+				//AGtoggleModeChangedKernel = true;
+			break;
+
+		case EuclidianView.MODE_COPY_VISUAL_STYLE:
+			//AGif (copyVisualStyle(hits.getTopHits()))
+				//AGtoggleModeChangedKernel = true;
+			break;
+
+			//  new text or image
+		case EuclidianView.MODE_TEXT:
+		case EuclidianView.MODE_IMAGE:
+			//AGchangedKernel = textImage(hits.getOtherHits(GeoImage.class, tempArrayList), mode, altDown); //e.isAltDown());
+			break;
+
+			// new slider
+		case EuclidianView.MODE_SLIDER:
+			//AGchangedKernel = slider();
+			break;			
+
+		case EuclidianView.MODE_MIRROR_AT_POINT:
+			//AGchangedKernel = mirrorAtPoint(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_MIRROR_AT_LINE:
+			//AGchangedKernel = mirrorAtLine(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_MIRROR_AT_CIRCLE: // Michael Borcherds 2008-03-23
+			//AGchangedKernel = mirrorAtCircle(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_TRANSLATE_BY_VECTOR:
+			//AGchangedKernel = translateByVector(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_ROTATE_BY_ANGLE:
+			//AGchangedKernel = rotateByAngle(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_DILATE_FROM_POINT:
+			//AGchangedKernel = dilateFromPoint(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_FITLINE:
+			//AGchangedKernel = fitLine(hits);
+			break;
+
+		case EuclidianView.MODE_CIRCLE_POINT_RADIUS:
+			//AGchangedKernel = circleOrSpherePointRadius(hits);
+			break;				
+
+		case EuclidianView.MODE_ANGLE:
+			//AGchangedKernel = angle(hits.getTopHits());
+			break;
+
+		case EuclidianView.MODE_VECTOR_FROM_POINT:
+			//AGchangedKernel = vectorFromPoint(hits);
+			break;
+
+		case EuclidianView.MODE_DISTANCE:
+			//AGchangedKernel = distance(hits, e);
+			break;	
+
+		case EuclidianView.MODE_MACRO:			
+			//AGchangedKernel = macro(hits);
+			break;
+
+		case EuclidianView.MODE_AREA:
+			//AGchangedKernel = area(hits, e);
+			break;	
+
+		case EuclidianView.MODE_SLOPE:
+			//AGchangedKernel = slope(hits);
+			break;
+
+		case EuclidianView.MODE_REGULAR_POLYGON:
+			//AGchangedKernel = regularPolygon(hits);
+			break;
+
+		case EuclidianView.MODE_SHOW_HIDE_CHECKBOX:
+			//AGchangedKernel = showCheckBox(hits);
+			break;
+
+		case EuclidianView.MODE_BUTTON_ACTION:
+			//AGchangedKernel = button(false);
+			break;
+
+		case EuclidianView.MODE_TEXTFIELD_ACTION:
+			//AGchangedKernel = button(true);
+			break;
+
+		case EuclidianView.MODE_PEN:
+			//AGchangedKernel = pen();
+			break;
+
+			// Michael Borcherds 2008-03-13	
+		case EuclidianView.MODE_COMPASSES:
+			//AGchangedKernel = compasses(hits);
+			break;
+
+		default:
+			// do nothing
+		}
+		
+		return changedKernel;
+
+	}
+	
+	final boolean processMode(Hits hits, MouseEvent e) {
+		boolean changedKernel = false;
+
+		if (hits==null)
+			hits = new Hits();
+
+		changedKernel = switchModeForProcessMode(hits, e);
+
+		// update preview
+		if (view.getPreviewDrawable() != null) {
+			view.getPreviewDrawable().updatePreview();
+			if (mouseLoc != null)
+				view.getPreviewDrawable().updateMousePos(mouseLoc.x, mouseLoc.y);			
+			view.repaintEuclidianView();
+		}
+
+		return changedKernel;
+	}
+
+	
+	/**
+	 * for some modes, polygons are not to be removed
+	 * @param hits
+	 */
+	protected void switchModeForRemovePolygons(Hits hits){
+		hits.removePolygons();
+	}
+
+	
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
 		// TODO Auto-generated method stub
@@ -1000,6 +1588,14 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	public void setLineEndPoint(Point2D.Double point) {
 		lineEndPoint = point;
 		useLineEndPoint = true;
+	}
+	
+	private boolean moveMode(int mode) {
+		if (mode == EuclidianView.MODE_MOVE ||
+				mode == EuclidianView.MODE_VISUAL_STYLE)
+			return true;
+		
+		else return false;
 	}
 	
 	/*public void setMode(int newMode) {

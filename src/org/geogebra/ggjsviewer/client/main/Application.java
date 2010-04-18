@@ -1,5 +1,6 @@
 package org.geogebra.ggjsviewer.client.main;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianController;
@@ -18,6 +19,10 @@ public class Application extends BaseApplication {
 	private Kernel kernel;
 	private EuclidianView euclidianview;
 	private EuclidianController euclidiancontroller;
+	
+	protected boolean showMenuBar = true;
+	
+	private ArrayList<GeoElement> selectedGeos = new ArrayList<GeoElement>();
 	
 	
 	public Application() {
@@ -60,14 +65,99 @@ public class Application extends BaseApplication {
 		GgjsViewerWrapper wrapper = new GgjsViewerWrapper();
 		RootPanel.get().add(wrapper);
 		euclidiancontroller = new EuclidianController(kernel);
+		euclidiancontroller.setApplication(this);
 		euclidianview = wrapper.getEuclidianView();
 		kernel.notifyAddAll(euclidianview);
 		kernel.attach(euclidianview);
+		euclidianview.setApplication(this);
 		euclidiancontroller.setEuclidianView(euclidianview);
 		euclidianview.setEuclidianController(euclidiancontroller);
 		euclidianview.addMouseDownHandler(euclidiancontroller);
+		euclidianview.addMouseUpHandler(euclidiancontroller);
+		euclidianview.addMouseWheelHandler(euclidiancontroller);
+		euclidianview.addMouseOverHandler(euclidiancontroller);
+		euclidianview.addMouseOutHandler(euclidiancontroller);
+		euclidianview.addMouseMoveHandler(euclidiancontroller);
 	
 		//CONNECTIONS MUST BE MADE
 	}
+
+	public boolean isLabelDragsEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+
+	final public void clearSelectedGeos() {
+		clearSelectedGeos(true);
+		updateSelection();
+	}
+
+	public void clearSelectedGeos(boolean repaint) {
+		int size = selectedGeos.size();
+		if (size > 0) {
+			for (int i = 0; i < size; i++) {
+				GeoElement geo = (GeoElement) selectedGeos.get(i);
+				geo.setSelected(false);
+			}
+			selectedGeos.clear();
+			if (repaint)
+				kernel.notifyRepaint();
+		}
+		updateSelection();
+	}
+	
+	private void updateSelection() {
+		if (!showMenuBar || !hasGuiManager())
+			return;
+
+		/*AG I don't know that we need this...getGuiManager().updateMenubarSelection();
+		if (getEuclidianView().getMode() == EuclidianView.MODE_VISUAL_STYLE) {
+			if (selectedGeos.size() > 0) {
+				
+				EuclidianController ec = getEuclidianView().getEuclidianController();
+				
+				for (int i = 0 ; i < selectedGeos.size() ; i++) {
+					ec.setProperties(((GeoElement)(selectedGeos.get(i))));
+				}
+				
+			}
+		}*/
+	}
+	
+	final public int selectedGeosSize() {
+		return selectedGeos.size();
+	}
+
+	final public ArrayList getSelectedGeos() {
+		return selectedGeos;
+	}
+
+	final public GeoElement getLastCreatedGeoElement() {
+		return kernel.getConstruction().getLastGeoElement();
+	}
+	
+	final public void toggleSelectedGeo(GeoElement geo) {
+		toggleSelectedGeo(geo, true);
+	}
+
+	final public void toggleSelectedGeo(GeoElement geo, boolean repaint) {
+		if (geo == null)
+			return;
+
+		boolean contains = selectedGeos.contains(geo);
+		if (contains) {
+			selectedGeos.remove(geo);
+			geo.setSelected(false);
+		} else {
+			selectedGeos.add(geo);
+			geo.setSelected(true);
+		}
+
+		if (repaint)
+			kernel.notifyRepaint();
+		updateSelection();
+	}
+
 
 }

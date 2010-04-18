@@ -5462,7 +5462,7 @@ public class Kernel {
 		return sbBuildImplicitVarPart;
 	}
 	private StringBuilder sbBuildImplicitVarPart = new StringBuilder(80);
-
+	//AG CAUSES JAVA LANG ILLEGALACCESSERROR!!!!!!!!!!!!
 	final StringBuilder buildImplicitEquation(
 		double[] numbers,
 		String[] vars,

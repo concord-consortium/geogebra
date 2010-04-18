@@ -12,19 +12,36 @@ import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
+import org.geogebra.ggjsviewer.client.main.Application;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasMouseDownHandlers;
+import com.google.gwt.event.dom.client.HasMouseMoveHandlers;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.HasMouseUpHandlers;
+import com.google.gwt.event.dom.client.HasMouseWheelHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
 
-public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasMouseDownHandlers, View {
+public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasMouseDownHandlers, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseWheelHandlers,HasMouseUpHandlers, HasMouseMoveHandlers, View {
 	
 	protected static final long serialVersionUID = 1L;
-	//protected Application app;
+	protected Application app;
 
 	protected Kernel kernel;
 
@@ -248,8 +265,8 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	int booleanSize=13;
 
 	int mode = MODE_MOVE;
-
-	protected boolean[] showAxes = { true, true };
+	//AG IT MUST BE SET DINAMICALLY
+	protected boolean[] showAxes = { false, false };
 	private boolean showAxesCornerCoords = true;
 	
 	protected boolean[] showAxesNumbers = { true, true };
@@ -322,9 +339,26 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 	public int fontSize = 12; //px
 	
+	/*Handling the text support with native canvas functions
+	*/
+	public native void strokeText(String text, int x, int y) /*-{
+		if (!$wnd.eview) {
+			//$wnd.alert(document.getElementById("eview"));
+			$wnd.eview = $doc.getElementById("eview");
+			$wnd.econt = $wnd.eview.getContext("2d");
+		}
+		if ($wnd.econt.strokeText) {
+			$wnd.econt.font = 'italic 400 12px/2 sans-serif';
+			$wnd.econt.clearRect(25,10,500,30);
+			$wnd.econt.strokeText(text,30,30);
+		}
+		
+	}-*/;
 	
+	/*end text support*/
 	public EuclidianView() {
 		super(700,350);
+		getElement().setAttribute("id", "eview");
 		width = getCoordWidth();
 		height = getCoordHeight();
 		  drawLayers = new DrawableList[MAX_LAYERS+1];
@@ -417,6 +451,18 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	
 	final public int getPointCapturingMode() {
 		return pointCapturingMode;
+	}
+	
+	public Previewable getPreviewDrawable(){
+		return previewDrawable;
+	}
+	
+	public void updatePreviewable(){
+		Point mouseLoc = getEuclidianController().mouseLoc;
+		getPreviewDrawable().updateMousePos(mouseLoc.x, mouseLoc.y);
+	}
+	public boolean getShowMouseCoords(){
+		return showMouseCoords;
 	}
 
 	public final boolean isGridOrAxesShown() {
@@ -644,9 +690,11 @@ final public void setHits(Point p){
 			if (d.hit(p.x, p.y) || d.hitLabel(p.x, p.y)) {
 				GeoElement geo = d.getGeoElement();
 				if (geo.isEuclidianVisible()) {
+					strokeText(geo.toString(),10,10);
 					hits.add(geo);
 				}
 			}
+			
 		}
 		
 		// look for axis
@@ -667,6 +715,7 @@ final public void setHits(Point p){
 					hits.remove(i);
 			}
 		}
+		GWT.log("none");
 		
 		
 	}
@@ -1336,6 +1385,23 @@ final public void setHits(Point p){
 		return d;
 	}	
 	
+	/**
+	 * returns GeoElement whose label is at screen coords (x,y).
+	 */
+	final public GeoElement getLabelHit(Point p) {
+		if (!app.isLabelDragsEnabled()) return null;
+		DrawableIterator it = allDrawableList.getIterator();
+		while (it.hasNext()) {
+			Drawable d = it.next();
+			if (d.hitLabel(p.x, p.y)) {
+				GeoElement geo = d.getGeoElement();
+				if (geo.isEuclidianVisible())
+					return geo;
+			}
+		}
+		return null;
+	}
+	
 	
 	@Override
 	public void clearView() {
@@ -1354,6 +1420,11 @@ final public void setHits(Point p){
 		// TODO Auto-generated method stub
 		
 	}
+	
+	final public void repaintEuclidianView(){
+		repaintView();
+	}
+	
 
 	@Override
 	public void repaintView() {
@@ -1415,6 +1486,40 @@ final public void setHits(Point p){
 		euclidianController = ec;
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+		// TODO Auto-generated method stub
+		return addDomHandler(handler, MouseOverEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+		// TODO Auto-gener
+		return addDomHandler(handler, MouseOutEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+		// TODO Auto-generated method stub
+		return addDomHandler(handler, MouseWheelEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+		// TODO Auto-generated method stub
+		return addDomHandler(handler, MouseUpEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+		// TODO Auto-generated method stub
+		return addDomHandler(handler, MouseMoveEvent.getType());
+	}
+	
+	public void setApplication(Application a) {
+		app = a;
 	}
 	
 	/*public void setMode(int mode) {

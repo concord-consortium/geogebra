@@ -513,7 +513,9 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
     	sbToString.setLength(0);
 		sbToString.append(label);
 		sbToString.append(": ");         
-		sbToString.append(buildValueString());
+		//AG CAUSES java.lang.illegalacceserror!!!!!!!!!
+		//AGsbToString.append(buildValueString());
+		sbToString.append("GeoLine");
 		return sbToString.toString();   
     }
     
