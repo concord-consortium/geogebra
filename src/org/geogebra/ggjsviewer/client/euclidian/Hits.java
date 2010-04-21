@@ -246,14 +246,14 @@ public class Hits extends ArrayList {
 	/**
 	 * returns array of GeoElements NOT of type geoclass out of hits
 	 */
-	final public Hits getOtherHits(Class geoclass,
+	final public Hits getOtherHits(int geoid,
 			Hits result) {
-		return getHits(geoclass, true, result);
+		return getHits(geoid, true, result);
 	}
 
-	final public Hits getHits(Class geoclass,
+	final public Hits getHits(int geoid,
 			Hits result) {
-		return getHits(geoclass, false, result);
+		return getHits(geoid, false, result);
 	}
 
 	/**
@@ -282,13 +282,13 @@ public class Hits extends ArrayList {
 	 *            true: returns array of GeoElements NOT of type geoclass out of
 	 *            hits.
 	 */
-	final protected Hits getHits(Object geoclass,
+	final protected Hits getHits(int  geoid,
 			boolean other, Hits result) {
 
 
 		result.clear();
 		for (int i = 0; i < size(); ++i) {
-			boolean success = geoclass.getClass() == get(i).getClass();
+			boolean success = geoid == ((GeoElement) get(i)).getGeoClassType() || geoid==0;
 			if (other)
 				success = !success;
 			if (success)
@@ -341,7 +341,7 @@ public class Hits extends ArrayList {
 	public Hits getTopHits() {
 		
 		if (isEmpty())
-			return clone();
+			return this;
 		
 		// point in there?
 		Hits topHitsList = new Hits();
@@ -350,7 +350,7 @@ public class Hits extends ArrayList {
 			//getHits(GeoPoint.class, false, topHitsList);
 			return topHitsList;
 		} else
-			return clone();
+			return this;
 	}
 	
 	

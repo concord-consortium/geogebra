@@ -332,9 +332,9 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	// temp image
 	protected Graphics2D g2Dtemp = new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB).createGraphics();
 	//public Graphics2D lastGraphics2D;
-	
+	*/
 	protected StringBuilder sb = new StringBuilder();
-
+	/*
 	protected Cursor defaultCursor;*/
 
 	public int fontSize = 12; //px
@@ -342,16 +342,22 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	/*Handling the text support with native canvas functions
 	*/
 	public native void strokeText(String text, int x, int y) /*-{
-		if (!$wnd.eview) {
+		//if (!$wnd.eview) {
 			//$wnd.alert(document.getElementById("eview"));
-			$wnd.eview = $doc.getElementById("eview");
-			$wnd.econt = $wnd.eview.getContext("2d");
-		}
-		if ($wnd.econt.strokeText) {
-			$wnd.econt.font = 'italic 400 12px/2 sans-serif';
-			$wnd.econt.clearRect(25,10,500,30);
-			$wnd.econt.strokeText(text,30,30);
-		}
+			//$wnd.eview = $doc.getElementById("eview");
+			//$wnd.alert($wnd.eview);
+			//$wnd.econt = $wnd.eview.getContext("2d");
+		//}
+		///if ($wnd.econt.strokeText) {
+			//$wnd.econt.font = 'italic 400 12px/2 sans-serif';
+			//$wnd.econt.clearRect(x-5,y-20,500,30);
+			//$wnd.econt.strokeText(text,x,y);
+		//}
+		var eview = $doc.getElementById('eview');
+		var ctx = eview.getContext('2d');
+		ctx.font = 'italic 400 12px/2 sans-serif';
+		//ctx.clearRect(x-5,y-20,500,30);
+		ctx.strokeText(text,x,y);
 		
 	}-*/;
 	
@@ -399,6 +405,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 		// showAxes = true;
 		// showGrid = false;
+		showMouseCoords = true;
 		pointCapturingMode = POINT_CAPTURING_AUTOMATIC;
 		pointStyle = POINT_STYLE_DOT;
 		
@@ -690,8 +697,9 @@ final public void setHits(Point p){
 			if (d.hit(p.x, p.y) || d.hitLabel(p.x, p.y)) {
 				GeoElement geo = d.getGeoElement();
 				if (geo.isEuclidianVisible()) {
-					strokeText(geo.toString(),10,10);
+					//strokeText(geo.toString(),30,30);
 					hits.add(geo);
+					//GWT.log(geo.toString());
 				}
 			}
 			
@@ -715,7 +723,6 @@ final public void setHits(Point p){
 					hits.remove(i);
 			}
 		}
-		GWT.log("none");
 		
 		
 	}
@@ -1428,17 +1435,40 @@ final public void setHits(Point p){
 
 	@Override
 	public void repaintView() {
+		clear();
 		paint();
 		//GWT.log("megvagy");
 		
 	}
 
 	private void paint() {
+		//clear();
 		drawObjects();
+		
+		if (showMouseCoords /*AG test && (showAxes[0] || showAxes[1] || showGrid)*/)
+			drawMouseCoords();
 		// TODO Auto-generated method stub
 		
 	}
 
+	final protected void drawMouseCoords() {
+		Point pos = euclidianController.mouseLoc;
+		if (pos == null)
+			return;
+
+		sb.setLength(0);
+		sb.append('(');
+		sb.append(String.valueOf(euclidianController.xRW)/*AGkernel.format(euclidianController.xRW)*/);
+		//AGif (kernel.getCoordStyle() == Kernel.COORD_STYLE_AUSTRIAN)
+		//AG	sb.append(" | ");
+		//AG else
+			sb.append(", ");
+		sb.append(String.valueOf(euclidianController.yRW)/*kernel.format(euclidianController.yRW)*/);
+		sb.append(')');
+
+		setStrokeStyle(Color.GREY);
+		strokeText(sb.toString(), pos.x + 15, pos.y + 15);
+	}
 	private void drawObjects() {
 		// TODO Auto-generated method stub
 		drawGeometricObjects();

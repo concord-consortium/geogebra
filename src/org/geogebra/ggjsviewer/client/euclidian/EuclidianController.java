@@ -604,7 +604,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			boolean doSingleHighlighting, boolean chooseGeo) {
 
 		// create hits for region
-		Hits regionHits = hits.getHits(Region.class, tempArrayList);
+		//Hits regionHits = hits.getHits(Region.class, tempArrayList);
 
 		// only keep polygon in hits if one side of polygon is in hits too
 		if (!hits.isEmpty())
@@ -616,7 +616,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		if (hits.containsGeoPoint()){
 			createPoint = false;
 			if (forPreviewable){
-				createNewPoint((GeoPointInterface) hits.getHits(GeoPointInterface.class, tempArrayList).get(0));				
+				createNewPoint((GeoPointInterface) hits.getHits(GeoPoint.GEO_CLASS_POINT, tempArrayList).get(0));				
 			}
 		}
 
@@ -651,7 +651,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 			// check if point lies in a region and if we are allowed to place a point
 			// in a region
-			if (!regionHits.isEmpty()) {
+			/*AGif (!regionHits.isEmpty()) {
 				if (inRegionPossible) {
 					if (chooseGeo)
 						region = (Region) chooseGeo(regionHits, true);
@@ -661,14 +661,14 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				} else {
 					createPoint = true;
 					// if inRegionPossible is false, the point is created as a free point
-				}
+				}*/
 
 			}
 
 
 			//check if point lies on path and if we are allowed to place a point
 			// on a path			
-			Hits pathHits = hits.getHits(Path.class, tempArrayList);
+			/*AGHits pathHits = hits.getHits(Path.class, tempArrayList);
 			if (!pathHits.isEmpty()) {
 				if (onPathPossible) {
 					if (chooseGeo)
@@ -681,7 +681,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				}
 			}
 
-		}
+		}*/
 
 
 
@@ -722,8 +722,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	   specified class (note: subclasses are included)
 	 * 
 	 */
-	private GeoElement chooseGeo(Hits hits, Class geoclass) {
-		return chooseGeo(hits.getHits(geoclass, tempArrayList), true);
+	private GeoElement chooseGeo(Hits hits, int geoid) {
+		return chooseGeo(hits.getHits(geoid, tempArrayList), true);
 	}
 	
 	protected GeoElement chooseGeo(ArrayList geos, boolean includeFixed) {
@@ -990,7 +990,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	protected void processMouseMoved(MouseMoveEvent event) {
 		// TODO Auto-generated method stub
 		//GWT.log("move");
-		view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 10, 10);
+		//view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 30, 30);
 		boolean repaintNeeded = false; //AG or false should be here?
 		// standard handling
 		Hits hits = new Hits();
@@ -1089,22 +1089,23 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	// dummy function for highlighting:
 	// used only in preview mode, see mouseMoved() and selectionPreview
 	final protected boolean point(Hits hits) {
-		addSelectedGeo(hits.getHits(Path.class, tempArrayList), 1, false);
+//AG		addSelectedGeo(hits.getHits(Path.class, tempArrayList), 1, false);
 		return false;
 	}
 	
 	final protected int addSelectedGeo(Hits hits, int max,
 			boolean addMoreThanOneAllowed) {
-		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedGeos, GeoElement.class);
+		
+		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedGeos,GeoElement.GEO_CLASS_ALL);
 	}		
 	
-	protected int handleAddSelected(Hits hits, int max, boolean addMore, ArrayList list, Class geoClass) {	
+	protected int handleAddSelected(Hits hits, int max, boolean addMore, ArrayList list, int geoid) {	
 		
 		
 		if (selectionPreview)
-			return addToHighlightedList(list, hits.getHits(geoClass, handleAddSelectedArrayList) , max);
+			return addToHighlightedList(list, hits.getHits(geoid, handleAddSelectedArrayList) , max);
 		else
-			return addToSelectionList(list, hits.getHits(geoClass, handleAddSelectedArrayList), max, addMore);
+			return addToSelectionList(list, hits.getHits(geoid, handleAddSelectedArrayList), max, addMore);
 	}
 	protected Hits handleAddSelectedArrayList = new Hits();
 
@@ -1197,7 +1198,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	}
 	final protected int addSelectedPoint(Hits hits, int max,
 			boolean addMoreThanOneAllowed) {
-		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedPoints, GeoPointInterface.class);
+		return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedPoints, GeoPoint.GEO_CLASS_POINT);
 		//ggb3D 2009-06-26 //return handleAddSelected(hits, max, addMoreThanOneAllowed, selectedPoints, GeoPoint.class);
 	}
 	

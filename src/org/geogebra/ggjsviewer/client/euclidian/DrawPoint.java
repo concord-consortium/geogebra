@@ -315,8 +315,8 @@ public final class DrawPoint extends Drawable {
     		 	//AGg2.setPaint(geo.getSelColor());		
     		 	//AGg2.fill(circleHighlight);
         		view.beginPath();
-        		view.arc(circleHighlight.x, circleHighlight.y, circleHighlight.height/2, 0, Math.PI*2, false);
-        		view.setFillStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen(),geo.getAlphaValue()));
+        		view.arc(circleHighlight.x+circleHighlight.width/2, circleHighlight.y+circleHighlight.height/2, circleHighlight.height/2, 0, Math.PI*2, false);
+        		view.setFillStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*,geo.getAlphaValue()*/));
         		view.fill();
             }
         	

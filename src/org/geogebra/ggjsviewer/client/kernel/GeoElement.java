@@ -245,6 +245,7 @@ public abstract class GeoElement
 	*/
 	
 	// GeoElement types
+	public static final int GEO_CLASS_ALL = 0;
 	public static final int GEO_CLASS_ANGLE = 10;
 	public static final int GEO_CLASS_AXIS = 20;
 	public static final int GEO_CLASS_BOOLEAN = 30;
