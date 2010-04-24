@@ -159,5 +159,21 @@ public class Application extends BaseApplication {
 		updateSelection();
 	}
 
+	public void addSelectedGeo(GeoElement geo) {
+		// TODO Auto-generated method stub
+		addSelectedGeo(geo, true);		
+	}
+
+	final public void addSelectedGeo(GeoElement geo, boolean repaint) {
+		if (geo == null || selectedGeos.contains(geo))
+			return;
+
+		selectedGeos.add(geo);
+		geo.setSelected(true);
+		if (repaint)
+			kernel.notifyRepaint();
+		updateSelection();
+	}
+
 
 }

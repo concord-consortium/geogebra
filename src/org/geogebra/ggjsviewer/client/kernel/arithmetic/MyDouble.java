@@ -25,6 +25,7 @@ import geogebra.util.MyMath;*/
 
 import java.util.HashSet;
 
+import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 
 /**
@@ -321,11 +322,12 @@ implements NumberValue {
         return val;
     }
     
-	/*AGfinal public GeoElement toGeoElement() {
-		GeoNumeric num = new GeoNumeric(kernel.getConstruction());
+	final public GeoElement toGeoElement() {
+		/*AG MUST BE IMPLEMENTED GeoNumeric num = new GeoNumeric(kernel.getConstruction());
 		num.setValue(val);
-		return num;
-	}*/
+		return num;*/
+		return null;
+	}
     
 	public boolean isNumberValue() {
 		return true;

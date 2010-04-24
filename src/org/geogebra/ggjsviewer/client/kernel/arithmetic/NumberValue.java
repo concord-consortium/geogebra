@@ -18,6 +18,8 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.kernel.arithmetic;
 
+import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+
 
 /**
  *
@@ -29,5 +31,6 @@ public interface NumberValue extends ExpressionValue {
     public boolean isAngle();
     public double getDouble(); 
     //AGpublic GeoElement toGeoElement();
+	public GeoElement toGeoElement();
 }
 

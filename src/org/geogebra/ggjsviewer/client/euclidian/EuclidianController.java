@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.geogebra.ggjsviewer.client.kernel.AlgoDynamicCoordinates;
+import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -194,7 +196,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	private static String defaultRotateAngle = "45\u00b0"; // 45 degrees
 
-	
+	// used for gridlock when dragging polygons, segments etc
+	double[] transformCoordsOffset = new double[2];
 	
 	
 	protected Kernel kernel;
@@ -367,15 +370,15 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		view.fill();*/
 		double screen_x = event.getClientX() - view.getAbsoluteLeft();
 		double screen_y = event.getClientY() - view.getAbsoluteTop();
-		GWT.log("screen_x: "+String.valueOf(screen_x));
-		GWT.log("sceenn_y: "+String.valueOf(screen_y));
+		//GWT.log("screen_x: "+String.valueOf(screen_x));
+		//GWT.log("sceenn_y: "+String.valueOf(screen_y));
 		// TODO Auto-generated method stub
 		if (mode == EuclidianView.MODE_PEN) {
 			//AGhandleMousePressedForPenMode(e);
 			return;
 		}
-		GWT.log(String.valueOf(mode));
-		//GeoElement geo;
+		//GWT.log(String.valueOf(mode));
+		GeoElement geo;
 		Hits hits;
 		setMouseLocation(event);
 		transformCoords();	
@@ -506,7 +509,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			 */
 		case EuclidianView.MODE_MOVE:	
 		case EuclidianView.MODE_VISUAL_STYLE:	
-			//handleMousePressedForMoveMode(event, false);			
+			handleMousePressedForMoveMode(event, false);			
 			break;
 		/*
 			// move drawing pad or axis
@@ -521,10 +524,379 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		}
 	}
 	
+	protected void handleMousePressedForMoveMode(MouseEvent e, boolean drag) {
+
+		//long t0 = System.currentTimeMillis();
+
+
+		//Application.debug("start");
+
+
+
+		//view.resetTraceRow(); // for trace/spreadsheet
+
+		// fix for meta-click to work on Mac/Linux
+		//AGif (Application.isControlDown(e)) return;
+
+		// move label?
+		GeoElement geo = view.getLabelHit(mouseLoc);
+		//Application.debug("label("+(System.currentTimeMillis()-t0)+")");
+		if (geo != null) {
+			moveMode = MOVE_LABEL;
+			movedLabelGeoElement = geo;
+			oldLoc.setLocation(geo.labelOffsetX, geo.labelOffsetY);
+			startLoc = mouseLoc;
+			view.setDragCursor();
+			return;
+		}
+
+
+		//Application.debug("laps("+(System.currentTimeMillis()-t0)+")");
+
+		// find and set movedGeoElement
+		view.setHits(mouseLoc); 
+		Hits moveableList;		
+
+		// if we just click (no drag) on eg an intersection, we want it selected
+		// not a popup with just the lines in
+		if (drag)
+			moveableList = view.getHits().getMoveableHits();
+		else
+			moveableList = view.getHits();
+
+		Hits hits = moveableList.getTopHits();
+
+		//Application.debug("end("+(System.currentTimeMillis()-t0)+")");
+
+		ArrayList selGeos = app.getSelectedGeos();
+		
+		// if object was chosen before, take it now!
+		if (selGeos.size() == 1 && 
+				!hits.isEmpty() && hits.contains(selGeos.get(0))) 
+		{
+			// object was chosen before: take it			
+			geo = (GeoElement) selGeos.get(0);			
+		} else {
+			// choose out of hits			
+			geo = chooseGeo(hits, false);
+
+			if (!selGeos.contains(geo)) {
+				app.clearSelectedGeos();
+				app.addSelectedGeo(geo);
+				//app.geoElementSelected(geo, false); // copy definiton to input bar
+			}
+		}				
+
+		if (geo != null && !geo.isFixed()) {		
+			moveModeSelectionHandled = true;	
+			DRAGGING_OCCURED = true;
+		} else {
+			// no geo clicked at
+			moveMode = MOVE_NONE;	
+			return;
+		}				
+
+		movedGeoElement = geo;
+
+
+
+		//doSingleHighlighting(movedGeoElement);				
+
+		/*
+		// if object was chosen before, take it now!
+		ArrayList selGeos = app.getSelectedGeos();
+		if (selGeos.size() == 1 && hits != null && hits.contains(selGeos.get(0))) {
+			// object was chosen before: take it
+			geo = (GeoElement) selGeos.get(0);			
+		} else {
+			geo = chooseGeo(hits);			
+		}		
+
+		if (geo != null) {
+			app.clearSelectedGeos(false);
+			app.addSelectedGeo(geo);
+			moveModeSelectionHandled = true;			
+		}						
+
+		movedGeoElement = geo;
+		doSingleHighlighting(movedGeoElement);	
+		 */	
+
+
+		// multiple geos selected
+		if (movedGeoElement != null && selGeos.size() > 1) {									
+			moveMode = MOVE_MULTIPLE_OBJECTS;
+			startPoint.setLocation(xRW, yRW);	
+			startLoc = mouseLoc;
+			view.setDragCursor();
+		//AG	if (translationVec == null)
+			//AG	translationVec = new GeoVector(kernel.getConstruction());
+		}	
+
+		// DEPENDENT object: changeable parents?
+		// move free parent points (e.g. for segments)
+		else if (!movedGeoElement.isMoveable()) {
+			translateableGeos = null;
+
+			// point with changeable coord parent numbers
+			if (movedGeoElement.isGeoPoint() && 
+					((GeoPointInterface) movedGeoElement).hasChangeableCoordParentNumbers()) {
+				translateableGeos = new ArrayList();
+				translateableGeos.add(movedGeoElement);
+			}
+
+			// STANDARD case: get free input points of dependent movedGeoElement
+			else if (movedGeoElement.hasMoveableInputPoints()) {
+				// allow only moving of the following object types
+				if (movedGeoElement.isGeoLine() || 
+						movedGeoElement.isGeoPolygon() ||					 
+						movedGeoElement.isGeoConic() || 
+						movedGeoElement.isGeoVector()) 
+				{		
+					translateableGeos = movedGeoElement.getFreeInputPoints();
+				}
+			}
+
+			// init move dependent mode if we have something to move ;-)
+			if (translateableGeos != null) {
+				moveMode = MOVE_DEPENDENT;
+
+				// snap to grid when dragging polygons, segments etc
+				// use first point
+				((GeoPoint)translateableGeos.get(0)).getInhomCoords(transformCoordsOffset);
+				transformCoordsOffset[0]-=xRW;
+				transformCoordsOffset[1]-=yRW;
+				
+				startPoint.setLocation(xRW, yRW);					
+				view.setDragCursor();
+				//AGif (translationVec == null)
+					//AGtranslationVec = new GeoVector(kernel.getConstruction());
+			} else {
+				moveMode = MOVE_NONE;
+			}				
+		} 
+
+		// free point
+		else if (movedGeoElement.isGeoPoint()) {
+			moveMode = MOVE_POINT;
+			setMovedGeoPoint(movedGeoElement);
+			movedGeoPoint = (GeoPoint) movedGeoElement;
+			/*AGview.setShowMouseCoords(!app.isApplet()
+					&& !movedGeoPoint.hasPath());
+			view.setDragCursor();
+			 */
+		} 			
+
+		// free line
+		else if (movedGeoElement.isGeoLine()) {
+			moveMode = MOVE_LINE;
+			movedGeoLine = (GeoLine) movedGeoElement;
+			view.setShowMouseCoords(true);
+			view.setDragCursor();
+		} 
+
+		// free vector
+		else if (movedGeoElement.isGeoVector()) {
+			/*AGmovedGeoVector = (GeoVector) movedGeoElement;
+
+			// change vector itself or move only startpoint?
+			// if vector is dependent or
+			// mouseLoc is closer to the startpoint than to the end
+			// point
+			// then move the startpoint of the vector
+			if (movedGeoVector.hasAbsoluteLocation()) {
+				GeoPoint sP = movedGeoVector.getStartPoint();
+				double sx = 0;
+				double sy = 0;
+				if (sP != null) {
+					sx = sP.inhomX;
+					sy = sP.inhomY;
+				}
+				//	if |mouse - startpoint| < 1/2 * |vec| then move
+				// startpoint
+				if (2d * GeoVec2D.length(xRW - sx, yRW - sy) < GeoVec2D
+						.length(movedGeoVector.x, movedGeoVector.y)) { // take
+					// startPoint
+					moveMode = MOVE_VECTOR_STARTPOINT;
+					if (sP == null) {
+						sP = new GeoPoint(kernel.getConstruction());
+						sP.setCoords(xRW, xRW, 1.0);
+						try {
+							movedGeoVector.setStartPoint(sP);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+				} else
+					moveMode = MOVE_VECTOR;
+			} else {
+				moveMode = MOVE_VECTOR;
+			}
+
+			view.setShowMouseCoords(true);
+			view.setDragCursor();*/
+		} 
+
+		// free text
+		else if (movedGeoElement.isGeoText()) {
+		/*AG	moveMode = MOVE_TEXT;
+			movedGeoText = (GeoText) movedGeoElement;
+			view.setShowMouseCoords(false);
+			view.setDragCursor();	
+
+			if (movedGeoText.isAbsoluteScreenLocActive()) {
+				oldLoc.setLocation(movedGeoText.getAbsoluteScreenLocX(),
+						movedGeoText.getAbsoluteScreenLocY());
+				startLoc = mouseLoc;
+			}
+			else if (movedGeoText.hasAbsoluteLocation()) {
+				//	absolute location: change location
+				GeoPoint loc = (GeoPoint) movedGeoText.getStartPoint();
+				if (loc == null) {
+					loc = new GeoPoint(kernel.getConstruction());
+					loc.setCoords(0, 0, 1.0);
+					try {
+						movedGeoText.setStartPoint(loc);
+					} catch (Exception ex) {
+					}
+					startPoint.setLocation(xRW, yRW);
+				} else {
+					startPoint.setLocation(xRW - loc.inhomX, yRW
+							- loc.inhomY);
+				}
+			} else {
+				// for relative locations label has to be moved
+				oldLoc.setLocation(movedGeoText.labelOffsetX,
+						movedGeoText.labelOffsetY);
+				startLoc = mouseLoc;
+			}*/							
+		} 
+
+		// free conic
+		else if (movedGeoElement.isGeoConic()) {
+		/*AG	moveMode = MOVE_CONIC;
+			movedGeoConic = (GeoConic) movedGeoElement;
+			view.setShowMouseCoords(false);
+			view.setDragCursor();
+
+			startPoint.setLocation(xRW, yRW);
+			if (tempConic == null) {
+				tempConic = new GeoConic(kernel.getConstruction());
+			}
+			tempConic.set(movedGeoConic);
+		} 
+		else if (movedGeoElement.isGeoFunction()) {
+			moveMode = MOVE_FUNCTION;
+			movedGeoFunction = (GeoFunction) movedGeoElement;
+			view.setShowMouseCoords(false);
+			view.setDragCursor();
+
+			startPoint.setLocation(xRW, yRW);
+			if (tempFunction == null) {
+				tempFunction = new GeoFunction(kernel.getConstruction());
+			}
+			tempFunction.set(movedGeoFunction);
+		} 
+
+		// free number
+		else if (movedGeoElement.isGeoNumeric()) {															
+			movedGeoNumeric = (GeoNumeric) movedGeoElement;
+			moveMode = MOVE_NUMERIC;
+
+			Drawable d = view.getDrawableFor(movedGeoNumeric);
+			if (d instanceof DrawSlider) {
+				// should we move the slider 
+				// or the point on the slider, i.e. change the number
+				DrawSlider ds = (DrawSlider) d;
+				if (!ds.hitPoint(mouseLoc.x, mouseLoc.y) &&
+						ds.hitSlider(mouseLoc.x, mouseLoc.y)) {
+					moveMode = MOVE_SLIDER;
+					if (movedGeoNumeric.isAbsoluteScreenLocActive()) {
+						oldLoc.setLocation(movedGeoNumeric.getAbsoluteScreenLocX(),
+								movedGeoNumeric.getAbsoluteScreenLocY());
+						startLoc = mouseLoc;
+					} else {
+						startPoint.setLocation(xRW - movedGeoNumeric.getRealWorldLocX(),
+								yRW - movedGeoNumeric.getRealWorldLocY());
+					}
+				}	
+				else {						
+					startPoint.setLocation(movedGeoNumeric.getSliderX(), movedGeoNumeric.getSliderY());
+				}
+			} 						
+
+			view.setShowMouseCoords(false);
+			view.setDragCursor();*/					
+		}  
+
+		//  checkbox
+		else if (movedGeoElement.isGeoBoolean()) {
+		/*AG	movedGeoBoolean = (GeoBoolean) movedGeoElement;
+			// move checkbox
+			moveMode = MOVE_BOOLEAN;					
+			startLoc = mouseLoc;
+			oldLoc.x = movedGeoBoolean.getAbsoluteScreenLocX();
+			oldLoc.y = movedGeoBoolean.getAbsoluteScreenLocY();
+
+			view.setShowMouseCoords(false);
+			view.setDragCursor();*/			
+		}
+
+		//  button
+		else if (movedGeoElement.isGeoButton()) {
+		/*AG	movedGeoButton = (GeoButton) movedGeoElement;
+			// move checkbox
+			moveMode = MOVE_BUTTON;					
+			startLoc = mouseLoc;
+			oldLoc.x = movedGeoButton.getAbsoluteScreenLocX();
+			oldLoc.y = movedGeoButton.getAbsoluteScreenLocY();
+
+			view.setShowMouseCoords(false);
+			view.setDragCursor();			
+		}
+
+		// image
+		else if (movedGeoElement.isGeoImage()) {
+			moveMode = MOVE_IMAGE;
+			movedGeoImage = (GeoImage) movedGeoElement;
+			view.setShowMouseCoords(false);
+			view.setDragCursor();
+
+			if (movedGeoImage.isAbsoluteScreenLocActive()) {
+				oldLoc.setLocation(movedGeoImage.getAbsoluteScreenLocX(),
+						movedGeoImage.getAbsoluteScreenLocY());
+				startLoc = mouseLoc;
+			} 
+			else if (movedGeoImage.hasAbsoluteLocation()) {
+				startPoint.setLocation(xRW, yRW);
+				oldImage = new GeoImage(movedGeoImage);
+			}*/ 				
+		}
+		else {
+			moveMode = MOVE_NONE;
+		}
+
+		view.repaintEuclidianView();		
+		//Application.printStacktrace("Handle");
+	}
+	
 	private boolean allowPointCreation() {
 		return  mode == EuclidianView.MODE_POINT || 
 		mode == EuclidianView.MODE_POINT_IN_REGION || true;
 		//AG NECESSARY?app.isOnTheFlyPointCreationActive(); 
+	}
+	
+	public void setMovedGeoPoint(GeoElement geo){
+		movedGeoPoint = (GeoPoint) movedGeoElement;
+
+		AlgoElement algo = movedGeoPoint.getParentAlgorithm();
+		if (algo != null && algo instanceof AlgoDynamicCoordinates) {
+			movedGeoPoint = ((AlgoDynamicCoordinates)algo).getParentPoint();
+		}
+
+		/*view.setShowMouseCoords(!app.isApplet()
+				&& !movedGeoPoint.hasPath());
+		view.setDragCursor();*/
 	}
 
 	
@@ -988,70 +1360,77 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	}
 
 	protected void processMouseMoved(MouseMoveEvent event) {
-		// TODO Auto-generated method stub
-		//GWT.log("move");
-		//view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 30, 30);
-		boolean repaintNeeded = false; //AG or false should be here?
-		// standard handling
-		Hits hits = new Hits();
-		boolean noHighlighting = false;		
-		altDown=event.isAltKeyDown();		
-		
-		if (moveMode(mode)) {
-			GeoElement geo = view.getLabelHit(mouseLoc);
+		//GWT.log(String.valueOf(DRAGGING_OCCURED));
+		//BECAUSE THERE IS NOT ONMOUSEDRAGGED IN GWT WE MUST BE
+		//AWARE OF DRAGGIN_OCCURED HERE
+		if (!DRAGGING_OCCURED) {
+			// TODO Auto-generated method stub
+			//GWT.log("move");
+			//view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 30, 30);
+			boolean repaintNeeded = false; //AG or false should be here?
+			// standard handling
+			Hits hits = new Hits();
+			boolean noHighlighting = false;		
+			altDown=event.isAltKeyDown();		
+
+			if (moveMode(mode)) {
+				GeoElement geo = view.getLabelHit(mouseLoc);
 			if (geo != null) {				
 				//Application.debug("hop");
 				noHighlighting = true;
 				tempArrayList.clear();
 				tempArrayList.add(geo);
 				hits = tempArrayList;				
+				}
 			}
-		}
-		else if (mode == EuclidianView.MODE_POINT || mode == EuclidianView.MODE_POINT_IN_REGION) {
-			// include polygons in hits
-			view.setHits(mouseLoc);
-			hits = view.getHits();
-		}
-		if (hits.isEmpty()){
-			view.setHits(mouseLoc);
-			hits = view.getHits();switchModeForRemovePolygons(hits);
+			else if (mode == EuclidianView.MODE_POINT || mode == EuclidianView.MODE_POINT_IN_REGION) {
+				// include polygons in hits
+				view.setHits(mouseLoc);
+				hits = view.getHits();
+			}
+			if (hits.isEmpty()){
+				view.setHits(mouseLoc);
+				hits = view.getHits();switchModeForRemovePolygons(hits);
 
-		}
-		if (hits.isEmpty()) {
-			//AG Not implemented yet view.setToolTipText(null);
-			//AG Not implemented yet view.setDefaultCursor();	
-		}	
-		//AGelse
+			}
+			if (hits.isEmpty()) {
+				//AG Not implemented yet view.setToolTipText(null);
+				//AG Not implemented yet view.setDefaultCursor();	
+			}	
+			//AGelse
 			//AG not implemented yet view.setHitCursor();
-		
-		repaintNeeded = noHighlighting ?  refreshHighlighting(null) : refreshHighlighting(hits) 
-				|| repaintNeeded;
-		
-		// set tool tip text
-		// the tooltips are only shown if algebra view is visible
-		//if (app.isUsingLayout() && app.getGuiManager().showAlgebraView()) {
+
+			repaintNeeded = noHighlighting ?  refreshHighlighting(null) : refreshHighlighting(hits) 
+					|| repaintNeeded;
+
+			// set tool tip text
+			// the tooltips are only shown if algebra view is visible
+			//if (app.isUsingLayout() && app.getGuiManager().showAlgebraView()) {
 			//hits = view.getTopHits(hits);
 			/*AG isn't implemented yet hits = hits.getTopHits();
 			if (!hits.isEmpty()) {
 				String text = GeoElement.getToolTipDescriptionHTML(hits,
-						true, true);				
-				view.setToolTipText(text);
+				true, true);				
+				view.setToolTipText(text);	
 			} else
 				view.setToolTipText(null);*/
-		// update previewable
-		if (view.getPreviewDrawable() != null) {			
-			view.updatePreviewable();
-			repaintNeeded = true;
-		}
-		
-		// show Mouse coordinates
-		if (view.getShowMouseCoords()) {
-			transformCoords();
-			repaintNeeded = true;
-		}		
+			// update previewable
+			if (view.getPreviewDrawable() != null) {			
+				view.updatePreviewable();
+				repaintNeeded = true;
+			}
 
-		if (repaintNeeded) {
-			kernel.notifyRepaint();
+			// show Mouse coordinates
+			if (view.getShowMouseCoords()) {
+				transformCoords();
+				repaintNeeded = true;
+			}			
+
+			if (repaintNeeded) {
+				kernel.notifyRepaint();
+			}
+		} else {
+			GWT.log("DRAG");
 		}
 
 		
@@ -1575,7 +1954,241 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 	}
 
 	@Override
-	public void onMouseUp(MouseUpEvent event) {
+	public void onMouseUp(MouseUpEvent e) {
+		// reset
+		transformCoordsOffset[0] = 0;
+		transformCoordsOffset[1] = 0;
+
+		//AGif (textfieldHasFocus) return;
+
+		if (mode == EuclidianView.MODE_PEN) {
+			//AGhandleMouseReleasedForPenMode(e);
+			return;
+		}
+
+
+		//if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) view.resetTraceRow(); // for trace/spreadsheet
+		/*AGif (getMovedGeoPoint() != null){
+
+			processReleaseForMovedGeoPoint();
+			/*
+			// deselect point after drag, but not on click
+			if (movedGeoPointDragged) getMovedGeoPoint().setSelected(false);
+
+			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) getMovedGeoPoint().resetTraceColumns();
+			 
+		}*/
+		/*AGif (movedGeoNumeric != null) {
+
+			// deselect slider after drag, but not on click
+			if (movedGeoNumericDragged) movedGeoNumeric.setSelected(false);
+
+			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) movedGeoNumeric.resetTraceColumns();
+		}*/
+
+		movedGeoPointDragged = false;
+		//AGmovedGeoNumericDragged = false;
+
+		//AG((JPanel) view).requestFocusInWindow();
+		setMouseLocation(e);
+
+		altDown=e.isAltKeyDown();
+
+		transformCoords();
+		Hits hits = null;
+		GeoElement geo;
+
+		/*AGif (hitResetIcon()) {				
+			app.reset();
+			return;
+		}
+		else if (view.hitAnimationButton(e)) {		
+			if (kernel.isAnimationRunning())
+				kernel.getAnimatonManager().stopAnimation();
+			else
+				kernel.getAnimatonManager().startAnimation();			
+			view.repaintEuclidianView();
+			app.setUnsaved();
+			return;
+		}*/
+
+
+
+		// Michael Borcherds 2007-10-08 allow drag with right mouse button
+		/*AGif ((Application.isRightClick(e) || Application.isControlDown(e)))// && !TEMPORARY_MODE)
+		{		
+			if (processRightReleaseFor3D()) return;
+			if (!TEMPORARY_MODE){
+				if (!app.isRightClickEnabled()) return;
+				if (processZoomRectangle()) return;
+				//			 Michael Borcherds 2007-10-08
+
+				// make sure cmd-click selects multiple points (not open properties)
+				if (Application.MAC_OS && Application.isControlDown(e) 
+						|| !Application.isRightClick(e))
+					return;
+
+				// get selected GeoElements						
+				// show popup menu after right click
+				view.setHits(mouseLoc);
+				hits = view.getHits().getTopHits();
+				if (hits.isEmpty()) {
+					// no hits
+					if (app.selectedGeosSize() == 1) {
+						GeoElement selGeo = (GeoElement) app.getSelectedGeos().get(0);
+						app.getGuiManager().showPopupMenu(selGeo, (JPanel) view, mouseLoc);
+					}
+					else if (app.selectedGeosSize() > 1) {
+						// there are selected geos: show them
+						app.getGuiManager().showPropertiesDialog(app.getSelectedGeos());
+					}
+					else {
+						// there are no selected geos: show drawing pad popup menu
+						app.getGuiManager().showDrawingPadPopup((JPanel) view, mouseLoc);
+					}
+				} else {		
+					// there are hits
+					if (app.selectedGeosSize() > 0) {	
+						// selected geos: add first hit to selection and show properties
+						app.addSelectedGeo((GeoElement) hits.get(0));
+
+						if (app.selectedGeosSize() == 1) {
+							GeoElement selGeo = (GeoElement) app.getSelectedGeos().get(0);
+							app.getGuiManager().showPopupMenu(selGeo, (JPanel) view, mouseLoc);
+						}
+						else  { // more than 1 selected					
+							app.getGuiManager().showPropertiesDialog(app.getSelectedGeos());
+						}
+					}
+					else {
+						// no selected geos: choose geo and show popup menu
+						geo = chooseGeo(hits, true);
+						if (geo!=null)
+							app.getGuiManager().showPopupMenu(geo,(JPanel) view, mouseLoc);
+						else
+							//for 3D : if the geo hitted is xOyPlane, then chooseGeo return null
+							app.getGuiManager().showDrawingPadPopup((JPanel) view, mouseLoc);
+					}																										
+				}				
+				return;
+			}
+		}*/
+
+		// handle moving
+		boolean changedKernel = POINT_CREATED;		
+		if (DRAGGING_OCCURED) {			
+
+			DRAGGING_OCCURED = false;
+			//			// copy value into input bar
+			//			if (mode == EuclidianView.MODE_MOVE && movedGeoElement != null) {
+			//				app.geoElementSelected(movedGeoElement,false);
+			//			}
+
+
+			changedKernel = (moveMode != MOVE_NONE);			
+			movedGeoElement = null;
+			rotGeoElement = null;	
+
+			// Michael Borcherds 2007-10-08 allow dragging with right mouse button
+			if (!TEMPORARY_MODE) {
+				// Michael Borcherds 2007-10-08
+				/*AGif (allowSelectionRectangle()) {
+					processSelectionRectangle(e);	
+
+					return;
+				}*/
+		} else {	
+			// no hits: release mouse button creates a point
+			// for the transformation tools
+			// (note: this cannot be done in mousePressed because
+			// we want to be able to select multiple objects using the selection rectangle)
+			
+			//AGchangedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
+		}
+
+		// remember helper point, see createNewPoint()
+		//AGif (changedKernel)
+			//AGapp.storeUndoInfo();
+
+		// make sure that when alt is pressed for creating a segment or line
+		// it works if the endpoint is on a path
+		/*AGif (useLineEndPoint && lineEndPoint != null) {
+			EuclidianView ev = (EuclidianView) view;
+			mouseLoc.x = ev.toScreenCoordX(lineEndPoint.x);
+			mouseLoc.y = ev.toScreenCoordY(lineEndPoint.y);
+			useLineEndPoint = false;	
+		}*/
+
+		// now handle current mode
+		view.setHits(mouseLoc);
+		hits = view.getHits();
+		switchModeForRemovePolygons(hits);
+		//Application.debug(hits.toString());
+
+
+		// Michael Borcherds 2007-12-08 BEGIN moved up a few lines (bugfix: Tools eg Line Segment weren't working with grid on)
+		// grid capturing on: newly created point should be taken
+		if (hits.isEmpty() && POINT_CREATED) {			
+			hits = new Hits();
+			hits.add(getMovedGeoPoint());//hits.add(movedGeoPoint);				
+		}
+		POINT_CREATED = false;		
+		//		 Michael Borcherds 2007-12-08 END	
+
+
+
+
+		if (TEMPORARY_MODE) {
+
+			//			Michael Borcherds 2007-10-13 BEGIN
+			//AGview.setMode(oldMode);
+			TEMPORARY_MODE = false;
+			// Michael Borcherds 2007-12-08 BEGIN bugfix: couldn't select multiple points with Ctrl
+			if (DONT_CLEAR_SELECTION==false)
+				//AGclearSelections();	
+			DONT_CLEAR_SELECTION=false;
+			//			 Michael Borcherds 2007-12-08 END
+			//mode = oldMode;
+			//			Michael Borcherds 2007-10-13 END
+		} 
+		//		 Michael Borcherds 2007-10-12 bugfix: ctrl-click on a point does the original mode's command at end of drag if a point was clicked on
+		//  also needed for right-drag
+		else
+		{			
+			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET){ 
+				changedKernel = processMode(hits, e);
+			}
+			if (changedKernel) {
+				//AGapp.storeUndoInfo();
+			}
+		}
+		//Michael Borcherds 2007-10-12
+
+
+
+		//		Michael Borcherds 2007-10-12
+		//      moved up a few lines
+		//		changedKernel = processMode(hits, e);
+		//		if (changedKernel)
+		//			app.storeUndoInfo();
+		//		Michael Borcherds 2007-10-12
+
+
+		if (!hits.isEmpty()){
+			//Application.debug("hits ="+hits);
+			//AGview.setDefaultCursor();		
+		}else {
+			//AGview.setHitCursor();
+		}
+		refreshHighlighting(null);
+
+		// reinit vars
+		//view.setDrawMode(EuclidianView.DRAW_MODE_BACKGROUND_IMAGE);
+		moveMode = MOVE_NONE;
+		//initShowMouseCoords();	
+		//view.setShowAxesRatio(false);
+		kernel.notifyRepaint();					
+	}
 		// TODO Auto-generated method stub
 		
 	}

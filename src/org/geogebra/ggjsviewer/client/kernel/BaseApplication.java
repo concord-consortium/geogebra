@@ -67,4 +67,15 @@ public class BaseApplication {
 		return "Line through: "+string+" Point 1: "+label+"Point 2: "+label2+" must be implemented AlgoJoinPoints";
 	}
 
+	public String getPlain(String string, String label, String label2,
+			String nameDescription) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getPlain(String string, String label) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
