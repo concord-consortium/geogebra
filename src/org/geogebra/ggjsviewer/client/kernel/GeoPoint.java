@@ -606,9 +606,9 @@ GeoPointInterface {
     /**
      * translate by vector v
      */
-   /*AG final public void translate(GeoVector v) { 
+   final public void translate(GeoVector v) { 
     		setCoords(x + v.x * z, y + v.y * z, z); 
-    }   */     
+    }     
     
 	final public boolean isTranslateable() {
 		return true;
@@ -933,11 +933,11 @@ GeoPointInterface {
 	}
 	
 	
-/*AG	public LocateableList getLocateableList(){
+	public LocateableList getLocateableList(){
 		if (locateableList == null)
 			locateableList = new LocateableList(this);
 		return locateableList;
-	}*/
+	}
 	
 	/*
 	/**
@@ -1113,6 +1113,7 @@ GeoPointInterface {
 			return null;
 		}
 
+	
 		/*@Override
 		public String getXML() {
 			// TODO Auto-generated method stub

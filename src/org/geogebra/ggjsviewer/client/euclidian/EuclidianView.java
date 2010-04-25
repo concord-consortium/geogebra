@@ -1552,6 +1552,22 @@ final public void setHits(Point p){
 		app = a;
 	}
 	
+	/**
+	 * Returns xscale of this view. The scale is the number of pixels in screen
+	 * space that represent one unit in user space.
+	 */
+	public double getXscale() {
+		return xscale;
+	}
+
+	/**
+	 * Returns the yscale of this view. The scale is the number of pixels in
+	 * screen space that represent one unit in user space.
+	 */
+	public double getYscale() {
+		return yscale;
+	}
+	
 	/*public void setMode(int mode) {
 		this.mode = mode;
 		//AGinitCursor();

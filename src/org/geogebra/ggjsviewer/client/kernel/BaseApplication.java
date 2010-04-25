@@ -1,5 +1,7 @@
 package org.geogebra.ggjsviewer.client.kernel;
 
+import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
+
 public class BaseApplication {
 
 	public String getPlain(String string) {
@@ -77,5 +79,7 @@ public class BaseApplication {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

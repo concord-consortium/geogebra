@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
+import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Path;
 import org.geogebra.ggjsviewer.client.kernel.Region;
@@ -142,7 +143,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	protected MyDouble tempNum;
 	protected double rotStartAngle;
 	protected ArrayList translateableGeos;
-	//AGprotected GeoVector translationVec;
+	protected GeoVector translationVec;
 
 	protected Hits tempArrayList = new Hits();
 	protected Hits tempArrayList2 = new Hits();
@@ -177,6 +178,11 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	protected boolean DONT_CLEAR_SELECTION = false; // Michael Borcherds 2007-12-08
 
 	protected boolean DRAGGING_OCCURED = false; // for moving objects
+	
+	// square of maximum allowed pixel distance 
+	// for continuous mouse movements
+	protected static double MOUSE_DRAG_MAX_DIST_SQUARE = 36; 
+	protected static int MAX_CONTINUITY_STEPS = 4; 
 
 	protected boolean POINT_CREATED = false;
 
@@ -629,8 +635,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			startPoint.setLocation(xRW, yRW);	
 			startLoc = mouseLoc;
 			view.setDragCursor();
-		//AG	if (translationVec == null)
-			//AG	translationVec = new GeoVector(kernel.getConstruction());
+			if (translationVec == null)
+				translationVec = new GeoVector(kernel.getConstruction());
 		}	
 
 		// DEPENDENT object: changeable parents?
@@ -669,8 +675,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				
 				startPoint.setLocation(xRW, yRW);					
 				view.setDragCursor();
-				//AGif (translationVec == null)
-					//AGtranslationVec = new GeoVector(kernel.getConstruction());
+				if (translationVec == null)
+					translationVec = new GeoVector(kernel.getConstruction());
 			} else {
 				moveMode = MOVE_NONE;
 			}				
@@ -1430,11 +1436,275 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				kernel.notifyRepaint();
 			}
 		} else {
-			GWT.log("DRAG");
+			//GWT.log("DRAG");
+			mouseDragged(event);
 		}
 
 		
 	}
+	
+	public void mouseDragged(MouseMoveEvent e) {
+
+		//AGif (textfieldHasFocus) return;
+
+		if (mode == EuclidianView.MODE_PEN) {
+			//AGhandleMousePressedForPenMode(e);
+			return;
+		}
+
+		if (!DRAGGING_OCCURED) {
+			DRAGGING_OCCURED = true;			
+
+			// Michael Borcherds 2007-10-07 allow right mouse button to drag points
+			/*AGif (Application.isRightClick(e)){
+				view.setHits(mouseLoc);
+				if (!(view.getHits().isEmpty())) 
+				{
+					TEMPORARY_MODE = true;
+					oldMode = mode; // remember current mode			
+					view.setMode(EuclidianView.MODE_MOVE);
+					handleMousePressedForMoveMode(e, true);	
+					return;
+				}
+			}
+			if (!app.isRightClickEnabled()) return;
+			//			 Michael Borcherds 2007-10-07
+
+			*/
+			if (mode == EuclidianView.MODE_MOVE_ROTATE) {
+				app.clearSelectedGeos(false);
+				app.addSelectedGeo(rotationCenter, false);						
+			}
+		}
+		lastMouseLoc = mouseLoc;
+		setMouseLocation(e);				
+		transformCoords();
+
+
+		//ggb3D - only for 3D view
+		/*AGif (Application.isRightClick(e)){
+			//Application.debug("hit(0) = "+view.getHits().get(0));
+			// if there's no hit, or if first hit is not moveable, do 3D view rotation
+			if ((!TEMPORARY_MODE) || !((GeoElement) view.getHits().get(0)).isMoveable())				
+				if (processRightDragFor3D()){ //in 2D view, return false
+					if (TEMPORARY_MODE){
+						TEMPORARY_MODE = false;
+						mode = oldMode;
+						view.setMode(mode);
+					}
+					return;
+				}
+		}*/
+
+
+
+
+		// zoom rectangle (right drag) or selection rectangle (left drag)
+		// Michael Borcherds 2007-10-07 allow dragging with right mouse button
+		/*AGif (((Application.isRightClick(e)) || allowSelectionRectangle()) && !TEMPORARY_MODE) {
+			//			 Michael Borcherds 2007-10-07 
+			// set zoom rectangle's size
+			// right-drag: zoom
+			// Shift-right-drag: zoom without preserving aspect ratio
+			updateSelectionRectangle((Application.isRightClick(e) && !e.isShiftDown())
+					// MACOS:
+					// Cmd-left-drag: zoom
+					// Cmd-shift-left-drag: zoom without preserving aspect ratio
+					|| (Application.MAC_OS && Application.isControlDown(e) && !e.isShiftDown() && !Application.isRightClick(e)));
+			view.repaintEuclidianView();
+			return;
+		}*/		
+
+		// update previewable
+		if (view.getPreviewDrawable() != null) {
+			view.getPreviewDrawable().updateMousePos(mouseLoc.x, mouseLoc.y);
+		}		
+
+		/*
+		 * Conintuity handling
+		 * 
+		 * If the mouse is moved wildly we take intermediate steps to
+		 * get a more continous behaviour
+		 */		 		
+		if (kernel.isContinuous() && lastMouseLoc != null) {
+			double dx = mouseLoc.x - lastMouseLoc.x;
+			double dy = mouseLoc.y - lastMouseLoc.y;			
+			double distsq = dx*dx + dy*dy;		
+			if (distsq > MOUSE_DRAG_MAX_DIST_SQUARE) {										
+				double factor = Math.sqrt(MOUSE_DRAG_MAX_DIST_SQUARE / distsq);				
+				dx *= factor;
+				dy *= factor;
+
+				// number of continuity steps <= MAX_CONTINUITY_STEPS
+				int steps = Math.min((int) (1.0 / factor), MAX_CONTINUITY_STEPS);
+				int mx = mouseLoc.x;
+				int my = mouseLoc.y;
+
+				// Application.debug("BIG drag dist: " + Math.sqrt(distsq) + ", steps: " + steps  );
+				for (int i=1; i <= steps; i++) {			
+					mouseLoc.x = (int) Math.round(lastMouseLoc.x + i * dx);
+					mouseLoc.y = (int) Math.round(lastMouseLoc.y + i * dy);
+					calcRWcoords();
+
+					handleMouseDragged(false);							
+				}
+
+				// set endpoint of mouse movement if we are not already there
+				if (mouseLoc.x != mx || mouseLoc.y != my) {	
+					mouseLoc.x = mx;
+					mouseLoc.y = my;
+					calcRWcoords();	
+				}				
+			} 
+		}
+
+		handleMouseDragged(true);								
+	}	
+	
+	protected void handleMouseDragged(boolean repaint) {
+		// moveMode was set in mousePressed()
+		switch (moveMode) {
+		case MOVE_ROTATE:
+			//AGrotateObject(repaint);
+			break;
+
+		case MOVE_POINT:
+
+			//view.incrementTraceRow(); // for spreadsheet/trace
+
+			movePoint(repaint);
+			break;
+
+		case MOVE_LINE:
+			moveLine(repaint);
+			break;
+
+		case MOVE_VECTOR:
+			//AGmoveVector(repaint);
+			break;
+
+		case MOVE_VECTOR_STARTPOINT:
+			//AGmoveVectorStartPoint(repaint);
+			break;
+
+		case MOVE_CONIC:
+			//AGmoveConic(repaint);
+			break;
+
+		case MOVE_FUNCTION:
+			//AGmoveFunction(repaint);
+			break;
+
+		case MOVE_LABEL:
+			//AGmoveLabel();
+			break;
+
+		case MOVE_TEXT:
+			//AGmoveText(repaint);
+			break;
+
+		case MOVE_IMAGE:
+			//AGmoveImage(repaint);
+			break;
+
+		case MOVE_NUMERIC:
+			//view.incrementTraceRow(); // for spreadsheet/trace
+
+			//AGmoveNumeric(repaint);
+			break;
+
+		case MOVE_SLIDER:
+			//AGmoveSlider(repaint);
+			break;
+
+		case MOVE_BOOLEAN:
+			//AGmoveBoolean(repaint);
+			break;
+
+		case MOVE_BUTTON:
+			//AGmoveButton(repaint);
+			break;
+
+		case MOVE_DEPENDENT:
+			moveDependent(repaint);
+			break;
+
+		case MOVE_MULTIPLE_OBJECTS:
+			//AGmoveMultipleObjects(repaint);
+			break;
+
+		case MOVE_VIEW:
+			if (repaint) {
+				/*AGif (TEMPORARY_MODE) view.setMoveCursor();*/
+				/*
+					view.setCoordSystem(xZeroOld + mouseLoc.x - startLoc.x, yZeroOld
+							+ mouseLoc.y - startLoc.y, view.getXscale(), view.getYscale());
+				 */
+				/*AGview.setCoordSystemFromMouseMove(mouseLoc.x - startLoc.x, mouseLoc.y - startLoc.y, MOVE_VIEW);*/
+			}
+			break;	
+
+		case MOVE_X_AXIS:
+			if (repaint) {
+				if (TEMPORARY_MODE) view.setDragCursor();
+
+				// take care when we get close to the origin
+				if (Math.abs(mouseLoc.x - view.getXZero()) < 2) {
+					mouseLoc.x = (int) Math.round(mouseLoc.x > view.getXZero() ?  view.getXZero() + 2 : view.getXZero() - 2);						
+				}											
+				double xscale = (mouseLoc.x - view.getXZero()) / xTemp;					
+				view.setCoordSystem(view.getXZero(), view.getYZero(), xscale, view.getYscale());
+			}
+			break;	
+
+		case MOVE_Y_AXIS:
+			if (repaint) {
+				if (TEMPORARY_MODE) view.setDragCursor();
+				// take care when we get close to the origin
+				if (Math.abs(mouseLoc.y - view.getYZero()) < 2) {
+					mouseLoc.y = (int) Math.round(mouseLoc.y > view.getYZero() ?  view.getYZero() + 2 : view.getYZero() - 2);						
+				}											
+				double yscale = (view.getYZero() - mouseLoc.y) / yTemp;					
+				view.setCoordSystem(view.getXZero(), view.getYZero(), view.getXscale(), yscale);					
+			}
+			break;	
+
+		default: // do nothing
+		}
+	}		
+	
+	final protected void moveLine(boolean repaint) {
+		// make parallel geoLine through (xRW, yRW)
+		movedGeoLine.setCoords(movedGeoLine.x, movedGeoLine.y, 
+				-(movedGeoLine.x * xRW + movedGeoLine.y * yRW));		
+		if (repaint)
+			movedGeoLine.updateRepaint();
+		else
+			movedGeoLine.updateCascade();	
+	}
+	
+	protected void movePoint(boolean repaint) {
+		movedGeoPoint.setCoords(xRW, yRW, 1.0);
+		movedGeoPoint.updateCascade();	
+		movedGeoPointDragged = true;
+
+		if (repaint)
+			kernel.notifyRepaint();
+		//Application.printStacktrace("Move Point");
+	}
+	
+	final protected void moveDependent(boolean repaint) {
+		//GEOVECTOR AND DEPENDENCIES MUST BE IMPLEMENTED FOR THIS
+		translationVec.setCoords(xRW - startPoint.x, yRW - startPoint.y, 0.0);
+		startPoint.setLocation(xRW, yRW);
+
+		// we don't specify screen coords for translation as all objects are Translateables
+		GeoElement.moveObjects(translateableGeos, translationVec, startPoint);		
+		if (repaint)
+			kernel.notifyRepaint();						
+	}
+
+	
 	
 	final boolean refreshHighlighting(Hits hits) {
 		boolean repaintNeeded = false;

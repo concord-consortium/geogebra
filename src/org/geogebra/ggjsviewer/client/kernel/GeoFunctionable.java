@@ -12,8 +12,9 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.kernel;
 
-public interface Translateable {
-	public void translate(GeoVector v);
+
+public interface GeoFunctionable {
+	
+	//AGpublic GeoFunction getGeoFunction();	
 	public GeoElement toGeoElement();
-	public boolean isTranslateable();
 }

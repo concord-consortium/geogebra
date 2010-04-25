@@ -28,6 +28,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
 
 
 
@@ -3697,7 +3698,7 @@ public abstract class GeoElement
 	 * (xPixel, yPixel) in screen coordinates. 
 	 * @param endPosition may be null
 	 */
-	/*AGpublic static boolean moveObjects(ArrayList geos, GeoVector rwTransVec, Point2D.Double endPosition) {	
+	public static boolean moveObjects(ArrayList geos, GeoVector rwTransVec, Point2D.Double endPosition) {	
 		if (moveObjectsUpdateList == null)
 			moveObjectsUpdateList = new ArrayList();
 		
@@ -3731,7 +3732,7 @@ public abstract class GeoElement
 			tempSet = new TreeSet();
 		}
 		return tempSet;
-	}*/
+	}
 	
 //	/**
 //	 * Moves geo by a vector in real world coordinates.
@@ -3745,7 +3746,7 @@ public abstract class GeoElement
 	 * Moves geo by a vector in real world coordinates.
 	 * @return whether actual moving occurred 	 
 	 */
-	/*AGprivate boolean moveObject(GeoVector rwTransVec, Point2D.Double endPosition, ArrayList updateGeos) {
+	private boolean moveObject(GeoVector rwTransVec, Point2D.Double endPosition, ArrayList updateGeos) {
 		boolean movedGeo = false;
 		
 		// moveable geo
@@ -3875,7 +3876,7 @@ public abstract class GeoElement
 		}
 					
 		return movedGeo;
-	}*/
+	}
 	private ArrayList tempMoveObjectList;
 
 	/**

@@ -25,6 +25,7 @@ import java.util.Stack;
 import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 
 
 
@@ -2098,7 +2099,7 @@ public class Kernel {
 	/** 
 		* LineSegment named label from Point P to Point Q
 		*/
-	/*AGfinal public GeoSegment Segment(
+	final public GeoSegment Segment(
 		String label,
 		GeoPoint P,
 		GeoPoint Q) {
@@ -2106,7 +2107,6 @@ public class Kernel {
 		GeoSegment s = algo.getSegment();
 		return s;
 	}
-	*/
 	/** 
 	 * Line named label through Points P and Q
 	 */
@@ -3518,10 +3518,10 @@ public class Kernel {
 	 * polygon P[0], ..., P[n-1]
 	 * The labels name the polygon itself and its segments
 	 */
-	/*AGfinal public GeoElement [] Polygon(String [] labels, GeoPoint [] P) {
+	final public GeoElement [] Polygon(String [] labels, GeoPoint [] P) {
 		AlgoPolygon algo = new AlgoPolygon(cons, labels, P);
 		return algo.getOutput();
-	}*/
+	}
 	
 	/** 
 	 * Regular polygon with vertices A and B and n total vertices.
@@ -4513,7 +4513,7 @@ public class Kernel {
 	/**
 	 * translate geoTrans by vector v
 	 */
-	/*AGfinal public GeoElement [] Translate(String label, Translateable geoTrans, GeoVector v) {
+	final public GeoElement [] Translate(String label, Translateable geoTrans, GeoVector v) {
 		
 		if (label == null)
 			label = transformedGeoLabel(geoTrans.toGeoElement());
@@ -4526,17 +4526,17 @@ public class Kernel {
 		AlgoTranslate algo = new AlgoTranslate(cons, label, geoTrans, v);			
 		GeoElement [] geos = {algo.getResult()};
 		return geos;				
-	}*/
+	}
 	
 	/**
 	 * translates vector v to point A. The resulting vector is equal
 	 * to v and has A as startPoint
 	 */
-	/*AGfinal public GeoVector Translate(String label, GeoVector v, GeoPoint A) {
+	final public GeoVector Translate(String label, GeoVector v, GeoPoint A) {
 		AlgoTranslateVector algo = new AlgoTranslateVector(cons, label, v, A);
 		GeoVector vec = algo.getTranslatedVector();
 		return vec;
-	}*/	
+	}	
 
 	/**
 	 * rotate geoRot by angle phi around (0,0)
@@ -4650,26 +4650,26 @@ public class Kernel {
 	/**
 	 * translate poly by vector v
 	 */
-	/*AGfinal public GeoElement [] Translate(String label, GeoPolygon poly, GeoVector v) {
+	final public GeoElement [] Translate(String label, GeoPolygon poly, GeoVector v) {
 		return transformPoly(label, poly, translatePoints(poly.getPoints(), v));
-	}*/	
+	}	
 	
-	/*AGGeoPoint [] translatePoints(GeoPoint [] points, GeoVector v) {		
+	GeoPoint [] translatePoints(GeoPoint [] points, GeoVector v) {		
 		// rotate all points
 		GeoPoint [] newPoints = new GeoPoint[points.length];
 		for (int i = 0; i < points.length; i++) {			
 			newPoints[i] = (GeoPoint) Translate(transformedGeoLabel(points[i]), points[i], v)[0]; 				
 		}			
 		return newPoints;
-	}*/
+	}
 	
-	/*AGprivate static String transformedGeoLabel(GeoElement geo) {
+	private static String transformedGeoLabel(GeoElement geo) {
 		if (geo.isLabelSet() && !geo.hasIndexLabel() && !geo.label.endsWith("'''")) {
 			return geo.label + "'";
 		} else {
 			return null;
 		}
-	}*/
+	}
 	
 	/**
 	 * rotates poly by angle phi around (0,0)
@@ -4727,8 +4727,7 @@ public class Kernel {
 	 */
 	/*AGfinal public GeoElement [] Mirror(String label, GeoPolygon poly, GeoLine g) {
 		return transformPoly(label, poly, mirrorPoints(poly.getPoints(), null, g));	
-	}	
-	*/
+	}	*/
 	/*AGGeoPoint [] mirrorPoints(GeoPoint [] points, GeoPoint Q, GeoLine g) {		
 		// mirror all points
 		GeoPoint [] newPoints = new GeoPoint[points.length];
@@ -4742,7 +4741,7 @@ public class Kernel {
 		return newPoints;
 	}*/		
 	
-	/*AGprivate GeoElement [] transformPoly(String label, GeoPolygon oldPoly, GeoPoint [] transformedPoints) {
+	private GeoElement [] transformPoly(String label, GeoPolygon oldPoly, GeoPoint [] transformedPoints) {
 		// get label for polygon
 		String [] polyLabel = null;		
 		if (label == null) {							
@@ -4764,7 +4763,7 @@ public class Kernel {
 	
 		// build the polygon from the transformed points
 		return Polygon(polyLabel, transformedPoints);
-	}	*/		    
+	}	    
 	
 	static final int TRANSFORM_TRANSLATE = 0;
 	static final int TRANSFORM_MIRROR_AT_POINT = 1;
@@ -4783,7 +4782,7 @@ public class Kernel {
 		}
 	}
 	
-	/*AGGeoPoint [] transformPoints(int type, GeoPoint [] points, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
+	GeoPoint [] transformPoints(int type, GeoPoint [] points, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
 		GeoPoint [] result = null;
 		
 		switch (type) {
@@ -4792,23 +4791,23 @@ public class Kernel {
 				break;
 				
 			case TRANSFORM_MIRROR_AT_POINT:
-				result = mirrorPoints(points, Q, null);	
+			//AG	result = mirrorPoints(points, Q, null);	
 				break;
 				
 			case TRANSFORM_MIRROR_AT_LINE:	
-				result = mirrorPoints(points, null, l);	
+			//AG	result = mirrorPoints(points, null, l);	
 				break;
 				
 			case TRANSFORM_ROTATE:
-				result = rotPoints(points, n, null);		
+			//AG	result = rotPoints(points, n, null);		
 				break;
 				
 			case TRANSFORM_ROTATE_AROUND_POINT:
-				result = rotPoints(points, n, Q);	
+			//AG	result = rotPoints(points, n, Q);	
 				break;
 				
 			case TRANSFORM_DILATE:
-				result = dilatePoints(points, n, Q);	
+			//AG	result = dilatePoints(points, n, Q);	
 				break;
 				
 			default:
@@ -4821,17 +4820,17 @@ public class Kernel {
 			notifyUpdate(result[i]);
 		}
 		return result;
-	}*/	
+	}	
 	
-	/*AGGeoLine getTransformedLine(int type, GeoLine line, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
+	GeoLine getTransformedLine(int type, GeoLine line, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
 		switch (type) {
 			case Kernel.TRANSFORM_TRANSLATE:
 				AlgoTranslate algoTrans = new AlgoTranslate(cons, line, vec);			
 				return (GeoLine) algoTrans.getResult();							
 				
-			case Kernel.TRANSFORM_MIRROR_AT_POINT:
+			/*AGcase Kernel.TRANSFORM_MIRROR_AT_POINT:
 			case Kernel.TRANSFORM_MIRROR_AT_LINE:	
-				AlgoMirror algoMirror = new AlgoMirror(cons, line, l, Q, null);			
+			/	AlgoMirror algoMirror = new AlgoMirror(cons, line, l, Q, null);			
 				return (GeoLine) algoMirror.getResult();			
 						
 			case Kernel.TRANSFORM_ROTATE:
@@ -4845,11 +4844,11 @@ public class Kernel {
 			case Kernel.TRANSFORM_DILATE:
 				AlgoDilate algoDilate = new AlgoDilate(cons, line, n, Q);			
 				return (GeoLine) algoDilate.getResult();						
-			
+			*/
 			default:
 				return null;
 		}
-	}*/	
+	}	
 	
 	/*AGGeoConic getTransformedConic(int type, GeoConic conic, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
 		switch (type) {

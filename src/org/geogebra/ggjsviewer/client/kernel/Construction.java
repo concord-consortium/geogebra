@@ -1573,6 +1573,11 @@ public class Construction {
 	public BaseApplication getBaseApplication() {
 		// TODO Auto-generated method stub
 		return kernel.getBaseApplication();
+	}
+
+	public void removeRandomNumber(GeoNumeric geoNumeric) {
+		// TODO Auto-generated method stub
+		
 	}    
     
    

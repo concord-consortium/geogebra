@@ -373,9 +373,9 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
     /**
      * translate by vector v
      */
-   /*AG final public void translate(GeoVector v) {        
+   final public void translate(GeoVector v) {        
         z -= x * v.x + y * v.y;
-    }  */
+    }
     
 	final public boolean isTranslateable() {
 		return true;
