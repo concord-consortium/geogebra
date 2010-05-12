@@ -27,8 +27,8 @@ public class Ggjsviewer implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
+	private final XmlHandlingServiceAsync greetingService = GWT
+			.create(XmlHandlingService.class);
 
 	/**
 	 * This is the entry point method.

@@ -4,15 +4,30 @@
 	xmlns:ggjs="urn:import:org.geogebra.ggjsviewer.client.euclidian">
 	<ui:style>
 		.euclidianview {
-			
+			border:1px solid black;	
 		}
 		.euclidianwrapper {
 			margin:50px auto;
 			width:700px;
-			border:1px solid black;		
+			
+		}
+		.base64wrapper {
+			width:700px;
+			margin-bottom:20px;
+		}
+		.base64Label {
+			text-align:right;
+			padding:5px 20px 5px 20px;
+		}
+		.base64button {
+			min-width:150px;	
 		}
 	</ui:style>
 	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
+		<g:HorizontalPanel styleName="{style.base64wrapper}">
+			<g:Label styleName="{style.base64Label}">View ggb files from the clipboard </g:Label>
+			<g:Button ui:field="button" styleName="{style.base64button}">Open TextBox</g:Button>
+		</g:HorizontalPanel>
 		<ggjs:EuclidianView styleName="{style.euclidianview}" ui:field="euclidianview">
 		</ggjs:EuclidianView>
 	</g:VerticalPanel>

@@ -1,6 +1,6 @@
 package org.geogebra.ggjsviewer.server;
 
-import org.geogebra.ggjsviewer.client.GreetingService;
+import org.geogebra.ggjsviewer.client.XmlHandlingService;
 import org.geogebra.ggjsviewer.shared.FieldVerifier;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -8,10 +8,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class GreetingServiceImpl extends RemoteServiceServlet implements
-		GreetingService {
+public class XmlHandlingServiceImpl extends RemoteServiceServlet implements
+		XmlHandlingService {
 
-	public String greetServer(String input) throws IllegalArgumentException {
+	public String xmlhandlingServer(String input) throws IllegalArgumentException {
 		// Verify that the input is valid. 
 		if (!FieldVerifier.isValidName(input)) {
 			// If the input is not valid, throw an IllegalArgumentException back to

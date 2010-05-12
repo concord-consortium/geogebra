@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.base64form {
+			width:700px;
+			height:350px;	
+		}
+		.base64area {
+			width:692px;
+			height:300px;
+		}
+	</ui:style>
+	<g:DialogBox styleName="{style.base64form}">
+		<g:VerticalPanel>
+			<g:Label>Please copy here blabalalba</g:Label>
+			<g:TextArea ui:field="base64area" styleName="{style.base64area}">
+			</g:TextArea>
+			<g:Button ui:field="base64submit">Ok</g:Button>
+		</g:VerticalPanel>
+	</g:DialogBox>
+</ui:UiBinder> 

@@ -50,6 +50,9 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected static final int MIN_WIDTH = 50;
 	protected static final int MIN_HEIGHT = 50;
 	
+	public static final int DEFAULT_HEIGHT = 350;
+	public static final int DEFAULT_WIDTH = 700;
+	
 	protected static final String PI_STRING = "\u03c0";
 	
 	private static final String EXPORT1 = "Export_1"; // Points used to define corners for export (if they exist)
@@ -363,7 +366,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	
 	/*end text support*/
 	public EuclidianView() {
-		super(700,350);
+		super(DEFAULT_WIDTH,DEFAULT_HEIGHT);
 		getElement().setAttribute("id", "eview");
 		width = getCoordWidth();
 		height = getCoordHeight();
