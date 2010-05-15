@@ -1,6 +1,7 @@
 package org.geogebra.ggjsviewer.client.gui;
 
-import org.geogebra.ggjsviewer.client.io.MyXmlHandler;
+import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,17 +25,23 @@ public class Base64Form extends PopupPanel  {
 	@UiField
 	Button base64submit;
 	@UiField
-	TextArea base64area;
+	public static TextArea base64area;
+	static private Application application;
 
 	public Base64Form() {
 		setWidget(uiBinder.createAndBindUi(this));
 		//base64submit.setText(firstName);
 	}
+	
+	static public void setApplication(Application app) {
+		application = app;
+	}
 
 	@UiHandler("base64submit")
 	void onClick(ClickEvent e) {
 		if (base64area.getText().trim()!="") {
-			MyXmlHandler.parseXml(base64area.getText());
+			application.getMyXmlHandler().parseXml(base64area.getText());
+			base64area.setText("");
 			this.hide();
 			GgjsViewerWrapper.button.setText("Open TextBox");
 		} else {

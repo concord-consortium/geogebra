@@ -5,7 +5,9 @@ import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianController;
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
+import org.geogebra.ggjsviewer.client.gui.Base64Form;
 import org.geogebra.ggjsviewer.client.gui.GgjsViewerWrapper;
+import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
@@ -19,6 +21,7 @@ public class Application extends BaseApplication {
 	private Kernel kernel;
 	private EuclidianView euclidianview;
 	private EuclidianController euclidiancontroller;
+	private MyXMLHandler xmlhandler;
 	
 	protected boolean showMenuBar = true;
 	
@@ -29,6 +32,7 @@ public class Application extends BaseApplication {
 		super();
 		initKernel();	
 		initEuclidianView();
+		initXmlHandler();
 		
 		/*Try to draw some basic objects*/
 		GeoElement geo_point1 = null;
@@ -61,6 +65,11 @@ public class Application extends BaseApplication {
 		kernel = new Kernel(this);
 	}
 	
+	private void initXmlHandler() {
+		xmlhandler = kernel.newMyXMLHandler(kernel.getConstruction());
+		Base64Form.setApplication(this);
+	}
+	
 	private void initEuclidianView() {
 		GgjsViewerWrapper wrapper = new GgjsViewerWrapper();
 		RootPanel.get().add(wrapper);
@@ -70,7 +79,7 @@ public class Application extends BaseApplication {
 		kernel.notifyAddAll(euclidianview);
 		kernel.attach(euclidianview);
 		euclidianview.setApplication(this);
-		euclidiancontroller.setEuclidianView(euclidianview);
+		euclidiancontroller.setEuclidianView(euclidianview);	
 		euclidianview.setEuclidianController(euclidiancontroller);
 		euclidianview.addMouseDownHandler(euclidiancontroller);
 		euclidianview.addMouseUpHandler(euclidiancontroller);
@@ -78,9 +87,12 @@ public class Application extends BaseApplication {
 		euclidianview.addMouseOverHandler(euclidiancontroller);
 		euclidianview.addMouseOutHandler(euclidiancontroller);
 		euclidianview.addMouseMoveHandler(euclidiancontroller);
+		
 	
 		//CONNECTIONS MUST BE MADE
 	}
+	
+	
 
 	public boolean isLabelDragsEnabled() {
 		// TODO Auto-generated method stub
@@ -91,6 +103,10 @@ public class Application extends BaseApplication {
 	final public void clearSelectedGeos() {
 		clearSelectedGeos(true);
 		updateSelection();
+	}
+	
+	public MyXMLHandler getMyXmlHandler() {
+		return xmlhandler;
 	}
 
 	public void clearSelectedGeos(boolean repaint) {

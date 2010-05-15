@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Stack;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 
@@ -271,10 +272,9 @@ public class Kernel {
 	 * @param cons construction used in MyXMLHandler constructor
 	 * @return a new MyXMLHandler
 	 */
-	/*AGpublic MyXMLHandler newMyXMLHandler(Construction cons){
+	public MyXMLHandler newMyXMLHandler(Construction cons){
 		return new MyXMLHandler(this, cons);		
-	}*/
-	
+	}	
 	
 	/**
 	 * creates the Evaluator for ExpressionNode

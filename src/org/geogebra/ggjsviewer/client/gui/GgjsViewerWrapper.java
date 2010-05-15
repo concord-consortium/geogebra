@@ -60,6 +60,7 @@ public class GgjsViewerWrapper extends Composite {
 		} else {
 				button.setText("Open TextBox");
 				form.hide();
+				Base64Form.base64area.setText("");
 		}
 		
 	}

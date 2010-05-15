@@ -13,7 +13,7 @@
 	</ui:style>
 	<g:DialogBox styleName="{style.base64form}">
 		<g:VerticalPanel>
-			<g:Label>Please copy here blabalalba</g:Label>
+			<g:Label>Please copy here the text acquired by "Export to clipboard as javascript" menu</g:Label>
 			<g:TextArea ui:field="base64area" styleName="{style.base64area}">
 			</g:TextArea>
 			<g:Button ui:field="base64submit">Ok</g:Button>
