@@ -77,6 +77,9 @@ public class MyXMLHandler  {
 		if (text.indexOf("loadBase64Unzipped") > -1) {
 			String xml = Base64.decode(text.substring(text.indexOf("(")+2, text.indexOf(")")-1));
 			boolean oldVal = kernel.isNotifyViewsActive();
+			//clear the kernel
+			kernel.clearConstruction();
+			kernel.updateConstruction();
 			processXml(xml);
 			kernel.updateConstruction();
 			kernel.setNotifyViewsActive(oldVal);	

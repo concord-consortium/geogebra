@@ -1415,8 +1415,21 @@ final public void setHits(Point p){
 	
 	@Override
 	public void clearView() {
+		clear();
+		resetLists();
+		initView(false);
 		// TODO Auto-generated method stub
 		
+	}
+
+	private void resetLists() {
+		DrawableMap.clear();
+		allDrawableList.clear();
+		bgImageList.clear();
+		
+		for (int i=0 ; i<=MAX_LAYER_USED ; i++) drawLayers[i].clear(); // Michael Borcherds 2008-02-29
+
+		//AGsetToolTipText(null);
 	}
 
 	@Override

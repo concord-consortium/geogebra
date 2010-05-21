@@ -1009,7 +1009,7 @@ public class Kernel {
 		cons.clearConstruction();
 		notifyClearView();
 		notifyRepaint();
-		System.gc();
+		//System.gc();
 	}
 
 	public void updateConstruction() {
