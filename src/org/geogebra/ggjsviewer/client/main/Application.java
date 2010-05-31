@@ -191,5 +191,15 @@ public class Application extends BaseApplication {
 		updateSelection();
 	}
 
+	public String translateCommand(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getError(String message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
