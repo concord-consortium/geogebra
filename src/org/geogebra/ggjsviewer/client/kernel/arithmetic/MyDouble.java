@@ -27,6 +27,7 @@ import java.util.HashSet;
 
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.util.MyMath;
 
 /**
  *
@@ -164,12 +165,12 @@ implements NumberValue {
     final public MyDouble atan() { isAngle = kernel.arcusFunctionCreatesAngle; set(Math.atan(val)); return this;  }
     
     final public MyDouble log() {  val = Math.log(val);  isAngle = false; return this; }
-    //AGfinal public MyDouble log10() {  val = Math.log(val)/MyMath.LOG10;  isAngle = false; return this; }
-    //AGfinal public MyDouble log2() {  val = Math.log(val)/MyMath.LOG2;  isAngle = false; return this; }
+    final public MyDouble log10() {  val = Math.log(val)/MyMath.LOG10;  isAngle = false; return this; }
+    final public MyDouble log2() {  val = Math.log(val)/MyMath.LOG2;  isAngle = false; return this; }
     
     final public MyDouble exp() {  val = Math.exp(val);  isAngle = false; return this; }    
     final public MyDouble sqrt() {  val = Math.sqrt(val); isAngle = false;  return this; }    
-    //AGfinal public MyDouble cbrt() {  val = MyMath.cbrt(val); isAngle = false;  return this; }
+    final public MyDouble cbrt() {  val = MyMath.cbrt(val); isAngle = false;  return this; }
     final public MyDouble abs() {  val = Math.abs(val);  return this; }    
 	
     final public MyDouble floor() {  
@@ -223,13 +224,13 @@ implements NumberValue {
 	
 
 	
- /*AG   final public MyDouble sgn() {  
+ final public MyDouble sgn() {  
         val = MyMath.sgn(kernel, val);         
         isAngle = false;
         return this; 
     }    
     
-	final public MyDouble cosh() {  
+ final public MyDouble cosh() {  
 		val = MyMath.cosh(val);
 		isAngle = false; 
 		return this; 
@@ -276,8 +277,46 @@ implements NumberValue {
 		isAngle = false;
 		return this;
 	}	
+	final public MyDouble sec() {  
+		val = MyMath.sec(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	final public MyDouble cot() {  
+		val = MyMath.cot(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	final public MyDouble csch() {  
+		val = MyMath.csch(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	final public MyDouble sech() {  
+		val = MyMath.sech(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	final public MyDouble coth() {  
+		val = MyMath.coth(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	final public MyDouble csc() {  
+		val = MyMath.csc(val);
+		isAngle = false;  
+		return this; 
+	}
+	
+	
   
-	final public MyDouble apply(Functional f) {
+  
+	/*AGfinal public MyDouble apply(Functional f) {
 		val = f.evaluate(val);
 		isAngle = false; // want function to return numbers eg f(x) = sin(x), f(45�)
 		return this;
