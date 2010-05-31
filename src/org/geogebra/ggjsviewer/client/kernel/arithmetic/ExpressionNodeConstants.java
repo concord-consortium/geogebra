@@ -6,9 +6,12 @@ public interface ExpressionNodeConstants {
 
 	public static final int STRING_TYPE_GEOGEBRA_XML = 0;
 	public static final int STRING_TYPE_GEOGEBRA = 1;
-	public static final int STRING_TYPE_JASYMCA = 2;
+	public static final int STRING_TYPE_MAXIMA = 2;
 	public static final int STRING_TYPE_MATH_PIPER = 3;
-	public static final int STRING_TYPE_LATEX = 100;
+	public static final int STRING_TYPE_LATEX = 4;
+	public static final int STRING_TYPE_PSTRICKS = 5;
+	public static final int STRING_TYPE_PGF = 6;
+	public static final int STRING_TYPE_JASYMCA = 7;
 	
 	public static final String UNICODE_PREFIX = "uNiCoDe";
 	public static final String UNICODE_DELIMITER = "U";  
@@ -16,20 +19,21 @@ public interface ExpressionNodeConstants {
 	public static final int NO_OPERATION = Integer.MIN_VALUE; 
     
 	// boolean
-	public static final int NOT_EQUAL = -100;
-	public static final int NOT = -99;
-	public static final int OR = -98;
-    public static final int AND = -97;
-    public static final int EQUAL_BOOLEAN = -96;
-    public static final int LESS = -95;
-    public static final int GREATER = -94;
-    public static final int LESS_EQUAL = -93;
-    public static final int GREATER_EQUAL = -92;    
-    public static final int PARALLEL = -91;  
-    public static final int PERPENDICULAR = -90;
-    public static final int IS_ELEMENT_OF = -89;
-    public static final int CONTAINS = -88;
-    public static final int CONTAINS_STRICT = -87;
+	public static final int NOT_EQUAL = -15;
+	public static final int NOT = -14;
+	public static final int OR = -13;
+    public static final int AND = -12;
+    public static final int EQUAL_BOOLEAN = -11;
+    public static final int LESS = -10;
+    public static final int GREATER = -9;
+    public static final int LESS_EQUAL = -8;
+    public static final int GREATER_EQUAL = -7;    
+    public static final int PARALLEL = -6;  
+    public static final int PERPENDICULAR = -5;
+    public static final int IS_ELEMENT_OF = -4;
+    public static final int CONTAINS = -3;
+    public static final int CONTAINS_STRICT = -2;
+    public static final int SET_DIFFERENCE = -1;
     
     public static final String strNOT = "\u00ac";
     public static final String strAND = "\u2227";
@@ -44,6 +48,7 @@ public interface ExpressionNodeConstants {
     public static final String strIS_ELEMENT_OF = "\u2208";
     public static final String strCONTAINS = "\u2286";
     public static final String strCONTAINS_STRICT = "\u2282";
+    public static final String strSET_DIFFERENCE = "\\";
         
     // arithmetic
     public static final int PLUS = 0;
@@ -71,26 +76,33 @@ public interface ExpressionNodeConstants {
     public static final int ACOSH = 22;
     public static final int ASINH = 23;
     public static final int ATANH = 24;
-    public static final int FLOOR = 25;
-    public static final int CEIL = 26;  
-    public static final int FACTORIAL = 27;
-    public static final int ROUND = 28;  
-    public static final int GAMMA = 29;    
-    public static final int LOG10 = 30;  
-    public static final int LOG2 = 31; 
-    public static final int CBRT = 32;   
-    public static final int RANDOM = 33;
-    public static final int COMPLEXMULTIPLY = 34; // TODO remove
-    public static final int VECTORPRODUCT = 34;
+    public static final int CSC = 25;
+    public static final int SEC = 26;
+    public static final int COT = 27;
+    public static final int CSCH = 28;
+    public static final int SECH = 29;
+    public static final int COTH = 30;
+    public static final int FLOOR = 31;
+    public static final int CEIL = 32;  
+    public static final int FACTORIAL = 33;
+    public static final int ROUND = 34;  
+    public static final int GAMMA = 35;    
+    public static final int LOG10 = 36;  
+    public static final int LOG2 = 37; 
+    public static final int CBRT = 38;   
+    public static final int RANDOM = 39;
+    public static final int VECTORPRODUCT = 40;
+    public static final int CONJUGATE = 41;
+    public static final int ARG = 42;
      
-    public static final int FUNCTION = 100;
-    public static final int VEC_FUNCTION = 101;
-    public static final int DERIVATIVE = 110;  
+    public static final int FUNCTION = 43;
+    public static final int VEC_FUNCTION = 44;
+    public static final int DERIVATIVE = 45;  
     
     
     // spreadsheet absolute reference using $ signs
-    public static final int $VAR_ROW = 501;
-    public static final int $VAR_COL = 502;
-    public static final int $VAR_ROW_COL = 503;
+    public static final int $VAR_ROW = 46;
+    public static final int $VAR_COL = 47;
+    public static final int $VAR_ROW_COL = 48;
 	
 }
