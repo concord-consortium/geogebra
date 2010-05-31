@@ -18,6 +18,7 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.kernel;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,7 +27,10 @@ import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNodeEvaluator;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
+import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 
 
@@ -223,7 +227,10 @@ public class Kernel {
 	// i.e. in silentMode no labels are created and no objects are added to views
 	private boolean silentMode = false;
 	
-	// setResolveUnkownVarsAsDummyGeos
+    //setResolveUnkownVarsAsDummyGeos
+	private boolean resolveUnkownVarsAsDummyGeos = false;
+	
+	
 	private boolean resolveVariablesForCASactive = false;
 			
 	private double xmin, xmax, ymin, ymax, xscale, yscale;
@@ -235,8 +242,9 @@ public class Kernel {
 	private int viewCnt = 0;
 	
 	protected Construction cons;
-	protected BaseApplication bApp;	
-	//AGprotected AlgebraProcessor algProcessor;
+	//protected BaseApplication bApp;
+	protected Application bApp;
+	protected AlgebraProcessor algProcessor;
 	//AGprivate EquationSolver eqnSolver;
 	//AGprivate RegressionMath regMath;
 	//AGprivate ExtremumFinder extrFinder;
@@ -249,14 +257,14 @@ public class Kernel {
 	
 	
 	/** Evaluator for ExpressionNode */
-	//AGprotected ExpressionNodeEvaluator expressionNodeEvaluator;
+	protected ExpressionNodeEvaluator expressionNodeEvaluator;
 				
-	public Kernel(BaseApplication bApp) {
+	public Kernel(Application bApp) {
 		this();
 		this.bApp = bApp;
 		
 		newConstruction();
-		//AGnewExpressionNodeEvaluator();
+		newExpressionNodeEvaluator();
 	}
 	
 	/**
@@ -279,18 +287,18 @@ public class Kernel {
 	/**
 	 * creates the Evaluator for ExpressionNode
 	 */
-	/*AGprotected void newExpressionNodeEvaluator(){
+	protected void newExpressionNodeEvaluator(){
 		expressionNodeEvaluator = new ExpressionNodeEvaluator();
-	}*/
+	}
 	
 	/** return the Evaluator for ExpressionNode
 	 * @return the Evaluator for ExpressionNode
 	 */
-	/*public ExpressionNodeEvaluator getExpressionNodeEvaluator(){
+	public ExpressionNodeEvaluator getExpressionNodeEvaluator(){
 		if (expressionNodeEvaluator == null)
 			newExpressionNodeEvaluator();
 		return expressionNodeEvaluator;
-	}*/
+	}
 	
 	
 	public Kernel() {
@@ -306,11 +314,11 @@ public class Kernel {
 	 * Returns this kernel's algebra processor that handles
 	 * all input and commands.
 	 */	
-	/*AGpublic AlgebraProcessor getAlgebraProcessor() {
+	public AlgebraProcessor getAlgebraProcessor() {
     	if (algProcessor == null)
     		algProcessor = new AlgebraProcessor(this);
     	return algProcessor;
-    }*/
+    }
 	
 	
 	
@@ -6183,6 +6191,15 @@ public class Kernel {
 		
 	}
 	
+	/**
+	 * Returns whether unkown variables are resolved as GeoDummyVariable objects.
+	 * @see setSilentMode()
+	 */
+	public final boolean isResolveUnkownVarsAsDummyGeos() {
+		return resolveUnkownVarsAsDummyGeos;
+	}
+	
+	
 
 	/**
 	 * Returns whether silent mode is turned on.
@@ -6238,7 +6255,7 @@ public class Kernel {
 	/**
 	 * test kernel
 	 */
-	public static void main(String [] args) {
+	/*public static void main(String [] args) {
 		// create kernel with null application for testing
 		Kernel kernel = new Kernel(new BaseApplication());
 		Construction cons = kernel.getConstruction();
@@ -6262,9 +6279,9 @@ public class Kernel {
 		System.out.println("changed " +B);
 		//System.out.println(g);
 		//System.out.println(c.black);
-	}
+	}*/
 
-	public BaseApplication getBaseApplication() {
+	public Application getBaseApplication() {
 		// TODO Auto-generated method stub
 		return bApp;
 	}
