@@ -525,6 +525,38 @@ implements VectorValue {
 
     	c.setMode(Kernel.COORD_COMPLEX);
     }
+    
+    /** c = sqrt(a) Michael Borcherds 2010-02-07 */
+    final public static void complexSqrt(GeoVec2D a, GeoVec2D c) {                                       
+        Complex out = new Complex(a.x, a.y);     
+        out = out.sqrt();
+        c.x = out.getReal();
+        c.y = out.getImaginary();
+      	c.setMode(Kernel.COORD_COMPLEX);
+    }
+
+    /** c = sqrt(a) Michael Borcherds 2010-02-07 */
+    final public static void complexCbrt(GeoVec2D a, GeoVec2D c) {                                       
+        Complex out = new Complex(a.x, a.y);     
+        out = out.pow(new Complex(1/3d, 0));
+        c.x = out.getReal();
+        c.y = out.getImaginary();
+      	c.setMode(Kernel.COORD_COMPLEX);
+    }
+
+    /** c = sqrt(a) Michael Borcherds 2010-02-07 */
+    final public static void complexConjugate(GeoVec2D a, GeoVec2D c) {                                       
+        Complex out = new Complex(a.x, a.y);     
+        out = out.conjugate();
+        c.x = out.getReal();
+        c.y = out.getImaginary();
+      	c.setMode(Kernel.COORD_COMPLEX);
+    }
+
+    /** c = sqrt(a) Michael Borcherds 2010-02-07 */
+    final public static double arg(GeoVec2D a) {                                       
+        return Math.atan2(a.y, a.x);
+    }
 
     final public static void inner(GeoVec2D a, GeoVec2D b, double c) {
         c = a.x * b.x + a.y * b.y;        
