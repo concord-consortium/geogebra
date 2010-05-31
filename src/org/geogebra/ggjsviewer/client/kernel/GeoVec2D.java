@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ListValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
@@ -422,7 +423,7 @@ implements VectorValue {
     /** c = a / b Michael Borcherds 2008-08-12 
      * 
      * */
-   /*AG final public static void complexDivide(NumberValue a, GeoVec2D b, GeoVec2D c) {                                       
+   final public static void complexDivide(NumberValue a, GeoVec2D b, GeoVec2D c) {                                       
     	// NB temporary variables *crucial*: a and c can be the same variable
     	//double x1=a.getDouble(), x2 = b.x, y2 = b.y;
     	// complex division
@@ -435,10 +436,10 @@ implements VectorValue {
         c.x = out.getReal();
         c.y = out.getImaginary();
     	c.setMode(Kernel.COORD_COMPLEX);
-}*/
+}
     
     /** c = a * b Michael Borcherds 2007-12-09 */
-   /*AG final public static void complexMultiply(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
+   final public static void complexMultiply(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
     	// NB temporary variables *crucial*: a and c can be the same variable
     	//double x1=a.x,y1=a.y,x2=b.x,y2=b.y;
     	//  do multiply
@@ -452,61 +453,66 @@ implements VectorValue {
       c.y = out.getImaginary();
 
     	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     /** c = a ^ b Michael Borcherds 2009-03-10 */
-  /*AG  final public static void complexPower(GeoVec2D a, NumberValue b, GeoVec2D c) {                                       
+  final public static void complexPower(GeoVec2D a, NumberValue b, GeoVec2D c) {                                       
         Complex out = new Complex(a.x, a.y);     
         out = out.pow(new Complex(b.getDouble(), 0));
         c.x = out.getReal();
         c.y = out.getImaginary();
       	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     /** c = a ^ b Michael Borcherds 2009-03-10 */
-   /*AG final public static void complexPower(NumberValue a, GeoVec2D b, GeoVec2D c) {                                       
+   final public static void complexPower(NumberValue a, GeoVec2D b, GeoVec2D c) {                                       
+  
+        
+        
+        
         Complex out = new Complex(a.getDouble(), 0);     
         out = out.pow(new Complex(b.x, b.y));
         c.x = out.getReal();
         c.y = out.getImaginary();
       	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
     /** c = e ^ a Michael Borcherds 2009-03-10 */
-   /*AG final public static void complexExp(GeoVec2D a, GeoVec2D c) {                                       
+   final public static void complexExp(GeoVec2D a, GeoVec2D c) {                                       
         Complex out = new Complex(a.x, a.y);     
         out = out.exp();
         c.x = out.getReal();
         c.y = out.getImaginary();
       	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     /** c = natural log(a) Michael Borcherds 2009-03-10 */
-   /*AG final public static void complexLog(GeoVec2D a, GeoVec2D c) {                                       
+   final public static void complexLog(GeoVec2D a, GeoVec2D c) {                                       
         Complex out = new Complex(a.x, a.y);     
         out = out.log();
         c.x = out.getReal();
         c.y = out.getImaginary();
       	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     /** c = abs(a) Michael Borcherds 2009-03-10 */
-   /*AG final public static double complexAbs(GeoVec2D a) {                                       
+   final public static double complexAbs(GeoVec2D a) {                                       
         Complex out = new Complex(a.x, a.y);     
 
         return out.abs();
-    }*/
+    }
 
     /** c = a ^ b Michael Borcherds 2009-03-14 */
-   /*AG final public static void complexPower(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
+   final public static void complexPower(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
         Complex out = new Complex(a.x, a.y);     
         out = out.pow(new Complex(b.x, b.y));
         c.x = out.getReal();
         c.y = out.getImaginary();
       	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     /** c = a * b Michael Borcherds 2007-12-09 */
-    /*AGfinal public static void complexMultiply(GeoVec2D a, NumberValue b, GeoVec2D c) {                                       
+   
+    final public static void complexMultiply(GeoVec2D a, NumberValue b, GeoVec2D c) {                                       
     	// NB temporary variables *crucial*: a and c can be the same variable
     	//double x1=a.x,y1=a.y,x2=b.getDouble();
     	//  do multiply
@@ -518,15 +524,15 @@ implements VectorValue {
         c.y = out.getImaginary();
 
     	c.setMode(Kernel.COORD_COMPLEX);
-    }*/
+    }
 
     final public static void inner(GeoVec2D a, GeoVec2D b, double c) {
         c = a.x * b.x + a.y * b.y;        
     }       
     
-    /*AGfinal public static void inner(GeoVec2D a, GeoVec2D b, MyDouble c) {
+    final public static void inner(GeoVec2D a, GeoVec2D b, MyDouble c) {
         c.set(a.x * b.x + a.y * b.y);        
-    }  */         
+    }         
     
     /** c = a / b */
     final public static void div(GeoVec2D a, double b, GeoVec2D c) {
