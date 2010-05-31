@@ -14,7 +14,9 @@ package org.geogebra.ggjsviewer.client.kernel;
 
 import java.util.ArrayList;
 
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ListValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 
 /*import geogebra.euclidian.EuclidianView;
@@ -319,7 +321,7 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
     /**
      * Returns this GeoList as a MyList object.
      */
-   /*AG public MyList getMyList() {
+   public MyList getMyList() {
     	int size = geoList.size();    	
     	MyList myList = new MyList(kernel, size);
     	
@@ -328,7 +330,7 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
     	}
     	
     	return myList;
-    }    */    
+    } 
         
     final public boolean isDefined() {    	
         return isDefined;  
