@@ -21,9 +21,12 @@ package org.geogebra.ggjsviewer.client.kernel;
 import java.util.HashSet;
 
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ListValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.VectorValue;
+import org.geogebra.ggjsviewer.client.org.apache.commons.math.complex.Complex;
 
 ;
 
@@ -294,7 +297,7 @@ implements VectorValue {
     
     /** vector + 2D list (to give another vector) 
      * */
-    /*AGfinal public static void add(GeoVec2D a, ListValue b, GeoVec2D c) {        	    	    	
+    final public static void add(GeoVec2D a, ListValue b, GeoVec2D c) {        	    	    	
     	MyList list = b.getMyList();    	
     	if (list.size() != 2) {
     		c.x = Double.NaN;
@@ -313,11 +316,11 @@ implements VectorValue {
     	
     	c.x = a.x + ((NumberValue)enX).getDouble();
     	c.y = a.y + ((NumberValue)enY).getDouble();
-    }*/
+    }
     
     /* vector - 2D list (to give another vector) 
      * */
-    /*AGfinal public static void sub(GeoVec2D a, ListValue b, GeoVec2D c, boolean reverse) {    
+    final public static void sub(GeoVec2D a, ListValue b, GeoVec2D c, boolean reverse) {    
     	
     	MyList list = b.getMyList();    	
     	if (list.size() != 2) {
@@ -342,7 +345,7 @@ implements VectorValue {
 	    	c.x = ((NumberValue)enX).getDouble() - a.x;
 	    	c.y = ((NumberValue)enY).getDouble() - a.y;
     	}
-    }*/
+    }
     
     /** (xc,yc) = (b - xa, -yx)  ie real - complex 
      * or (xc,yc) = (b - xa, b - yx)  for Vectors/Points
@@ -401,7 +404,7 @@ implements VectorValue {
     /** c = a / b Michael Borcherds 2007-12-09 
      * 
      * */
-    /*AGfinal public static void complexDivide(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
+    final public static void complexDivide(GeoVec2D a, GeoVec2D b, GeoVec2D c) {                                       
     	// NB temporary variables *crucial*: a and c can be the same variable
     	//double x1=a.x,y1=a.y,x2=b.x,y2=b.y;
     	// complex division
@@ -414,7 +417,7 @@ implements VectorValue {
       c.y = out.getImaginary();
     	c.setMode(Kernel.COORD_COMPLEX);
       
-    }*/
+    }
     
     /** c = a / b Michael Borcherds 2008-08-12 
      * 
@@ -635,7 +638,7 @@ implements VectorValue {
 	  * 
 	  * @param 2x2 matrix
 	  */
-	/*AG public void multiplyMatrix(MyList list)
+	public void multiplyMatrix(MyList list)
 	 {
 			if (list.getMatrixCols() != 2 || list.getMatrixRows() != 2) return;
 		 
@@ -651,7 +654,7 @@ implements VectorValue {
 			x=x1;
 			y=y1;
 			return;
-	 }*/
+	 }
 	 
 	 /** multiplies 2D vector by a 3x3 affine matrix
 	  *  a b c
@@ -660,7 +663,7 @@ implements VectorValue {
 	  * @param 3x3 matrix
 	  * @param GeoVec3D (as ExpressionValue) to get homogeneous coords from
 	  */
-	/*AG public void multiplyMatrixAffine(MyList list, ExpressionValue rt)
+	public void multiplyMatrixAffine(MyList list, ExpressionValue rt)
 	 {
 			if (list.getMatrixCols() != 3 || list.getMatrixRows() != 3) return;
 		 
@@ -694,7 +697,7 @@ implements VectorValue {
 		public void setZero() {
 			x=0;
 			y=0;
-		}*/
+		}
 
 		public boolean isVector3DValue() {
 			// TODO Auto-generated method stub
