@@ -7,6 +7,7 @@ import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.util.Base64;
 
@@ -50,6 +51,8 @@ public class MyXMLHandler  {
 	private Construction cons, origCons;
 	private Kernel kernel, origKernel;
 	private Application app;
+	private Command cmd;
+	private GeoElement[] cmdOutput;
 	
 	//private int docPointStyle; 
 	
