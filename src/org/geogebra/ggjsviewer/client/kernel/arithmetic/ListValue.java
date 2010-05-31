@@ -29,7 +29,7 @@ public interface ListValue extends ExpressionValue {
 	/**
 	 * Returns a MyList object. 
 	 */
-	//AGpublic MyList getMyList();
+	public MyList getMyList();
 		
 }
 
