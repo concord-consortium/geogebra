@@ -1475,6 +1475,14 @@ public class Kernel {
 		p.setLabel(label); // invokes add()                
 		return p;
 	}
+	
+	/** Point P + v   */
+	final public GeoPoint Point(String label, GeoPoint P, GeoVector v) {
+		AlgoPointVector algo = new AlgoPointVector(cons, label, P, v);
+		GeoPoint p = algo.getQ();        
+		return p;
+	}
+	
 
 	/** Point label with cartesian coordinates (x,y)   */
 	final public GeoPoint Point(String label, double x, double y, boolean complex) {
@@ -2013,7 +2021,7 @@ public class Kernel {
 	}
 	
 	/** Point anywhere on path with    */
-	/*AGfinal public GeoPoint Point(String label, Path path) {						
+	final public GeoPoint Point(String label, Path path) {						
 		// try (0,0)
 		AlgoPointOnPath algo = new AlgoPointOnPath(cons, label, path, 0, 0);
 		GeoPoint p = algo.getP(); 
@@ -2032,7 +2040,18 @@ public class Kernel {
 				
 		return p;
 	}
-	*/
+	
+	/**
+	 * 
+	 */
+	final public GeoPoint [] PointsFromList(String [] labels, GeoList list) {
+		
+		AlgoPointsFromList algo = new AlgoPointsFromList(cons, labels, true, list);
+		GeoPoint [] g = algo.getPoints();
+		return g;
+	}	
+	
+	
 	
 	/** Point in region with cartesian coordinates (x,y)   */
 	final public GeoPoint PointIn(String label, Region region, double x, double y) {
@@ -2126,11 +2145,11 @@ public class Kernel {
 	/** 
 	 * Line named label through Point P with direction of vector v
 	 */
-	/*AGfinal public GeoLine Line(String label, GeoPoint P, GeoVector v) {
+	final public GeoLine Line(String label, GeoPoint P, GeoVector v) {
 		AlgoLinePointVector algo = new AlgoLinePointVector(cons, label, P, v);
 		GeoLine g = algo.getLine();
 		return g;
-	}*/
+	}
 
 	/** 
 	 *  Ray named label through Points P and Q
@@ -2151,7 +2170,7 @@ public class Kernel {
 	/** 
 	* Line named label through Point P parallel to Line l
 	*/
-	/*AGfinal public GeoLine Line(String label, GeoPoint P, GeoLine l) {
+	final public GeoLine Line(String label, GeoPoint P, GeoLine l) {
 		AlgoLinePointLine algo = new AlgoLinePointLine(cons, label, P, l);
 		GeoLine g = algo.getLine();
 		return g;
