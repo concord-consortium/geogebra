@@ -14,6 +14,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Application extends BaseApplication {
@@ -198,7 +199,13 @@ public class Application extends BaseApplication {
 
 	public String getError(String message) {
 		// TODO Auto-generated method stub
-		return null;
+		return message+"must be implemented Application.java getError()";
+	}
+
+	public void showError(String message) {
+		GWT.log(message);
+		// TODO Auto-generated method stub
+		
 	}
 
 
