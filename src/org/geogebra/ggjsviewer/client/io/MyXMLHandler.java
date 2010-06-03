@@ -1,6 +1,8 @@
 package org.geogebra.ggjsviewer.client.io;
 
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
@@ -8,7 +10,9 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.main.Application;
+import org.geogebra.ggjsviewer.client.main.MyError;
 import org.geogebra.ggjsviewer.client.util.Base64;
 
 
@@ -150,7 +154,11 @@ public class MyXMLHandler  {
 				if (children.item(i).getNodeName().equals("element")) {
 					startGeoElement(children.item(i));
 				} else if (children.item(i).getNodeName().equals("command")) {
-					startCommandElement(children.item(i));
+				cmd = 	getCommand(children.item(i));
+				if (cmd != null && children.item(i).hasChildNodes()) {
+					startCommandElement(children.item(i).getChildNodes());
+				}
+				
 				}
 				
 			}
@@ -158,11 +166,151 @@ public class MyXMLHandler  {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void startCommandElement(NodeList childNodes) {
+		boolean ok = true;
+		  for (int i=0; i<childNodes.getLength();i++) {
+			  String eName = childNodes.item(i).getNodeName();
+			  if (!eName.equals("#text")) {
+				  NamedNodeMap attributes = childNodes.item(i).getAttributes();
+				  LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+				  for (int j=0; j<attributes.getLength();j++)
+					  attrs.put(attributes.item(j).getNodeName(), attributes.item(j).getNodeValue());
+					if (eName.equals("input")) {
+						if (cmd == null)
+							throw new MyError(app, "no command set for <input>");
+						ok = handleCmdInput(attrs);
+					} else if (eName.equals("output")) {
+						ok = handleCmdOutput(attrs);
+					} else
+						System.err.println("unknown tag in <command>: " + eName);
+			
+					if (!ok)
+						System.err.println("error in <command>: " + eName);
+				}
+		  }
+	}
 
-	private void startCommandElement(Node item) {
-		GWT.log(item.getNodeName());
-		// TODO Auto-generated method stub
-		
+	private boolean handleCmdInput(LinkedHashMap<String, String> attrs) {
+		GeoElement geo;
+		ExpressionNode en;
+		String arg = null;
+
+		Collection values = attrs.values();
+		Iterator it = values.iterator();
+		while (it.hasNext()) {
+			// parse argument expressions
+			try {
+				arg = (String) it.next();
+
+				// for downward compatibility: lookup label first
+				// as this could be some weird name that can't be parsed
+				// e.g. "1/2_{a,b}" could be a label name
+				geo = kernel.lookupLabel(arg);
+				
+				//Application.debug("input : "+geo.getLabel());
+
+				// arg is a label and does not conatin $ signs (e.g. $A1 in
+				// spreadsheet)
+				if (geo != null && arg.indexOf('$') < 0) {
+					en = new ExpressionNode(kernel, geo);
+				} else {
+					// parse argument expressions
+				//	en = parser.parseCmdExpression(arg);
+					en = null;
+					GWT.log("parser needed");
+				}
+				cmd.addArgument(en);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new MyError(app, "unknown command input: " + arg);
+			} catch (Error e) {
+				e.printStackTrace();
+				throw new MyError(app, "unknown command input: " + arg);
+			}
+		}
+		return true;
+	}
+
+	private boolean handleCmdOutput(LinkedHashMap attrs) {
+		try {
+			// set labels for command processing
+			String label;
+			Collection values = attrs.values();
+			Iterator it = values.iterator();
+			int countLabels = 0;
+			while (it.hasNext()) {
+				label = (String) it.next();
+				if ("".equals(label))
+					label = null;
+				else
+					countLabels++;
+				cmd.addLabel(label);
+			}
+
+			// it is possible that we get a command that has been saved
+			// where NONE of its output objects had a label
+			// (e.g. intersection that never produced any points).
+			// Such a command should not be processed as it might
+			// use up labels that are needed later on.
+			// For example, since v3.0 every intersection command shows
+			// at least one labeled (and possibly undefined) point
+			// whereas in v2.7 the label was not set before an intersection
+			// point became defined for the first time.
+			// THUS: let's not process commands with no labels for their output
+			if (countLabels == 0)
+				return true;
+
+			// process the command
+			cmdOutput = kernel.getAlgebraProcessor().processCommand(cmd, true);
+			String cmdName = cmd.getName();
+			if (cmdOutput == null)
+				throw new MyError(app, "processing of command " + cmd
+						+ " failed");
+			cmd = null;
+
+			// ensure that labels are set for invisible objects too
+			if (attrs.size() != cmdOutput.length) {
+				Application
+						.debug("error in <output>: wrong number of labels for command "
+								+ cmdName);
+				System.err.println("   cmdOutput.length = " + cmdOutput.length
+						+ ", labels = " + attrs.size());
+				return false;
+			}
+			// enforce setting of labels
+			// (important for invisible objects like intersection points)
+			it = values.iterator();
+			int i = 0;
+			while (it.hasNext()) {
+				label = (String) it.next();
+				if ("".equals(label))
+					label = null;
+
+				if (label != null && cmdOutput[i] != null) {
+					cmdOutput[i].setLoadedLabel(label);
+				}
+				i++;
+			}
+			return true;
+		} catch (MyError e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MyError(app, "processing of command: " + cmd);
+		}
+	}
+
+	private Command getCommand(Node item) {
+		Command cmd = null;
+		String name = (String) item.getAttributes().getNamedItem("name").getNodeValue();
+
+		//Application.debug(name);
+		if (name != null)
+			cmd = new Command(kernel, name, false); // do not translate name
+		else
+			throw new MyError(app, "name missing in <command>");
+		return cmd;
 	}
 
 	private GeoElement startGeoElement(Node item) {

@@ -207,6 +207,17 @@ public class Application extends BaseApplication {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	final public String getCommand(String key) {
+		/*AGinitTranslatedCommands();		
+
+		try {
+			return rbcommand.getString(key);
+		} catch (Exception e) {
+			return key;
+		}*/
+		return "getCommand needed";
+	}
 
 
 }

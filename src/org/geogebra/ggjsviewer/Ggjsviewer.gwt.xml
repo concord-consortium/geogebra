@@ -13,6 +13,7 @@
   <!-- Other module inherits                                      -->
   <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>
   <inherits name='com.google.gwt.xml.XML'/>
+  <inherits name="net.zschech.gwt.math.Math" />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.geogebra.ggjsviewer.client.Ggjsviewer'/>

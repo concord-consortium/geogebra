@@ -7,12 +7,19 @@ import java.util.Set;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Equation;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Polynomial;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
+
+import com.google.gwt.core.client.GWT;
 
 public class AlgebraProcessor {
 	
@@ -589,7 +596,7 @@ public class AlgebraProcessor {
 		ret[0] = f;		
 		return ret;
 	}
-
+*/
 	protected GeoElement[] processEquation(Equation equ) throws MyError {		
 		//Application.debug("EQUATION: " + equ);        
 		//Application.debug("NORMALFORM POLYNOMIAL: " + equ.getNormalForm());        		
@@ -609,15 +616,17 @@ public class AlgebraProcessor {
 	
 				// quadratic equation -> CONIC                                  
 				case 2 :
-					return processConic(equ);
+					//return processConic(equ);
+					GWT.log("processConic needed");
 	
 				case 3 :
 				case 4 ://
 				case 5 ://
 				case 6 :// needed for eg x^3 y^3
 					if (equ.singleDegree() <= 3)
-						return processCubic(equ);
+						//AGreturn processCubic(equ);
 					// else fall through to default:
+						GWT.log("processCubic needed");
 	
 				default :
 					throw new MyError(app, "InvalidEquation");
@@ -628,7 +637,7 @@ public class AlgebraProcessor {
 			
         	// invalid equation: maybe a function of form "y = <rhs>"?			
 			String lhsStr = equ.getLHS().toString().trim();
-			if (lhsStr.equals("y")) {
+			/*AGif (lhsStr.equals("y")) {
 				try {
 					// try to create function from right hand side
 					Function fun = new Function(equ.getRHS());
@@ -640,7 +649,7 @@ public class AlgebraProcessor {
 				catch (MyError funError) {
 					funError.printStackTrace();
 				}        
-			} 
+			} */
 			
 			// throw invalid equation error if we get here
 			if (eqnError.getMessage() == "InvalidEquation")
@@ -670,8 +679,9 @@ public class AlgebraProcessor {
 			c = lhs.getCoeffValue("");
 			line = kernel.Line(label, a, b, c);
 		} else
-			line = kernel.DependentLine(label, equ);
-
+			//AGline = kernel.DependentLine(label, equ);
+			line = null;
+			GWT.log("kernel.dependentLine needed Algebraprocessor 681");
 		if (isExplicit) {
 			line.setToExplicit();
 			line.updateRepaint();
@@ -680,7 +690,7 @@ public class AlgebraProcessor {
 		return ret;
 	}
 
-	protected GeoElement[] processConic(Equation equ) {
+	/*protected GeoElement[] processConic(Equation equ) {
 		double a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
 		GeoElement[] ret = new GeoElement[1];
 		GeoConic conic;
@@ -799,7 +809,7 @@ public class AlgebraProcessor {
 	
 	
 
-
+*/
 	protected GeoElement[] processExpressionNode(ExpressionNode n) throws MyError {					
 		// command is leaf: process command
 		if (n.isLeaf()) {
@@ -814,9 +824,9 @@ public class AlgebraProcessor {
 				 eqn.setLabels(n.getLabels());
 				 return processEquation(eqn);
 			 }
-			 else if (leaf instanceof Function) {
+			/*AG else if (leaf instanceof Function) {
 				return processFunction(n, (Function) leaf);			
-			} 
+			} */
 		}											
 		
 		// ELSE:  resolve variables and evaluate expressionnode		
@@ -848,17 +858,24 @@ public class AlgebraProcessor {
 		}		
 		
 		if (eval.isBooleanValue())
-			return processBoolean(n, eval);
+			//AGreturn processBoolean(n, eval);
+			GWT.log("processBoolean needed");
 		else if (eval.isNumberValue())
-			return processNumber(n, eval);
+			//AGreturn processNumber(n, eval);
+			GWT.log("processBoolean needed");
 		else if (eval.isVectorValue())
-			return processPointVector(n, eval);	
+			//AGreturn processPointVector(n, eval);
+			GWT.log("processPointVector needed");
+
 		else if (eval.isVector3DValue())
-			return processPointVector3D(n, eval);	
+			//AG return processPointVector3D(n, eval);
+			GWT.log("isVector3DValue() found CommandProcessor");
 		else if (eval.isTextValue())
-			return processText(n, eval);				
+			GWT.log("processText neede");
+		//AG	return processText(n, eval);				
 		else if (eval instanceof MyList) {
-			return processList(n, (MyList) eval);
+			GWT.log("processlist needed");
+		//AG	return processList(n, (MyList) eval);
 		} 
 		
 		// REMOVED due to issue 131: http://code.google.com/p/geogebra/issues/detail?id=131
@@ -876,7 +893,8 @@ public class AlgebraProcessor {
 		// create a copy of A1
 		else if (eval.isGeoElement()) {
 			if (n.getLabel() != null || dollarLabelFound) {
-				return processGeoCopy(n.getLabel(), n);	
+				//AGreturn processGeoCopy(n.getLabel(), n);
+				GWT.log("geoCopy needed AlgebraProcessor888");
 			}									
 		}		
 		
@@ -885,7 +903,7 @@ public class AlgebraProcessor {
 				"Unhandled ExpressionNode: " + eval + ", " + eval.getClass());
 		return null;
 	}
-
+/*AG
 	private GeoElement[] processNumber(
 		ExpressionNode n,
 		ExpressionValue evaluate) {

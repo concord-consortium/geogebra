@@ -19,6 +19,8 @@ package org.geogebra.ggjsviewer.client.org.apache.commons.math.util;
 
 
 import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 
 
@@ -425,8 +427,8 @@ public final class MathUtils {
         // default NAN won't compare as equal to anything.
         assert maxUlps > 0 && maxUlps < NAN_GAP;
 
-        long xInt = Double.doubleToLongBits(x);
-        long yInt = Double.doubleToLongBits(y);
+        long xInt = BigDecimal.valueOf(x).longValue();
+        long yInt = BigDecimal.valueOf(y).longValue();
 
         // Make lexicographically ordered as a two's-complement integer.
         if (xInt < 0) {
@@ -895,7 +897,7 @@ public final class MathUtils {
         // are handled just as normal numbers
 
         // split the double in raw components
-        long bits     = Double.doubleToLongBits(d);
+        long bits     = BigDecimal.valueOf(d).longValue();
         long sign     = bits & 0x8000000000000000L;
         long exponent = bits & 0x7ff0000000000000L;
         long mantissa = bits & 0x000fffffffffffffL;
@@ -903,21 +905,22 @@ public final class MathUtils {
         if (d * (direction - d) >= 0) {
                 // we should increase the mantissa
                 if (mantissa == 0x000fffffffffffffL) {
-                        return Double.longBitsToDouble(sign |
-                                        (exponent + 0x0010000000000000L));
+                	//AG I'm not sure that it is right
+                        return BigDecimal.valueOf(sign |
+                                        exponent + 0x0010000000000000L).doubleValue();
                 } else {
-                        return Double.longBitsToDouble(sign |
-                                        exponent | (mantissa + 1));
+                        return BigDecimal.valueOf(sign |
+                                        exponent | (mantissa + 1)).doubleValue();
                 }
         } else {
                 // we should decrease the mantissa
                 if (mantissa == 0L) {
-                        return Double.longBitsToDouble(sign |
+                        return BigDecimal.valueOf(sign |
                                         (exponent - 0x0010000000000000L) |
-                                        0x000fffffffffffffL);
+                                        0x000fffffffffffffL).doubleValue();
                 } else {
-                        return Double.longBitsToDouble(sign |
-                                        exponent | (mantissa - 1));
+                        return BigDecimal.valueOf(sign |
+                                        exponent | (mantissa - 1)).doubleValue();
                 }
         }
 
@@ -940,13 +943,13 @@ public final class MathUtils {
         }
 
         // split the double in raw components
-        final long bits     = Double.doubleToLongBits(d);
+        final long bits     = BigDecimal.valueOf(d).longValue();
         final long exponent = bits & 0x7ff0000000000000L;
         final long rest     = bits & 0x800fffffffffffffL;
 
         // shift the exponent
         final long newBits = rest | (exponent + (((long) scaleFactor) << 52));
-        return Double.longBitsToDouble(newBits);
+        return BigDecimal.valueOf(newBits).doubleValue();
 
     }
 
@@ -999,7 +1002,7 @@ public final class MathUtils {
      * @return the rounded value.
      * @since 1.1
      */
-  /*AG  public static double round(double x, int scale, int roundingMethod) {
+   public static double round(double x, int scale, int roundingMethod) {
         try {
             return (new BigDecimal
                    (Double.toString(x))
@@ -1024,8 +1027,7 @@ public final class MathUtils {
      * @since 1.1
      */
     public static float round(float x, int scale) {
-      //AG  return round(x, scale, BigDecimal.ROUND_HALF_UP);
-    	return Math.round(x);
+    	return round(x, scale, BigDecimal.ROUND_HALF_UP);
     }
 
     /**
@@ -1040,7 +1042,7 @@ public final class MathUtils {
      * @return the rounded value.
      * @since 1.1
      */
-   /*AG public static float round(float x, int scale, int roundingMethod) {
+   public static float round(float x, int scale, int roundingMethod) {
         float sign = indicator(x);
         float factor = (float)Math.pow(10.0f, scale) * sign;
         return (float)roundUnscaled(x * factor, sign, roundingMethod) / factor;
@@ -1048,7 +1050,8 @@ public final class MathUtils {
 
     /**
      * Round the given non-negative, value to the "nearest" integer. Nearest is
-     * determined by the rounding method specified. Rounding methods are defined
+     * determined by the rounding method specified. Round
+     * ing methods are defined
      * in {@link BigDecimal}.
      * 
      * @param unscaled the value to round.
@@ -1058,7 +1061,7 @@ public final class MathUtils {
      * @return the rounded value.
      * @since 1.1
      */
-   /*AG private static double roundUnscaled(double unscaled, double sign,
+   private static double roundUnscaled(double unscaled, double sign,
         int roundingMethod) {
         switch (roundingMethod) {
         case BigDecimal.ROUND_CEILING :
@@ -1124,18 +1127,7 @@ public final class MathUtils {
             unscaled = Math.ceil(nextAfter(unscaled,  Double.POSITIVE_INFINITY));
             break;
         default :
-            throw MathRuntimeException.createIllegalArgumentException(
-                  "invalid rounding method {0}, valid methods: {1} ({2}), {3} ({4})," +
-                  " {5} ({6}), {7} ({8}), {9} ({10}), {11} ({12}), {13} ({14}), {15} ({16})",
-                  roundingMethod,
-                  "ROUND_CEILING",     BigDecimal.ROUND_CEILING,
-                  "ROUND_DOWN",        BigDecimal.ROUND_DOWN,
-                  "ROUND_FLOOR",       BigDecimal.ROUND_FLOOR,
-                  "ROUND_HALF_DOWN",   BigDecimal.ROUND_HALF_DOWN,
-                  "ROUND_HALF_EVEN",   BigDecimal.ROUND_HALF_EVEN,
-                  "ROUND_HALF_UP",     BigDecimal.ROUND_HALF_UP,
-                  "ROUND_UNNECESSARY", BigDecimal.ROUND_UNNECESSARY,
-                  "ROUND_UP",          BigDecimal.ROUND_UP);
+            throw new IllegalArgumentException("roundUnscaled problem");
         }
         return unscaled;
     }
@@ -1408,13 +1400,11 @@ public final class MathUtils {
      * @return k<sup>e</sup>
      * @exception IllegalArgumentException if e is negative
      */
-    /*AGpublic static BigInteger pow(final BigInteger k, int e)
+    public static BigInteger pow(final BigInteger k, int e)
         throws IllegalArgumentException {
 
         if (e < 0) {
-            throw MathRuntimeException.createIllegalArgumentException(
-                "cannot raise an integral value to a negative power ({0}^{1})",
-                k, e);
+        	new IllegalArgumentException("powproblem");
         }
 
         return k.pow(e);
@@ -1428,13 +1418,11 @@ public final class MathUtils {
      * @return k<sup>e</sup>
      * @exception IllegalArgumentException if e is negative
      */
-    /*AGpublic static BigInteger pow(final BigInteger k, long e)
+    public static BigInteger pow(final BigInteger k, long e)
         throws IllegalArgumentException {
 
         if (e < 0) {
-            throw MathRuntimeException.createIllegalArgumentException(
-                "cannot raise an integral value to a negative power ({0}^{1})",
-                k, e);
+        	new IllegalArgumentException("Powproblem");
         }
 
         BigInteger result = BigInteger.ONE;
@@ -1458,13 +1446,11 @@ public final class MathUtils {
      * @return k<sup>e</sup>
      * @exception IllegalArgumentException if e is negative
      */
-    /*AGpublic static BigInteger pow(final BigInteger k, BigInteger e)
+    public static BigInteger pow(final BigInteger k, BigInteger e)
         throws IllegalArgumentException {
 
         if (e.compareTo(BigInteger.ZERO) < 0) {
-            throw MathRuntimeException.createIllegalArgumentException(
-                "cannot raise an integral value to a negative power ({0}^{1})",
-                k, e);
+        	new IllegalArgumentException("powproblem");
         }
 
         BigInteger result = BigInteger.ONE;
