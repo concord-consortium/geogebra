@@ -1,5 +1,7 @@
 package org.geogebra.ggjsviewer.client.euclidian;
 
+
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -10,6 +12,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
+import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -174,12 +177,12 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected static final Color colZoomRectangleFill = new Color(200, 200, 230, 50);
 
 	// STROKES
-	/*protected static MyBasicStroke standardStroke = new MyBasicStroke(1.0f);
+	protected static BasicStroke standardStroke = new BasicStroke(1.0f);
 
-	protected static MyBasicStroke selStroke = new MyBasicStroke(
+	protected static BasicStroke selStroke = new BasicStroke(
 			1.0f + SELECTION_ADD);
 
-	// protected static MyBasicStroke thinStroke = new MyBasicStroke(1.0f);
+	protected static BasicStroke thinStroke = new BasicStroke(1.0f);
 
 	// axes strokes
 	protected static BasicStroke defAxesStroke = new BasicStroke(1.0f,
@@ -190,7 +193,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 	// axes and grid stroke
 	protected BasicStroke axesStroke, tickStroke, gridStroke;
-
+	/*AG
 	protected Line2D.Double tempLine = new Line2D.Double();
 
 	protected static RenderingHints defRenderingHints = new RenderingHints(null);
@@ -552,6 +555,46 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 			//AGupdateAllDrawables(repaint);
 			//app.updateStatusLabelAxesRatio();
 		}
+	}
+	
+	/**
+	 * convert real world coordinate x to screen coordinate x
+	 * 
+	 * @param xRW
+	 * @return
+	 */
+	final public int toScreenCoordX(double xRW) {
+		return (int) Math.round(xZero + xRW * xscale);
+	}
+
+	/**
+	 * convert real world coordinate y to screen coordinate y
+	 * 
+	 * @param yRW
+	 * @return
+	 */
+	final public int toScreenCoordY(double yRW) {
+		return (int) Math.round(yZero - yRW * yscale);
+	}
+
+	/**
+	 * convert real world coordinate x to screen coordinate x
+	 * 
+	 * @param xRW
+	 * @return
+	 */
+	final public double toScreenCoordXd(double xRW) {
+		return xZero + xRW * xscale;
+	}
+
+	/**
+	 * convert real world coordinate y to screen coordinate y
+	 * 
+	 * @param yRW
+	 * @return
+	 */
+	final public double toScreenCoordYd(double yRW) {
+		return yZero - yRW * yscale;
 	}
 	
 	final public boolean toScreenCoords(double[] inOut) {
@@ -1583,6 +1626,41 @@ final public void setHits(Point p){
 	public double getYscale() {
 		return yscale;
 	}
+
+	public void setDecoStroke() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setSelStroke() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setObjStroke() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setPaint(
+			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
+		this.setFillStyle(new Color(color.getRed(),color.getBlue(),color.getGreen(),color.getAlpha()/100));	
+		//AGGWT.log(String.valueOf(color.getAlpha()));
+	}
+
+	public void setStroke(
+			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
+		this.setStrokeStyle(new Color(color.getRed(),color.getBlue(),color.getGreen(),color.getAlpha()/100));
+	}
+	
+	public void setStroke(BasicStroke stroke) {
+		if (stroke != null) {
+			this.setLineWidth(stroke.getLineWidth());
+			this.setLineCap(stroke.getLineCap());
+			this.setLineJoin(stroke.getLineJoin());
+		}
+	}
+	
 	
 	/*public void setMode(int mode) {
 		this.mode = mode;
@@ -1591,4 +1669,12 @@ final public void setHits(Point p){
 		setSelectionRectangle(null);
 	}*/
 
+	static public BasicStroke getDefaultStroke() {
+		return standardStroke;
+	}
+
+	public void setStroke(Color color) {
+		this.setStrokeStyle(color);
+		// TODO Auto-generated method stub		
+	}
 }

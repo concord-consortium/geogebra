@@ -63,6 +63,30 @@ public abstract class Drawable {
 	public abstract GeoElement getGeoElement();
 	public abstract void setGeoElement(GeoElement geo);
 	
+	/**AG Set the object stroke
+	 * 
+	 */
+	public void setObjStroke() {
+		view.setObjStroke();
+	}
+	
+	/**AG Set the selection stroke
+	 * 
+	 */	
+	public void setSelStroke() {
+		view.setSelStroke();
+	}
+	
+	/**AG Set the deco stroke
+	 * 
+	 */
+	public void setDecoStroke() {
+		view.setDecoStroke();
+	}
+	
+	
+	
+	
 	public double getxLabel() {
 		return xLabel;
 	}

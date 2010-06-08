@@ -22,6 +22,8 @@ import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.GeneralPath;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Line2D;
@@ -56,8 +58,8 @@ public final class DrawPoint extends Drawable {
 	private Line2D.Double line1, line2, line3, line4;// for cross
 	GeneralPath gp = null;
     
-    //private static BasicStroke borderStroke = EuclidianView.getDefaultStroke();
-    //private static BasicStroke [] crossStrokes = new BasicStroke[10];
+    private static BasicStroke borderStroke = EuclidianView.getDefaultStroke();
+    private static BasicStroke [] crossStrokes = new BasicStroke[10];
     
     /** Creates new DrawPoint */
     public DrawPoint(EuclidianView view, GeoPoint P) {      
@@ -65,7 +67,7 @@ public final class DrawPoint extends Drawable {
         this.P = P;
         geo = P;
         
-        //crossStrokes[1] = new BasicStroke(1f);
+        crossStrokes[1] = new BasicStroke(1f);
 
         update();
     }
@@ -270,10 +272,10 @@ public final class DrawPoint extends Drawable {
     	case GeoElement.GEO_CLASS_LINE:
     		drawable = new DrawLine(view, (GeoLine)geo);
     		break;
-    	/*AGcase GeoElement.GEO_CLASS_SEGMENT:
+    		case GeoElement.GEO_CLASS_SEGMENT:
     		drawable = new DrawSegment(view, (GeoSegment)geo);
     		break;
-    	case GeoElement.GEO_CLASS_CONIC:
+    	/*case GeoElement.GEO_CLASS_CONIC:
     		drawable = new DrawConic(view, (GeoConic)geo);
     		break;
     	case GeoElement.GEO_CLASS_FUNCTION:
@@ -314,9 +316,11 @@ public final class DrawPoint extends Drawable {
         	if (geo.doHighlighting()) {           
     		 	//AGg2.setPaint(geo.getSelColor());		
     		 	//AGg2.fill(circleHighlight);
+        		
         		view.beginPath();
         		view.arc(circleHighlight.x+circleHighlight.width/2, circleHighlight.y+circleHighlight.height/2, circleHighlight.height/2, 0, Math.PI*2, false);
-        		view.setFillStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*,geo.getAlphaValue()*/));
+        		//AG oldview.setFillStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*,geo.getAlphaValue()*/));
+        		view.setPaint(geo.getSelColor());
         		view.fill();
             }
         	
@@ -347,7 +351,8 @@ public final class DrawPoint extends Drawable {
                 g2.setStroke(getCrossStroke(pointSize));            
                 g2.draw(line1);                              
                 g2.draw(line2);*/  
-        		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        		//oldview.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        		view.setStroke(geo.getObjectColor());
         		view.beginPath();
         		view.moveTo(line1.x1, line2.x2);
         		view.lineTo(line1.x2, line1.y2);
@@ -363,7 +368,8 @@ public final class DrawPoint extends Drawable {
                 g2.draw(line2);             		
                 g2.draw(line3);                              
                 g2.draw(line4);*/   
-        		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        		//oldview.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        		view.setStroke(geo.getObjectColor());
         		view.moveTo(line1.x1, line1.y1);
         		view.lineTo(line1.x2, line1.y2);
         		view.moveTo(line2.x1, line2.y1);
@@ -385,7 +391,8 @@ public final class DrawPoint extends Drawable {
                 g2.setStroke(getCrossStroke(pointSize));  
                 drawWithValueStrokePure(gp, g2);
 				g2.fill(gp);*/
-        		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        		view.setStroke(geo.getObjectColor());
+        		//AGview.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
         		//Must be implemented AG!
         		break;
         		
@@ -396,7 +403,9 @@ public final class DrawPoint extends Drawable {
         	/*		g2.setPaint(geo.getObjectColor());	
         			g2.setStroke(getCrossStroke(pointSize));
         			g2.draw(circle);*/
-            		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue(),geo.getObjectColor().getAlpha()));
+            		view.setPaint(geo.getObjectColor());
+            		view.setStroke(geo.getObjectColor());
+            		//AGview.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue(),geo.getObjectColor().getAlpha()));
             		view.beginPath();
             		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);
             		view.stroke();
@@ -409,8 +418,10 @@ public final class DrawPoint extends Drawable {
             		view.beginPath();
             		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);                    
                     // black stroke   
-            		view.setFillStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue()/*geo.getObjectColor().getAlpha()*/));
-                    view.setStrokeStyle(Color.BLACK);
+            		//oldview.setFillStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getGreen(),geo.getObjectColor().getBlue()/*geo.getObjectColor().getAlpha()*/));
+                    //oldview.setStrokeStyle(Color.BLACK);
+            		view.setPaint(geo.getObjectColor());
+            		view.setStroke(Color.BLACK);
                    //AG dont forget g2.setStroke(borderStroke);
                     view.stroke();
                     view.fill();
@@ -429,8 +440,8 @@ public final class DrawPoint extends Drawable {
     
     final void drawTrace(/*Graphics2D g2*/) {
     	//AGg2.setPaint(geo.getObjectColor());
-		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
-
+		//oldview.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+    	view.setPaint(geo.getObjectColor());
     	
     	// Florian Sonner 2008-07-17
     	int pointStyle = P.getPointStyle();
@@ -439,16 +450,17 @@ public final class DrawPoint extends Drawable {
 	     	case EuclidianView.POINT_STYLE_CIRCLE:
 	 		/*	g2.setStroke(getCrossStroke(pointSize));
 	 			g2.draw(circle);*/
-        	view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
-        	view.beginPath();
-    		view.arc(circle.x, circle.y, circle.height/2,  0, Math.PI*2, false);                         	
+        	//view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+        	view.setStroke(getCrossStroke(pointSize));
+	     	view.beginPath();
+    		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);                         	
             view.stroke();
 	    		break;
 	     	
 	     	case EuclidianView.POINT_STYLE_CROSS:
 	     	default: // case EuclidianView.POINT_STYLE_CIRCLE:	     		
 	 			//AGg2.fill(circle);
-	     		view.arc(circle.x, circle.y, circle.height/2,  0, Math.PI*2, false);                         	
+	     		view.arc(circle.x+circle.width/2, circle.y+circle.height/2, circle.height/2,  0, Math.PI*2, false);                         	
 	            view.fill();
 	     }    		       
     }
@@ -487,7 +499,7 @@ public final class DrawPoint extends Drawable {
     /*
      * pointSize can be more than 9 (set from JavaScript, SetPointSize[])
      */
-   /* final private BasicStroke getCrossStroke(int pointSize) {
+   final private BasicStroke getCrossStroke(int pointSize) {
     	
     	if (pointSize > 9)
     		return new BasicStroke(pointSize/2f); 
@@ -497,7 +509,7 @@ public final class DrawPoint extends Drawable {
 		
 		return crossStrokes[pointSize];
 
-    }*/
+    }
 
 }
 
