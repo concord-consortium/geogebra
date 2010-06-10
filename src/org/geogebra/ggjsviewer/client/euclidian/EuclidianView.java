@@ -1514,20 +1514,31 @@ final public void setHits(Point p){
 		Point pos = euclidianController.mouseLoc;
 		if (pos == null)
 			return;
-
-		sb.setLength(0);
+		//We have some bug with stringbuilders.
+		/*AGsb.setLength(0);
 		sb.append('(');
-		sb.append(String.valueOf(euclidianController.xRW)/*AGkernel.format(euclidianController.xRW)*/);
-		//AGif (kernel.getCoordStyle() == Kernel.COORD_STYLE_AUSTRIAN)
-		//AG	sb.append(" | ");
-		//AG else
+		sb.append(kernel.format(euclidianController.xRW));
+		if (kernel.getCoordStyle() == Kernel.COORD_STYLE_AUSTRIAN)
+			sb.append(" | ");
+		else
 			sb.append(", ");
-		sb.append(String.valueOf(euclidianController.yRW)/*kernel.format(euclidianController.yRW)*/);
-		sb.append(')');
-
-		setStrokeStyle(Color.GREY);
-		strokeText(sb.toString(), pos.x + 15, pos.y + 15);
+		sb.append(kernel.format(euclidianController.yRW));
+		sb.append(')');*/
+		if (kernel == null)
+			return;
+		String coordsToShow = "";
+		coordsToShow += "("+kernel.format(euclidianController.xRW);
+		if (kernel.getCoordStyle() == kernel.COORD_STYLE_AUSTRIAN) {
+			coordsToShow +=" | ";
+		} else {
+			coordsToShow +=", ";
+		}
+		coordsToShow +=kernel.format(euclidianController.yRW);
+		coordsToShow +=")";
+		setStroke(Color.GREY);
+		strokeText(coordsToShow, pos.x + 15, pos.y + 15);
 	}
+	
 	private void drawObjects() {
 		// TODO Auto-generated method stub
 		drawGeometricObjects();
@@ -1644,13 +1655,14 @@ final public void setHits(Point p){
 
 	public void setPaint(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setFillStyle(new Color(color.getRed(),color.getBlue(),color.getGreen(),color.getAlpha()/100));	
+		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue()));	
 		//AGGWT.log(String.valueOf(color.getAlpha()));
+		//Alfa value will needed to implement properly
 	}
 
 	public void setStroke(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setStrokeStyle(new Color(color.getRed(),color.getBlue(),color.getGreen(),color.getAlpha()/100));
+		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/100));
 	}
 	
 	public void setStroke(BasicStroke stroke) {
@@ -1660,6 +1672,7 @@ final public void setHits(Point p){
 			this.setLineJoin(stroke.getLineJoin());
 		}
 	}
+	
 	
 	
 	/*public void setMode(int mode) {
@@ -1676,5 +1689,11 @@ final public void setHits(Point p){
 	public void setStroke(Color color) {
 		this.setStrokeStyle(color);
 		// TODO Auto-generated method stub		
+	}
+
+	public void setKernel(Kernel k) {
+		kernel = k;
+		// TODO Auto-generated method stub
+		
 	}
 }

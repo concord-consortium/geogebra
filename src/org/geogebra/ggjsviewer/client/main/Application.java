@@ -79,6 +79,7 @@ public class Application extends BaseApplication {
 		euclidianview = wrapper.getEuclidianView();
 		kernel.notifyAddAll(euclidianview);
 		kernel.attach(euclidianview);
+		euclidianview.setKernel(kernel);
 		euclidianview.setApplication(this);
 		euclidiancontroller.setEuclidianView(euclidianview);	
 		euclidianview.setEuclidianController(euclidiancontroller);

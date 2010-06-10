@@ -5685,7 +5685,7 @@ public class Kernel {
 	 * takes getCasPrintForm() into account.
 	 */
 	final public String format(double x) {		
-		switch (casPrintForm) {
+		/*AGswitch (casPrintForm) {
 			// number formatting for XML string output
 			case ExpressionNode.STRING_TYPE_GEOGEBRA_XML:
 				return Double.toString(x);		
@@ -5758,26 +5758,28 @@ public class Kernel {
 				}
 	
 				if (useSignificantFigures) {	
-					return "AGKernel5729";//formatSF(x);
+					return formatSF(x);
 				} else {				
-					return "AGKernel5731";//formatNF(x);
+					return formatNF(x);
 				}
-			}								
+			}	*/
+		return formatNF(x);
 	}
 	
 	
 	/**
 	 * Uses current NumberFormat nf to format a number.
 	 */
-	/*AGfinal private String formatNF(double x) {
+	final private String formatNF(double x) {
 		if (-PRINT_PRECISION < x && x < PRINT_PRECISION) {
 			// avoid output of "-0"
 			return "0";
 		} else {
 			// standard case
-			return nf.format(x);
+			//AGreturn nf.format(x);BUGGI!!!!
+			return Double.toString(x).substring(0,Double.toString(x).indexOf(".")+3);
 		}
-	}*/
+	}
 
 	/**
 	 * Uses current ScientificFormat sf to format a number. Makes sure ".123" is
