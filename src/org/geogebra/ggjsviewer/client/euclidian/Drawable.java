@@ -19,6 +19,7 @@ the Free Software Foundation.
 package org.geogebra.ggjsviewer.client.euclidian;
 
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
 
@@ -107,9 +108,10 @@ public abstract class Drawable {
 	}
 	
 	final protected void drawLabel(/*Graphics2D g2*/) {
-		/*if (labelDesc == null) return;		
+		if (labelDesc == null) return;		
 		String label = labelDesc;
-		Font oldFont  = null;
+		//AGFont oldFont  = null;
+		String oldFont = null;
 		
 		// label changed: check for bold or italic tags in caption
 		if (oldLabelDesc != labelDesc || labelDesc.startsWith("<")) {					
@@ -119,41 +121,46 @@ public abstract class Drawable {
 			// must be whole caption
 			if (label.startsWith("<i>") && label.endsWith("</i>")) {
 				if (oldFont == null)
-					oldFont = g2.getFont();
+					oldFont = view.getFont();
 				
 				// use Serif font so that we can get a nice curly italic x
-				g2.setFont(view.getApplication().getFont(true, oldFont.getStyle() | Font.ITALIC, oldFont.getSize()));			
+				//AGg2.setFont(view.getApplication().getFont(true, oldFont.getStyle() | Font.ITALIC, oldFont.getSize()));	
+				view.setFont("italic");
 				label = label.substring(3, label.length() - 4);
 				italic = true;
 			} 
 	
 			if (label.startsWith("<b>") && label.endsWith("</b>")) {			
 				if (oldFont == null)
-					oldFont = g2.getFont();
+					oldFont = view.getFont();
 	
-				g2.setFont(g2.getFont().deriveFont(Font.BOLD + (italic ? Font.ITALIC : 0)));	
+				//AGg2.setFont(g2.getFont().deriveFont(Font.BOLD + (italic ? Font.ITALIC : 0)));
+				view.setFont("bold");
 				label = label.substring(3, label.length() - 4);			
 			}
 		}
 				
 		// no index in label: draw it fast
-		int fontSize = g2.getFont().getSize();
+		int fontSize = view.getFontSize();
 		if (oldLabelDesc == labelDesc && !labelHasIndex && lastFontSize == fontSize) {
 			lastFontSize = fontSize;
-			g2.drawString(label, xLabel, yLabel);
+			view.strokeText(label, xLabel, yLabel,view.getFont(),view.getFontSize());
 			labelRectangle.setLocation(xLabel, yLabel - fontSize);
 		} 
 		else { // label with index or label has changed:
 			// do the slower index drawing routine and check for indices
-			oldLabelDesc = labelDesc;
+			/*AGoldLabelDesc = labelDesc;
 					
-			Point p = drawIndexedString(g2, label, xLabel, yLabel);
+			Point p = drawIndexedString(, label, xLabel, yLabel);
 			labelHasIndex = p.y > 0;
-			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);			
+			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);*/	
+			lastFontSize = fontSize;
+			view.strokeText(label, xLabel, yLabel,view.getFont(),view.getFontSize());
+			labelRectangle.setLocation(xLabel, yLabel - fontSize);
 		}		
 		
 		if (oldFont != null)
-			g2.setFont(oldFont);*/
+			view.setFont(oldFont);
 	}			
 	
 	/**
@@ -552,7 +559,7 @@ public abstract class Drawable {
 	 * @param str
 	 * @return additional pixel needed to draw str (x-offset, y-offset) 
 	 */
-	/*AGpublic static Point drawIndexedString(Graphics2D g2, String str, float xPos, float yPos) {
+	/*public static Point drawIndexedString(String str, float xPos, float yPos) {
 		Font g2font = g2.getFont();
 		Font indexFont = getIndexFont(g2font);
 		Font font = g2font;

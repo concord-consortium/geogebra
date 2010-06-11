@@ -334,10 +334,9 @@ public final class DrawLine extends Drawable implements Previewable {
 
             // label
             if (labelVisible) {
-            	//MUST BE IMPLEMENTED
-				/*AGg2.setFont(view.fontLine);
-				g2.setColor(geo.getLabelColor());
-				drawLabel(g2);*/
+				view.setFont(view.fontLine);
+				view.setPaint(geo.getLabelColor());
+				drawLabel();
             }                            
         }
     }

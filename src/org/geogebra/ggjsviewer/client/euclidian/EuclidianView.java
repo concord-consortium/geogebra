@@ -344,10 +344,13 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected Cursor defaultCursor;*/
 
 	public int fontSize = 12; //px
+	private String canvasFont = "normal";
+	public String fontPoint = "normal";
+	public String fontLine = "normal";
 	
 	/*Handling the text support with native canvas functions
 	*/
-	public native void strokeText(String text, int x, int y) /*-{
+	public native void strokeText(String text, int x, int y, String font, int fontSize) /*-{
 		//if (!$wnd.eview) {
 			//$wnd.alert(document.getElementById("eview"));
 			//$wnd.eview = $doc.getElementById("eview");
@@ -361,7 +364,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		//}
 		var eview = $doc.getElementById('eview');
 		var ctx = eview.getContext('2d');
-		ctx.font = 'italic 400 12px/2 sans-serif';
+		ctx.font = font+' '+String.valueOf(fontSize)+'px/'+String.valueOf(fontSize)+'px sans-serif';
 		//ctx.clearRect(x-5,y-20,500,30);
 		ctx.strokeText(text,x,y);
 		
@@ -1535,10 +1538,15 @@ final public void setHits(Point p){
 		}
 		coordsToShow +=kernel.format(euclidianController.yRW);
 		coordsToShow +=")";
-		setStroke(Color.GREY);
-		strokeText(coordsToShow, pos.x + 15, pos.y + 15);
+		setStroke(Color.BLACK);
+		strokeText(coordsToShow, pos.x + 15, pos.y + 15,this.getFont(),this.getFontSize());
 	}
 	
+	public int getFontSize() {
+		// TODO Auto-generated method stub
+		return fontSize;
+	}
+
 	private void drawObjects() {
 		// TODO Auto-generated method stub
 		drawGeometricObjects();
@@ -1694,6 +1702,16 @@ final public void setHits(Point p){
 	public void setKernel(Kernel k) {
 		kernel = k;
 		// TODO Auto-generated method stub
+		
+	}
+
+	public String getFont() {
+		// The active font of the Canvas
+		return canvasFont;
+	}
+
+	public void setFont(String font) {
+		canvasFont = font;
 		
 	}
 }

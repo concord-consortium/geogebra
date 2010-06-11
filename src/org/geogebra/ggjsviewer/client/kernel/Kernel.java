@@ -32,6 +32,8 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
 import org.geogebra.ggjsviewer.client.main.Application;
 
+import com.google.gwt.core.client.GWT;
+
 
 
 /*import geogebra.io.MyXMLHandler;
@@ -5776,8 +5778,13 @@ public class Kernel {
 			return "0";
 		} else {
 			// standard case
-			//AGreturn nf.format(x);BUGGI!!!!
-			return Double.toString(x).substring(0,Double.toString(x).indexOf(".")+3);
+			//AGreturn nf.format(x);
+			String number = Double.toString(x);
+			//GWT.log(String.valueOf(number.indexOf("."))+" l: "+String.valueOf(number.length())+" and: "+String.valueOf(number.indexOf(".")+2>number.length()));
+			if (number.indexOf(".") > 0 && number.indexOf(".")+2 < number.length()) {
+				return number.substring(0, number.indexOf(".")+2);
+			}
+			return number;
 		}
 	}
 

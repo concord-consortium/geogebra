@@ -430,11 +430,11 @@ public final class DrawPoint extends Drawable {
                   
 
             // label   
-           /* if (labelVisible) {
-				g2.setFont(view.fontPoint);
-				g2.setPaint(geo.getLabelColor());
-				drawLabel(g2);
-            }*/                         
+           if (labelVisible) {
+				view.setFont(view.fontPoint);
+				view.setPaint(geo.getLabelColor());
+				drawLabel();
+            }                      
         }
     }
     
