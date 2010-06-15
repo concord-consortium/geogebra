@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
 import org.geogebra.ggjsviewer.client.kernel.AlgoDynamicCoordinates;
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
+import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Path;
 import org.geogebra.ggjsviewer.client.kernel.Region;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -114,7 +118,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	protected GeoLine movedGeoLine;
 
-	//protected GeoSegment movedGeoSegment;
+	protected GeoSegment movedGeoSegment;
 
 	/*protected GeoConic movedGeoConic;
 
@@ -143,7 +147,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	protected MyDouble tempNum;
 	protected double rotStartAngle;
 	protected ArrayList translateableGeos;
-	protected GeoVector translationVec;
+	protected GgbVector translationVec;
 
 	protected Hits tempArrayList = new Hits();
 	protected Hits tempArrayList2 = new Hits();
@@ -636,7 +640,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			startLoc = mouseLoc;
 			view.setDragCursor();
 			if (translationVec == null)
-				translationVec = new GeoVector(kernel.getConstruction());
+				translationVec = new GgbVector(2);
 		}	
 
 		// DEPENDENT object: changeable parents?
@@ -676,7 +680,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				startPoint.setLocation(xRW, yRW);					
 				view.setDragCursor();
 				if (translationVec == null)
-					translationVec = new GeoVector(kernel.getConstruction());
+					translationVec = new GgbVector(2);
 			} else {
 				moveMode = MOVE_NONE;
 			}				
@@ -1694,8 +1698,9 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	}
 	
 	final protected void moveDependent(boolean repaint) {
-		//GEOVECTOR AND DEPENDENCIES MUST BE IMPLEMENTED FOR THIS
-		translationVec.setCoords(xRW - startPoint.x, yRW - startPoint.y, 0.0);
+		translationVec.setX(xRW - startPoint.x);
+		translationVec.setY(yRW - startPoint.y);
+
 		startPoint.setLocation(xRW, yRW);
 
 		// we don't specify screen coords for translation as all objects are Translateables
@@ -1868,6 +1873,57 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		return false;
 	}
 	
+	//	get two points and create line through them
+	final protected boolean segment(Hits hits) {
+		if (hits.isEmpty())
+			return false;
+
+		// points needed
+		addSelectedPoint(hits, 2, false);
+		if (selPoints() == 2) {
+			// fetch the two selected points
+			segment();
+			/*
+			GeoPoint[] points = getSelectedPoints();
+			kernel.Segment(null, points[0], points[1]);
+			 */
+			return true;
+		}
+		return false;
+	}
+	
+	// get point and number
+	/*AGfinal protected boolean segmentFixed(Hits hits) {
+		if (hits.isEmpty())
+			return false;
+
+		// dilation center
+		addSelectedPoint(hits, 1, false);
+
+		// we got the point
+		if (selPoints() == 1) {
+			// get length of segment
+			NumberValue num = app.getGuiManager().showNumberInputDialog(app.getMenu(getKernel().getModeText(mode)),
+					app.getPlain("Length"), null);		
+
+			if (num == null) {
+				view.resetMode();
+				return false;
+			}
+
+			GeoPoint[] points = getSelectedPoints();		
+			kernel.Segment(null, points[0], num);
+			return true;
+		}
+		return false;
+	}	*/
+	
+	// fetch the two selected points for segment
+	protected void segment(){
+		GeoPoint[] points = getSelectedPoints();
+		GeoSegment segment = kernel.Segment(null, points[0], points[1]);
+	}
+	
 	protected final int selPoints() {
 		return selectedPoints.size();
 	}
@@ -1959,12 +2015,12 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 
 			// new segment through two points
 		case EuclidianView.MODE_SEGMENT:
-			//AGchangedKernel = segment(hits);
+			changedKernel = segment(hits);
 			break;
 
 			// segment for point and number
 		case EuclidianView.MODE_SEGMENT_FIXED:
-			//AGchangedKernel = segmentFixed(hits);
+		//AG	changedKernel = segmentFixed(hits);
 			break;
 
 			//	angle for two points and number

@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -603,12 +604,12 @@ GeoPointInterface {
  * MOVEMENTS
  ***********************************************************/
     
-    /**
+	 /**
      * translate by vector v
      */
-   final public void translate(GeoVector v) { 
-    		setCoords(x + v.x * z, y + v.y * z, z); 
-    }     
+    final public void translate(GgbVector v) { 
+    		setCoords(x + v.getX() * z, y + v.getY() * z, z); 
+    }        
     
 	final public boolean isTranslateable() {
 		return true;
@@ -1111,6 +1112,16 @@ GeoPointInterface {
 		public String getXML() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public double distance(GeoPointInterface P) {
+			return distance((GeoPoint) P);
+		}
+
+		@Override
+		public GgbVector getInhomCoords() {
+			return new GgbVector(new double[] {inhomX, inhomY});
 		}
 
 	

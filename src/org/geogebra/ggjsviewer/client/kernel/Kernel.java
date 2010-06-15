@@ -247,7 +247,7 @@ public class Kernel {
 	//protected BaseApplication bApp;
 	protected Application bApp;
 	protected AlgebraProcessor algProcessor;
-	//AGprivate EquationSolver eqnSolver;
+	private EquationSolver eqnSolver;
 	//AGprivate RegressionMath regMath;
 	//AGprivate ExtremumFinder extrFinder;
 	//AGprotected Parser parser;
@@ -385,12 +385,12 @@ public class Kernel {
 		return cons.showOnlyBreakpoints();
 	}
 	
-	/*AGfinal public EquationSolver getEquationSolver() {
+	final public EquationSolver getEquationSolver() {
 		if (eqnSolver == null)
 			eqnSolver = new EquationSolver(this);
 		return eqnSolver;
 	}
-	
+	/*AG
 	final public ExtremumFinder getExtremumFinder() {
 		if (extrFinder == null)
 			extrFinder = new ExtremumFinder();
@@ -821,7 +821,7 @@ public class Kernel {
     			return null;//AG new GeoRay(cons, null);
     			
     		case 's': // segment    			
-    			return null; //AGnew GeoSegment(cons, null, null);	    			    			
+    			return new GeoSegment(cons, null, null);	    			    			
     			
     		case 't': 
     			if (type.equals("text"))
@@ -3565,7 +3565,7 @@ public class Kernel {
 	 * Creates new point B with distance n from A and  new segment AB 
 	 * The labels[0] is for the segment, labels[1] for the new point	 
 	 */
-	/*AGfinal public GeoElement [] Segment (String [] labels, GeoPoint A, NumberValue n) {
+	final public GeoElement [] Segment (String [] labels, GeoPoint A, NumberValue n) {
 		// this is actually a macro
 		String pointLabel = null, segmentLabel = null;
 		if (labels != null) {
@@ -3590,7 +3590,7 @@ public class Kernel {
 		GeoElement [] ret = { Segment(segmentLabel, A, algoPoint.getP()),
 											algoPoint.getP() };
 		return ret;		
-	}*/
+	}
 	
 	/** 
 	 * Creates a new point C by rotating B around A using angle alpha and
@@ -4339,9 +4339,9 @@ public class Kernel {
 		return null;
 	 }*/
 	 
-	/*AG void removeIntersectionAlgorithm(AlgoIntersect algo) {
+	void removeIntersectionAlgorithm(AlgoIntersect algo) {
 		intersectionAlgos.remove(algo);	 
-	 }*/
+	 }
 
 
 	/** 

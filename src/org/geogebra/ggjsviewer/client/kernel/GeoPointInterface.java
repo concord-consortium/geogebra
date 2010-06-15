@@ -1,5 +1,7 @@
 package org.geogebra.ggjsviewer.client.kernel;
 
+import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
+
 
 
 /**
@@ -52,6 +54,11 @@ public interface GeoPointInterface {
 	 * @param Q ending point
 	 * @return coords of the vector */
 	public double[] vectorTo(GeoPointInterface Q);
+	
+	public GgbVector getInhomCoords();
+	
+	public double distance(GeoPointInterface P);
+	
 	
 
 }

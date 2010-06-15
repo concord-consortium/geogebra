@@ -18,6 +18,7 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.kernel;
 
+import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 
 public class GeoLine extends GeoVec3D 
@@ -370,12 +371,12 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
  * MOVEMENTS
  ***********************************************************/
     
-    /**
+	 /**
      * translate by vector v
      */
-   final public void translate(GeoVector v) {        
-        z -= x * v.x + y * v.y;
-    }
+    final public void translate(GgbVector v) {        
+        z -= x * v.getX() + y * v.getY();
+    }  
     
 	final public boolean isTranslateable() {
 		return true;

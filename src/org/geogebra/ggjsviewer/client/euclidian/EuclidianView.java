@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
@@ -1331,7 +1332,7 @@ final public void setHits(Point p){
 			break;					
 
 		case GeoElement.GEO_CLASS_SEGMENT:
-		//AG	d = new DrawSegment(this, (GeoSegment) geo);
+		d = new DrawSegment(this, (GeoSegment) geo);
 			break;
 
 		case GeoElement.GEO_CLASS_RAY:
@@ -1670,7 +1671,7 @@ final public void setHits(Point p){
 
 	public void setStroke(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/100));
+		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue()/* Alfa value buggy! color.getAlpha()/100*/));
 	}
 	
 	public void setStroke(BasicStroke stroke) {

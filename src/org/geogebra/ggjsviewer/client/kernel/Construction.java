@@ -205,11 +205,11 @@ public class Construction {
 		return kernel.getApplication();
 	}*/
 
-	/*AGpublic EquationSolver getEquationSolver() {
+	public EquationSolver getEquationSolver() {
 		return kernel.getEquationSolver();
 	}
 
-	public ExtremumFinder getExtremumFinder() {
+	/*AGpublic ExtremumFinder getExtremumFinder() {
 		return kernel.getExtremumFinder();
 	}*/
 

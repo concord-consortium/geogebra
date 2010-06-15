@@ -315,7 +315,8 @@ public final class DrawLine extends Drawable implements Previewable {
                 /*g2.setPaint(geo.getSelColor());
                 g2.setStroke(selStroke);            
                 g2.draw(line);*/
-        		view.setStrokeStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*AG something wrong here I must look after it,geo.getAlphaValue()*/));
+            	view.setPaint(geo.getSelColor());
+        		//view.setStroke(geo.getSelColor());
         		view.beginPath();
         		view.moveTo(line.x1, line.y1);
         		view.lineTo(line.x2, line.y2);
@@ -326,7 +327,7 @@ public final class DrawLine extends Drawable implements Previewable {
            /* g2.setPaint(geo.getObjectColor());
             g2.setStroke(objStroke);            
 			g2.draw(line);*/    
-            view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen()/*geo.getObjectColor().getAlpha()*/));
+            view.setStroke(geo.getObjectColor());
     		view.beginPath();
     		view.moveTo(line.x1, line.y1);
     		view.lineTo(line.x2, line.y2);
@@ -345,7 +346,7 @@ public final class DrawLine extends Drawable implements Previewable {
 		/*AGg2.setPaint(geo.getObjectColor());
 		g2.setStroke(objStroke);  
 		g2.draw(line);*/
-		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+		view.setStroke(geo.getObjectColor());
 		view.beginPath();
 		view.moveTo(line.x1, line.y1);
 		view.lineTo(line.x2, line.y2);
@@ -409,7 +410,7 @@ public final class DrawLine extends Drawable implements Previewable {
 			/*AGg2.setPaint(ConstructionDefaults.colPreview);             
 			g2.setStroke(objStroke);            
 			g2.draw(line);*/
-			view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+			view.setStroke(geo.getObjectColor());
 			view.beginPath();
 			view.moveTo(line.x1, line.y1);
 			view.lineTo(line.x2, line.y2);

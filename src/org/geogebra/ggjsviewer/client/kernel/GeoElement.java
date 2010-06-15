@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
@@ -3360,17 +3361,21 @@ public abstract class GeoElement
 	/**
 	 * returns all class-specific xml tags for getXML
 	 * GeoGebra File Format
+	 * @param sb2 
 	 */
-	/*AGprotected String getXMLtags() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getLineStyleXML());
+	/**
+	 * returns all class-specific xml tags for getXML
+	 * GeoGebra File Format
+	 */
+	protected void getXMLtags(StringBuilder sb) {
+		//sb.append(getLineStyleXML());
 		sb.append(getXMLvisualTags());
-		sb.append(getXMLanimationTags());
+		//AGsb.append(getXMLanimationTags());
 		sb.append(getXMLfixedTag());
-		sb.append(getAuxiliaryXML());
+		//AGsb.append(getAuxiliaryXML());
 		sb.append(getBreakpointXML());		
-		return sb.toString();
-	}*/
+	}
+
 
 	/**
 	 * returns all class-specific i2g tags for getI2G
@@ -3698,7 +3703,7 @@ public abstract class GeoElement
 	 * (xPixel, yPixel) in screen coordinates. 
 	 * @param endPosition may be null
 	 */
-	public static boolean moveObjects(ArrayList geos, GeoVector rwTransVec, Point2D.Double endPosition) {	
+	public static boolean moveObjects(ArrayList geos, GgbVector rwTransVec, Point2D.Double endPosition) {	
 		if (moveObjectsUpdateList == null)
 			moveObjectsUpdateList = new ArrayList();
 		
@@ -3724,6 +3729,7 @@ public abstract class GeoElement
 		
 		return moved;
 	}
+	
 	private static ArrayList moveObjectsUpdateList;	
 	private static TreeSet tempSet;
 	
@@ -3746,34 +3752,50 @@ public abstract class GeoElement
 	 * Moves geo by a vector in real world coordinates.
 	 * @return whether actual moving occurred 	 
 	 */
-	private boolean moveObject(GeoVector rwTransVec, Point2D.Double endPosition, ArrayList updateGeos) {
+	/**
+	 * Moves geo by a vector in real world coordinates.
+	 * @return whether actual moving occurred 	 
+	 */
+	protected boolean movePoint(GgbVector rwTransVec, Point2D.Double endPosition) {
+		
+		boolean movedGeo = false;
+		
+		GeoPoint point = (GeoPoint) this;
+		if (endPosition != null) {					
+			point.setCoords(endPosition.x, endPosition.y, 1);
+			movedGeo = true;
+		} 
+		
+		// translate point
+		else {	
+			double x  = point.inhomX + rwTransVec.getX();
+			double y =  point.inhomY + rwTransVec.getY();
+								
+			// round to decimal fraction, e.g. 2.800000000001 to 2.8
+			if (Math.abs(rwTransVec.getX()) > Kernel.MIN_PRECISION)
+				x  = kernel.checkDecimalFraction(x);
+			if (Math.abs(rwTransVec.getY()) > Kernel.MIN_PRECISION) 
+				y = kernel.checkDecimalFraction(y);
+				
+			// set translated point coords
+			point.setCoords(x, y, 1);					
+			movedGeo = true;
+		}
+		
+		return movedGeo;
+	
+	}
+	
+	private boolean moveObject(GgbVector rwTransVec, Point2D.Double endPosition, ArrayList updateGeos) {
 		boolean movedGeo = false;
 		
 		// moveable geo
 		if (isMoveable()) {
 			// point
 			if (isGeoPoint()) {
-				GeoPoint point = (GeoPoint) this;
-				if (endPosition != null) {					
-					point.setCoords(endPosition.x, endPosition.y, 1);
-					movedGeo = true;
-				} 
 				
-				// translate point
-				else {	
-					double x  = point.inhomX + rwTransVec.x;
-					double y =  point.inhomY + rwTransVec.y;
-										
-					// round to decimal fraction, e.g. 2.800000000001 to 2.8
-					if (Math.abs(rwTransVec.x) > Kernel.MIN_PRECISION)
-						x  = kernel.checkDecimalFraction(x);
-					if (Math.abs(rwTransVec.y) > Kernel.MIN_PRECISION) 
-						y = kernel.checkDecimalFraction(y);
-						
-					// set translated point coords
-					point.setCoords(x, y, 1);					
-					movedGeo = true;
-				}
+				movedGeo = movePoint(rwTransVec, endPosition);
+				
 			}
 			
 			// translateable
@@ -3787,8 +3809,8 @@ public abstract class GeoElement
 			else if (isAbsoluteScreenLocateable()) {
 				AbsoluteScreenLocateable screenLoc = (AbsoluteScreenLocateable) this;
 				if (screenLoc.isAbsoluteScreenLocActive()) {					
-					int vxPixel = (int) Math.round(kernel.getXscale() * rwTransVec.x);
-					int vyPixel = -(int) Math.round(kernel.getYscale() * rwTransVec.y);
+					int vxPixel = (int) Math.round(kernel.getXscale() * rwTransVec.getX());
+					int vyPixel = -(int) Math.round(kernel.getYscale() * rwTransVec.getY());
 					int x = screenLoc.getAbsoluteScreenLocX() + vxPixel;
 					int y = screenLoc.getAbsoluteScreenLocY() + vyPixel;
 					screenLoc.setAbsoluteScreenLoc(x, y);

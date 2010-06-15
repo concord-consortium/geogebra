@@ -275,7 +275,7 @@ public class DrawSegment extends Drawable implements Previewable {
             /*    g2.setPaint(geo.getSelColor());
                 g2.setStroke(selStroke);            
                 g2.draw(line);*/    
-        	view.setStrokeStyle(new Color(geo.getSelColor().getRed(),geo.getSelColor().getBlue(),geo.getSelColor().getGreen()/*AG something wrong here I must look after it,geo.getAlphaValue()*/));
+        	view.setStroke(geo.getSelColor());
     		view.beginPath();
     		view.moveTo(line.x1, line.y1);
     		view.lineTo(line.x2, line.y2);
@@ -286,7 +286,7 @@ public class DrawSegment extends Drawable implements Previewable {
             g2.setStroke(objStroke);            
 			g2.draw(line);
 			*/
-	        view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen()/*geo.getObjectColor().getAlpha()*/));
+	        view.setStroke(geo.getObjectColor());
 			view.beginPath();
 			view.moveTo(line.x1, line.y1);
 			view.lineTo(line.x2, line.y2);
@@ -294,7 +294,7 @@ public class DrawSegment extends Drawable implements Previewable {
 			//added by Lo�c BEGIN			
 			if (geo.decorationType != GeoElement.DECORATION_NONE) {
 				//AG I'm not sure yet that it is right here....
-				 view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen()/*geo.getObjectColor().getAlpha()*/));
+				 view.setStroke(geo.getObjectColor());
 				
 				switch(geo.decorationType){
 				//AG IT MUST BE RETHINKED
@@ -343,6 +343,9 @@ public class DrawSegment extends Drawable implements Previewable {
 				/*AGg2.setPaint(geo.getLabelColor());
 				g2.setFont(view.fontLine);
 				drawLabel(g2);*/
+				view.setFont(view.fontLine);
+				view.setPaint(geo.getLabelColor());
+				drawLabel();
             }
         }
     }
@@ -351,7 +354,7 @@ public class DrawSegment extends Drawable implements Previewable {
 		/*AGg2.setPaint(geo.getObjectColor());
 		g2.setStroke(objStroke);  
 		g2.draw(line);*/
-		view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+		view.setStroke(geo.getObjectColor());
 		view.beginPath();
 		view.moveTo(line.x1, line.y1);
 		view.lineTo(line.x2, line.y2);
@@ -415,7 +418,7 @@ public class DrawSegment extends Drawable implements Previewable {
 			/*AGg2.setPaint(ConstructionDefaults.colPreview);             
 			g2.setStroke(objStroke);            
 			g2.draw(line);*/
-			view.setStrokeStyle(new Color(geo.getObjectColor().getRed(),geo.getObjectColor().getBlue(),geo.getObjectColor().getGreen(),geo.getObjectColor().getAlpha()));
+			view.setStroke(geo.getObjectColor());
 			view.beginPath();
 			view.moveTo(line.x1, line.y1);
 			view.lineTo(line.x2, line.y2);
