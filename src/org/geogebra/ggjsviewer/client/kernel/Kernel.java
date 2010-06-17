@@ -2091,19 +2091,19 @@ public class Kernel {
 	/** 
 	 * Midpoint M = (P + Q)/2
 	 */
-	/*AGfinal public GeoPoint Midpoint(
+	final public GeoPoint Midpoint(
 		String label,
 		GeoPoint P,
 		GeoPoint Q) {
 		AlgoMidpoint algo = new AlgoMidpoint(cons, label, P, Q);
 		GeoPoint M = algo.getPoint();
 		return M;
-	}*/
+	}
 	
 	/** 
 	 * Creates Midpoint M = (P + Q)/2 without label (for use as e.g. start point)
 	 */
-	/*AGfinal public GeoPoint Midpoint(
+	final public GeoPoint Midpoint(
 		GeoPoint P,
 		GeoPoint Q) {
 
@@ -2113,18 +2113,16 @@ public class Kernel {
 		cons.setSuppressLabelCreation(oldValue);
 		return midPoint;
 	}
-	*/
 	/** 
 	 * Midpoint of segment
 	 */
-	/*AGfinal public GeoPoint Midpoint(
+	final public GeoPoint Midpoint(
 		String label,
 		GeoSegment s) {
 		AlgoMidpointSegment algo = new AlgoMidpointSegment(cons, label, s);
 		GeoPoint M = algo.getPoint();
 		return M;
 	}
-	*/
 	/** 
 		* LineSegment named label from Point P to Point Q
 		*/
@@ -3952,11 +3950,11 @@ public class Kernel {
 	/** 
 	 * Center of conic
 	 */
-	/*AGfinal public GeoPoint Center(String label, GeoConic c) {
+	final public GeoPoint Center(String label, GeoConic c) {
 		AlgoCenterConic algo = new AlgoCenterConic(cons, label, c);
 		GeoPoint midpoint = algo.getPoint();
 		return midpoint;
-	}*/
+	}
 	
 	/** 
 	 * Centroid of a 

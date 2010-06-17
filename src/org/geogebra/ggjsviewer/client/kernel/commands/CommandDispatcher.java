@@ -134,7 +134,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
     	//AGcmdTable.put("Angle", new CmdAngle(kernel));	   
     	//AGcmdTable.put("Corner", new CmdCorner(kernel));	   
-    	//AGcmdTable.put("Midpoint", new CmdMidpoint(kernel));	   
+    	cmdTable.put("Midpoint", new CmdMidpoint(kernel));	   
     	//AGcmdTable.put("Direction", new CmdDirection(kernel));	   
     	//AGcmdTable.put("Polynomial", new CmdPolynomial(kernel));	   
     	//AGcmdTable.put("Tangent", new CmdTangent(kernel));	   

@@ -16,10 +16,12 @@ import java.util.ArrayList;
 
 import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
+import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoList;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
@@ -193,7 +195,7 @@ public abstract class CommandProcessor  {
 /* *****************************************
  *     Command classes used by CommandDispatcher
  *  *****************************************/
-/*
+
 
 class CmdCenter extends CmdMidpoint {
 	public CmdCenter(Kernel kernel) {
@@ -204,7 +206,7 @@ class CmdCenter extends CmdMidpoint {
 /*
  * Midpoint[ <GeoConic> ] Midpoint[ <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdMidpoint extends CommandProcessor {
 
 	public CmdMidpoint(Kernel kernel) {
