@@ -3170,11 +3170,11 @@ public class Kernel {
 	 * Intersection[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoList Intersection(String label, GeoList list, GeoList list1) {
+	final public GeoList Intersection(String label, GeoList list, GeoList list1) {
 		AlgoIntersection algo = new AlgoIntersection(cons, label, list, list1);
 		GeoList list2 = algo.getResult();
 		return list2;
-	}*/
+	}
 	
 	/** 
 	 * SetDifferece[list,list]
@@ -4070,7 +4070,7 @@ public class Kernel {
 	 * IntersectLineConic yields intersection points named label1, label2
 	 * of line g and conic c
 	 */
-	/*AGfinal public GeoPoint[] IntersectLineConic(
+	final public GeoPoint[] IntersectLineConic(
 		String[] labels,
 		GeoLine g,
 		GeoConic c) {
@@ -4079,13 +4079,13 @@ public class Kernel {
 		GeoPoint[] points = algo.getIntersectionPoints();		
 		GeoElement.setLabels(labels, points);	
 		return points;
-	}*/
+	}
 
 	/** 
 	 * IntersectConics yields intersection points named label1, label2, label3, label4
 	 * of conics c1, c2
 	 */
-	/*AGfinal public GeoPoint[] IntersectConics(
+	final public GeoPoint[] IntersectConics(
 		String[] labels,
 		GeoConic a,
 		GeoConic b) {
@@ -4094,7 +4094,7 @@ public class Kernel {
 		GeoPoint[] points = algo.getIntersectionPoints();
 		GeoElement.setLabels(labels, points);
 		return points;
-	}*/
+	}
 	
 	/** 
 	 * IntersectPolynomials yields all intersection points 
@@ -4217,7 +4217,7 @@ public class Kernel {
 	 * get only one intersection point of two conics that is near to the given
 	 * location (xRW, yRW)
 	 */
-	/*AGfinal public GeoPoint IntersectLineConicSingle(
+	final public GeoPoint IntersectLineConicSingle(
 		String label,
 		GeoLine g,
 		GeoConic c, double xRW, double yRW) {
@@ -4226,13 +4226,13 @@ public class Kernel {
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, index);
 		GeoPoint point = salgo.getPoint();
 		return point;
-	}*/
+	}
 	
 	
 	/** 
 	 * get only one intersection point of a line and a conic 
 	 */
-	/*AGfinal public GeoPoint IntersectLineConicSingle(
+	final public GeoPoint IntersectLineConicSingle(
 		String label,
 		GeoLine g,
 		GeoConic c, NumberValue index) {
@@ -4240,13 +4240,13 @@ public class Kernel {
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, (int) index.getDouble() - 1);
 		GeoPoint point = salgo.getPoint();
 		return point;
-	}*/
+	}
 	
 	/** 
 	 * get only one intersection point of two conics that is near to the given
 	 * location (xRW, yRW)
 	 */
-	/*AGfinal public GeoPoint IntersectConicsSingle(
+	final public GeoPoint IntersectConicsSingle(
 		String label,
 		GeoConic a,
 		GeoConic b, double xRW, double yRW) {
@@ -4255,18 +4255,45 @@ public class Kernel {
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, index);
 		GeoPoint point = salgo.getPoint();
 		return point;
-	}*/
+	}
 	
 	/** 
 	 * get only one intersection point of two conics 
 	 */
-	/*AGfinal public GeoPoint IntersectConicsSingle(
+	final public GeoPoint IntersectConicsSingle(
 			String label, GeoConic a, GeoConic b, NumberValue index) {
 		AlgoIntersectConics algo = getIntersectionAlgorithm(a, b);		// index - 1 to start at 0
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, (int) index.getDouble() - 1);
 		GeoPoint point = salgo.getPoint();
 		return point;
+	}
+	
+	/** 
+	 * IntersectLineConic yields intersection points named label1, label2
+	 * of line g and conic c
+	 */
+	/*AGfinal public GeoPoint[] IntersectLineCubic(
+		String[] labels,
+		GeoLine g,
+		GeoCubic c) {
+		AlgoIntersectLineCubic algo = getIntersectionAlgorithm(g, c);
+		algo.setPrintedInXML(true);
+		GeoPoint[] points = algo.getIntersectionPoints();		
+		GeoElement.setLabels(labels, points);	
+		return points;
 	}*/
+	
+	 // intersect line and cubic
+	 /*AGAlgoIntersectLineCubic getIntersectionAlgorithm(GeoLine g, GeoCubic c) {
+		AlgoElement existingAlgo = findExistingIntersectionAlgorithm(g, c);
+		if (existingAlgo != null) return (AlgoIntersectLineCubic) existingAlgo;
+			
+	 	// we didn't find a matching algorithm, so create a new one
+		AlgoIntersectLineCubic algo = new AlgoIntersectLineCubic(cons, g, c);
+		algo.setPrintedInXML(false);
+		intersectionAlgos.add(algo); // remember this algorithm
+		return algo;
+	 }*/
 	
 	
 	/*
@@ -4276,7 +4303,7 @@ public class Kernel {
 	 private ArrayList intersectionAlgos = new ArrayList();
 	 
 	 // intersect line and conic
-	/*AG AlgoIntersectLineConic getIntersectionAlgorithm(GeoLine g, GeoConic c) {
+	AlgoIntersectLineConic getIntersectionAlgorithm(GeoLine g, GeoConic c) {
 		AlgoElement existingAlgo = findExistingIntersectionAlgorithm(g, c);
 		if (existingAlgo != null) return (AlgoIntersectLineConic) existingAlgo;
 			
@@ -4285,10 +4312,10 @@ public class Kernel {
 		algo.setPrintedInXML(false);
 		intersectionAlgos.add(algo); // remember this algorithm
 		return algo;
-	 }*/
+	 }
 	 
 	 // intersect conics
-	/*AG AlgoIntersectConics getIntersectionAlgorithm(GeoConic a, GeoConic b) {
+	 AlgoIntersectConics getIntersectionAlgorithm(GeoConic a, GeoConic b) {
 		AlgoElement existingAlgo = findExistingIntersectionAlgorithm(a, b);
 		if (existingAlgo != null) return (AlgoIntersectConics) existingAlgo;
 		
@@ -4297,7 +4324,7 @@ public class Kernel {
 		algo.setPrintedInXML(false);
 		intersectionAlgos.add(algo); // remember this algorithm
 		return algo;
-	 }*/
+	 }
 	 
 	 // intersection of polynomials
 	 /*AGAlgoIntersectPolynomials getIntersectionAlgorithm(GeoFunction a, GeoFunction b) {
@@ -4323,7 +4350,7 @@ public class Kernel {
 		return algo;
 	 }*/
 	  
-	 /*AGprivate AlgoElement findExistingIntersectionAlgorithm(GeoElement a, GeoElement b) {
+	 private AlgoElement findExistingIntersectionAlgorithm(GeoElement a, GeoElement b) {
 		int size = intersectionAlgos.size();
 		AlgoElement algo;
 		for (int i=0; i < size; i++) {
@@ -4335,7 +4362,7 @@ public class Kernel {
 				return algo;
 		}
 		return null;
-	 }*/
+	 }
 	 
 	void removeIntersectionAlgorithm(AlgoIntersect algo) {
 		intersectionAlgos.remove(algo);	 

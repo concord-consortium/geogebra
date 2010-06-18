@@ -146,7 +146,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Directrix", new CmdDirectrix(kernel));	   
     	//AGcmdTable.put("Diameter", new CmdDiameter(kernel));	   
     	cmdTable.put("Line", new CmdLine(kernel));	   
-    	//AGcmdTable.put("Intersect", new CmdIntersect(kernel));	   
+    	cmdTable.put("Intersect", new CmdIntersect(kernel));	   
     	//AGcmdTable.put("CircumcircleSector", new CmdCircumcircleSector(kernel));	   
     	//AGcmdTable.put("Focus", new CmdFocus(kernel));	   
     	//AGcmdTable.put("OrthogonalVector", new CmdOrthogonalVector(kernel));	   

@@ -270,6 +270,8 @@ public abstract class GeoElement
 	public static final int GEO_CLASS_VECTOR = 180;
 	public static final int GEO_CLASS_CURVE_CARTESIAN = 190;
 	public static final int GEO_CLASS_CURVE_POLAR = 191;
+	public static final int GEO_CLASS_CUBIC = 192;
+	public static final int GEO_CLASS_IMPLICIT_POLY = 193;
 	
 	
 	public static final int LABEL_NAME = 0;
@@ -3555,6 +3557,9 @@ public abstract class GeoElement
 	}	
 	
 	public boolean isGeoDeriveable() {
+		return false;
+	}
+	public boolean isGeoCubic() {
 		return false;
 	}
 	
