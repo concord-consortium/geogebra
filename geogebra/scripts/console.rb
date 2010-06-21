@@ -1,17 +1,18 @@
 # Run it with JRuby
+# Don't forget to generate unobfuscated jars.
 
 require 'rubygems'
 require 'irb'
 
 # Where the jar files are.
-JAR_DIR= File.dirname(__FILE__)
+JAR_DIR= File.join(File.dirname(__FILE__), '..', 'build', 'unsigned', 'unpacked')
 
 %w{geogebra.jar
    geogebra_main.jar
    geogebra_properties.jar
    geogebra_gui.jar
 }.each do |jar|
-  require File.join JAR_DIR, jar
+  require File.join(JAR_DIR, jar)
 end
 
 # Just some constants.
