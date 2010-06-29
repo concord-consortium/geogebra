@@ -816,6 +816,12 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	 /** returns true if this line and g are parallel (signed)*/
+    final public boolean isSameDirection(GeoLine g) {        
+    	// check x and g.x have the same sign
+    	// also y and g.y
+        return (g.x * x >= 0) && (g.y * y >= 0) && isParallel(g);        
+    }
 
 	
 	

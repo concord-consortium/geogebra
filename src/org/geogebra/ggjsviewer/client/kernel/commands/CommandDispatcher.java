@@ -130,7 +130,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   
     	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
-    	//AGcmdTable.put("Ray", new CmdRay(kernel));	   
+    	cmdTable.put("Ray", new CmdRay(kernel));	   
     	//AGcmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
     	//AGcmdTable.put("Angle", new CmdAngle(kernel));	   
     	//AGcmdTable.put("Corner", new CmdCorner(kernel));	   
@@ -178,7 +178,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Vertex", new CmdVertex(kernel));	   
     	//AGcmdTable.put("Conic", new CmdConic(kernel));	   
     	//AGcmdTable.put("FirstAxis", new CmdFirstAxis(kernel));	   
-    	//AGcmdTable.put("Circle", new CmdCircle(kernel));	   
+    	cmdTable.put("Circle", new CmdCircle(kernel));	   
     	//AGcmdTable.put("LineBisector", new CmdLineBisector(kernel));	   
     	//AGcmdTable.put("Area", new CmdArea(kernel));	   
     	//AGcmdTable.put("Slope", new CmdSlope(kernel));	   

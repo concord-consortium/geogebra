@@ -818,7 +818,7 @@ public class Kernel {
     				return null; //AGnew GeoConic(cons);
     			
     		case 'r': // ray
-    			return null;//AG new GeoRay(cons, null);
+    			return new GeoRay(cons, null);
     			
     		case 's': // segment    			
     			return new GeoSegment(cons, null, null);	    			    			
@@ -2154,18 +2154,18 @@ public class Kernel {
 	/** 
 	 *  Ray named label through Points P and Q
 	 */
-	/*AGfinal public GeoRay Ray(String label, GeoPoint P, GeoPoint Q) {
+	final public GeoRay Ray(String label, GeoPoint P, GeoPoint Q) {
 		AlgoJoinPointsRay algo = new AlgoJoinPointsRay(cons, label, P, Q);
 		return algo.getRay();
-	}*/
+	}
 
 	/** 
 	 * Ray named label through Point P with direction of vector v
 	 */
-	/*AGfinal public GeoRay Ray(String label, GeoPoint P, GeoVector v) {
+	final public GeoRay Ray(String label, GeoPoint P, GeoVector v) {
 		AlgoRayPointVector algo = new AlgoRayPointVector(cons, label, P, v);
 		return algo.getRay();
-	}*/
+	}
 	
 	/** 
 	* Line named label through Point P parallel to Line l
@@ -3737,7 +3737,7 @@ public class Kernel {
 	/** 
 	 * circle with midpoint M and radius r
 	 */
-	/*AGfinal public GeoConic Circle(
+	final public GeoConic Circle(
 		String label,
 		GeoPoint M,
 		NumberValue r) {
@@ -3747,13 +3747,13 @@ public class Kernel {
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 
 	/** 
 	 * circle with midpoint M and radius BC
 	 * Michael Borcherds 2008-03-14
 	 */
-	/*AGfinal public GeoConic Circle(
+	final public GeoConic Circle(
 			// this is actually a macro
 		String label,
 		GeoPoint A,
@@ -3769,13 +3769,13 @@ public class Kernel {
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 
 	/** 
 	 * circle with midpoint A and radius the same as circle
 	 * Michael Borcherds 2008-03-14
 	 */
-	/*AGfinal public GeoConic Circle(
+	final public GeoConic Circle(
 			// this is actually a macro
 		String label,
 		GeoPoint A,
@@ -3790,13 +3790,13 @@ public class Kernel {
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 
 	/** 
 	 * circle with midpoint M and radius segment
 	 * Michael Borcherds 2008-03-15
 	 */
-	/*AGfinal public GeoConic Circle(
+	final public GeoConic Circle(
 		String label,
 		GeoPoint A,
 		GeoSegment segment) {
@@ -3807,19 +3807,19 @@ public class Kernel {
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 
 	/** 
 	 * circle with midpoint M through point P
 	 */
-	/*AGfinal public GeoConic Circle(String label, GeoPoint M, GeoPoint P) {
+	final public GeoConic Circle(String label, GeoPoint M, GeoPoint P) {
 		AlgoCircleTwoPoints algo = new AlgoCircleTwoPoints(cons, label, M, P);
 		GeoConic circle = algo.getCircle();
 		circle.setToSpecific();
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 	
 	/** 
 	 * semicircle with midpoint M through point P
@@ -3844,18 +3844,18 @@ public class Kernel {
 	/** 
 	 * circle with through points A, B, C
 	 */
-	/*AGfinal public GeoConic Circle(
+	final public GeoConic Circle(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
 		GeoPoint C) {
 		AlgoCircleThreePoints algo = new AlgoCircleThreePoints(cons, label, A, B, C);
-		GeoConic circle = algo.getCircle();
+		GeoConic circle = (GeoConic) algo.getCircle();
 		circle.setToSpecific();
 		circle.update();
 		notifyUpdate(circle);
 		return circle;
-	}*/
+	}
 	
 	/** 
 	 * conic arc from conic and parameters

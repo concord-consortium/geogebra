@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
@@ -1336,7 +1337,7 @@ final public void setHits(Point p){
 			break;
 
 		case GeoElement.GEO_CLASS_RAY:
-		//AG	d = new DrawRay(this, (GeoRay) geo);
+			d = new DrawRay(this, (GeoRay) geo);
 			break;
 
 		case GeoElement.GEO_CLASS_LINE:
@@ -1714,5 +1715,10 @@ final public void setHits(Point p){
 	public void setFont(String font) {
 		canvasFont = font;
 		
+	}
+
+	public static BasicStroke getDefaultSelectionStroke() {
+		// TODO Auto-generated method stub
+		return selStroke;
 	}
 }

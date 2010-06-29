@@ -4174,6 +4174,15 @@ public abstract class GeoElement
 	public boolean getShowTrimmedIntersectionLines() {
 		return showTrimmedIntersectionLines;
 	}
+	
+	/*
+	 * In future, this can be used to turn on/off whether transformed objects 
+	 * have the same style as the original object
+	 */
+	public void setVisualStyleForTransformations(GeoElement geo) {
+		setVisualStyle(geo);
+		update();
+	}
 
 
 

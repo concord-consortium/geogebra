@@ -18,7 +18,10 @@ the Free Software Foundation.
 
 package org.geogebra.ggjsviewer.client.euclidian;
 
+
+
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
@@ -33,9 +36,9 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
  * @version 
  */
 public abstract class Drawable {
-	/*BasicStroke objStroke = EuclidianView.getDefaultStroke();
+	BasicStroke objStroke = EuclidianView.getDefaultStroke();
 	BasicStroke selStroke = EuclidianView.getDefaultSelectionStroke();
-	BasicStroke decoStroke = EuclidianView.getDefaultStroke();*/
+	BasicStroke decoStroke = EuclidianView.getDefaultStroke();
 
 	private int lineThickness = -1;
 	public int lineType = -1;

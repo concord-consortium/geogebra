@@ -1892,6 +1892,32 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		return false;
 	}
 	
+//	get two points and create ray with them
+	final protected boolean ray(Hits hits) {
+		if (hits.isEmpty())
+			return false;
+
+		// points needed
+		addSelectedPoint(hits, 2, false);
+		if (selPoints() == 2) {
+			// fetch the two selected points
+			/*
+			GeoPoint[] points = getSelectedPoints();
+			kernel.Ray(null, points[0], points[1]);
+			 */
+			ray();
+			return true;
+		}
+
+		return false;
+	}
+	
+	// fetch the two selected points for ray
+	protected void ray(){
+		GeoPoint[] points = getSelectedPoints();
+		kernel.Ray(null, points[0], points[1]);
+	}
+	
 	// get point and number
 	/*AGfinal protected boolean segmentFixed(Hits hits) {
 		if (hits.isEmpty())
@@ -2034,7 +2060,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 
 			// new ray through two points or point and vector
 		case EuclidianView.MODE_RAY:
-			//AGchangedKernel = ray(hits);
+			changedKernel = ray(hits);
 			break;
 
 			// new polygon through points
