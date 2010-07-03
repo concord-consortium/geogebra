@@ -28,9 +28,11 @@ import java.util.TreeSet;
 import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNodeEvaluator;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
 import org.geogebra.ggjsviewer.client.main.Application;
+import org.geogebra.ggjsviewer.client.util.Unicode;
 
 import com.google.gwt.core.client.GWT;
 
@@ -1560,13 +1562,12 @@ public class Kernel {
 		return t;
 	}
 	*/
-	/*AG
 	final public GeoBoolean Boolean(String label, boolean value) {
 		GeoBoolean b = new GeoBoolean(cons);
 		b.setValue(value);
 		b.setLabel(label);
 		return b;
-	}*/
+	}
 		
 	/**
 	 * Creates a free list object with the given
@@ -2008,13 +2009,12 @@ public class Kernel {
 	 * Text dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. c = a & b
 	 */
-	/*AGfinal public GeoBoolean DependentBoolean(
+	final public GeoBoolean DependentBoolean(
 		String label,
 		ExpressionNode root) {
 		AlgoDependentBoolean algo = new AlgoDependentBoolean(cons, label, root);
 		return algo.getGeoBoolean();		
 	}
-	*/
 	/** Point on path with cartesian coordinates (x,y)   */
 	final public GeoPoint Point(String label, Path path, double x, double y) {
 		AlgoPointOnPath algo = new AlgoPointOnPath(cons, label, path, x, y);
@@ -5945,7 +5945,7 @@ public class Kernel {
 	}
 	private StringBuilder sbFormatSigned = new StringBuilder(40);
 
-	final public StringBuilder formatAngle(double phi) {		
+	/*final public StringBuilder formatAngle(double phi) {		
 		sbFormatAngle.setLength(0);
 		switch (casPrintForm) {
 			case ExpressionNode.STRING_TYPE_MATH_PIPER:
@@ -5996,7 +5996,68 @@ public class Kernel {
 		}
 		
 		
+	}*/
+	
+	final public StringBuilder formatAngle(double phi) {
+		// STANDARD_PRECISION * 10 as we need a little leeway as we've converted from radians
+		return formatAngle(phi, 10);
 	}
+	
+	final public StringBuilder formatAngle(double phi, double precision) {
+		sbFormatAngle.setLength(0);
+		switch (casPrintForm) {
+			case ExpressionNode.STRING_TYPE_MATH_PIPER:
+			case ExpressionNode.STRING_TYPE_JASYMCA:
+				if (angleUnit == ANGLE_DEGREE) {
+					sbFormatAngle.append("(");
+					// STANDARD_PRECISION * 10 as we need a little leeway as we've converted from radians
+					sbFormatAngle.append(format(checkDecimalFraction(Math.toDegrees(phi), precision)));
+					sbFormatAngle.append("*");
+					sbFormatAngle.append("\u00b0");
+					sbFormatAngle.append(")");
+				} else {
+					sbFormatAngle.append(format(phi));					
+				}
+				return sbFormatAngle;				
+				
+			default:
+				// STRING_TYPE_GEOGEBRA_XML
+				// STRING_TYPE_GEOGEBRA
+
+				if (Double.isNaN(phi)) {
+					sbFormatAngle.append("?");
+					return sbFormatAngle;
+				}		
+				
+				if (angleUnit == ANGLE_DEGREE) {
+					phi = Math.toDegrees(phi);
+					if (phi < 0) 
+						phi += 360;	
+					else if (phi > 360)
+						phi = phi % 360;
+					// STANDARD_PRECISION * 10 as we need a little leeway as we've converted from radians
+					sbFormatAngle.append(format(checkDecimalFraction(phi, precision)));
+					
+					if (casPrintForm == ExpressionNode.STRING_TYPE_GEOGEBRA_XML) {
+						sbFormatAngle.append("*");
+					}
+					sbFormatAngle.append('\u00b0');
+					return sbFormatAngle;
+				} 
+				else {
+					// RADIANS
+					sbFormatAngle.append(format(phi));
+					
+					if (casPrintForm != ExpressionNode.STRING_TYPE_GEOGEBRA_XML) {
+						sbFormatAngle.append(" rad");
+					}
+					return sbFormatAngle;
+				}
+		}
+		
+		
+	}
+	
 	private StringBuilder sbFormatAngle = new StringBuilder(40);
 
 	final private static char sign(double x) {
@@ -6338,4 +6399,43 @@ public class Kernel {
 		// TODO Auto-generated method stub
 		return bApp;
 	}
+	
+final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int type) {
+		
+		// sin^(-1)(x) -> ArcSin(x)
+		if (image.indexOf(Unicode.Superscript_Minus) > -1) {
+			//String check = ""+Unicode.Superscript_Minus + Unicode.Superscript_1 + '(';
+			if (image.substring(3, 6).equals(Unicode.superscriptMinusOneBracket)) {
+				switch (type) {
+				case ExpressionNode.SIN:
+					return new ExpressionNode(this, en, ExpressionNode.ARCSIN, null);
+				case ExpressionNode.COS:
+					return new ExpressionNode(this, en, ExpressionNode.ARCCOS, null);
+				case ExpressionNode.TAN:
+					return new ExpressionNode(this, en, ExpressionNode.ARCTAN, null);
+				default:
+						throw new Error("Inverse not supported for trig function"); // eg csc^-1(x)
+				}
+			}
+			else throw new Error("Bad index for trig function"); // eg sin^-2(x)
+		}
+		
+		return new ExpressionNode(this, new ExpressionNode(this, en, type, null), ExpressionNode.POWER, convertIndexToNumber(image));
+	}
+	
+	final public GeoNumeric convertIndexToNumber(String str) {
+	
+	int i = 0;
+	char c;
+	while (i < str.length() && !Unicode.isSuperscriptDigit(str.charAt(i)))
+		i++;
+	
+	//Application.debug(str.substring(i, str.length() - 1)); 
+	MyDouble md = new MyDouble(this, str.substring(i, str.length() - 1)); // strip off eg "sin" at start, "(" at end
+	GeoNumeric num = new GeoNumeric(getConstruction(), md.getDouble());
+	return num;
+
+	}
+
+
 }

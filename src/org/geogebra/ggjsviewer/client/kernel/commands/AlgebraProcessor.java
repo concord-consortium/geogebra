@@ -8,12 +8,16 @@ import java.util.Set;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.BooleanValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Equation;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Polynomial;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -858,11 +862,10 @@ public class AlgebraProcessor {
 		}		
 		
 		if (eval.isBooleanValue())
-			//AGreturn processBoolean(n, eval);
-			GWT.log("processBoolean needed");
+			return processBoolean(n, eval);
+			//GWT.log("processBoolean needed");
 		else if (eval.isNumberValue())
-			//AGreturn processNumber(n, eval);
-			GWT.log("processBoolean needed");
+			return processNumber(n, eval);
 		else if (eval.isVectorValue())
 			//AGreturn processPointVector(n, eval);
 			GWT.log("processPointVector needed");
@@ -903,7 +906,7 @@ public class AlgebraProcessor {
 				"Unhandled ExpressionNode: " + eval + ", " + eval.getClass());
 		return null;
 	}
-/*AG
+
 	private GeoElement[] processNumber(
 		ExpressionNode n,
 		ExpressionValue evaluate) {
@@ -923,9 +926,9 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentNumber(label, n, isAngle);
 		}	
 		
-		if (n.isForcedFunction()) {
+		/*AGif (n.isForcedFunction()) {
 			ret[0] = ((GeoFunctionable)(ret[0])).getGeoFunction();
-		}
+		}*/
 		
 		return ret;
 	}
@@ -989,7 +992,7 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentText(label, n);
 		return ret;
 	}
-	
+	*/
 	private GeoElement[] processBoolean(
 		ExpressionNode n,
 		ExpressionValue evaluate) {
@@ -1004,7 +1007,7 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentBoolean(label, n);
 		return ret;
 	}
-
+	/*AG
 	private GeoElement[] processPointVector(
 		ExpressionNode n,
 		ExpressionValue evaluate) {

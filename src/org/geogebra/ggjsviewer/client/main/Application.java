@@ -1,6 +1,7 @@
 package org.geogebra.ggjsviewer.client.main;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianController;
@@ -23,6 +24,7 @@ public class Application extends BaseApplication {
 	private EuclidianView euclidianview;
 	private EuclidianController euclidiancontroller;
 	private MyXMLHandler xmlhandler;
+	//private Hashtable translateCommandTable;
 	
 	protected boolean showMenuBar = true;
 	
@@ -193,9 +195,20 @@ public class Application extends BaseApplication {
 		updateSelection();
 	}
 
-	public String translateCommand(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public String translateCommand(String localname) {
+		if (localname == null)
+			return null;
+		else 
+			return localname;
+		/*AGif (translateCommandTable == null)
+			return localname;
+
+		// note: lookup lower case of command name!
+		Object value = translateCommandTable.get(localname.toLowerCase());		
+		if (value == null)
+			return localname;
+		else
+			return (String) value;*/
 	}
 
 	public String getError(String message) {
@@ -210,14 +223,8 @@ public class Application extends BaseApplication {
 	}
 	
 	final public String getCommand(String key) {
-		/*AGinitTranslatedCommands();		
-
-		try {
-			return rbcommand.getString(key);
-		} catch (Exception e) {
-			return key;
-		}*/
-		return "getCommand needed";
+		
+		return key;
 	}
 
 

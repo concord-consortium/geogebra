@@ -1578,6 +1578,11 @@ public class Construction {
 	public void removeRandomNumber(GeoNumeric geoNumeric) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void addRandomGeo(GeoNumeric randNum) {
+		// TODO Auto-generated method stub
+		
 	}    
     
    

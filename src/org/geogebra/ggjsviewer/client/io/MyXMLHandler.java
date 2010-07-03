@@ -11,6 +11,7 @@ import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
 import org.geogebra.ggjsviewer.client.util.Base64;
@@ -53,6 +54,7 @@ public class MyXMLHandler  {
 	
 	private GeoElement geo;
 	private Construction cons, origCons;
+	private Parser parser, origParser;
 	private Kernel kernel, origKernel;
 	private Application app;
 	private Command cmd;
@@ -67,6 +69,7 @@ public class MyXMLHandler  {
 	public MyXMLHandler(Kernel kernel, Construction cons) {
 		origKernel = kernel;
 		origCons = cons;
+		origParser = new Parser(origKernel,origCons);
 		initKernelVars();
 		
 		mode = MODE_INVALID;
@@ -77,6 +80,7 @@ public class MyXMLHandler  {
 	private void initKernelVars() {
 		this.kernel = origKernel;
 		this.cons = origKernel.getConstruction();
+		this.parser = origParser;
 	}
 
 
@@ -216,9 +220,8 @@ public class MyXMLHandler  {
 					en = new ExpressionNode(kernel, geo);
 				} else {
 					// parse argument expressions
-				//	en = parser.parseCmdExpression(arg);
-					en = null;
-					GWT.log("parser needed");
+					en = parser.parseCmdExpression(arg);
+					
 				}
 				cmd.addArgument(en);
 			} catch (Exception e) {
