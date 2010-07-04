@@ -2178,7 +2178,7 @@ public class Kernel {
 	/** 
 	* Line named label through Point P orthogonal to vector v
 	*/
-	/*AGfinal public GeoLine OrthogonalLine(
+	final public GeoLine OrthogonalLine(
 		String label,
 		GeoPoint P,
 		GeoVector v) {
@@ -2186,44 +2186,44 @@ public class Kernel {
 			new AlgoOrthoLinePointVector(cons, label, P, v);
 		GeoLine g = algo.getLine();
 		return g;
-	}*/
+	}
 	/** 
 	 * Line named label through Point P orthogonal to line l
 	 */
-	/*final public GeoLine OrthogonalLine(
+	final public GeoLine OrthogonalLine(
 		String label,
 		GeoPoint P,
 		GeoLine l) {
 		AlgoOrthoLinePointLine algo = new AlgoOrthoLinePointLine(cons, label, P, l);
 		GeoLine g = algo.getLine();
 		return g;
-	}*/
+	}
 
 	/** 
 	 * Line bisector of points A, B
 	 */
-	/*AGfinal public GeoLine LineBisector(
+	final public GeoLine LineBisector(
 		String label,
 		GeoPoint A,
 		GeoPoint B) {
 		AlgoLineBisector algo = new AlgoLineBisector(cons, label, A, B);
 		GeoLine g = algo.getLine();
 		return g;
-	}*/
+	}
 
 	/** 
 	  * Line bisector of segment s
 	  */
-	/*AGfinal public GeoLine LineBisector(String label, GeoSegment s) {
+	final public GeoLine LineBisector(String label, GeoSegment s) {
 		AlgoLineBisectorSegment algo = new AlgoLineBisectorSegment(cons, label, s);
 		GeoLine g = algo.getLine();
 		return g;		
-	}*/
+	}
 
 	/** 
 	 * Angular bisector of points A, B, C
 	 */
-	/*AGfinal public GeoLine AngularBisector(
+	final public GeoLine AngularBisector(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -2232,12 +2232,12 @@ public class Kernel {
 			new AlgoAngularBisectorPoints(cons, label, A, B, C);
 		GeoLine g = algo.getLine();
 		return g;
-	}*/
+	}
 
 	/** 
 	 * Angular bisectors of lines g, h
 	 */
-	/*AGfinal public GeoLine[] AngularBisector(
+	final public GeoLine[] AngularBisector(
 		String[] labels,
 		GeoLine g,
 		GeoLine h) {
@@ -2245,7 +2245,7 @@ public class Kernel {
 			new AlgoAngularBisectorLines(cons, labels, g, h);
 		GeoLine[] lines = algo.getLines();
 		return lines;
-	}*/
+	}
 
 	/** 
 	 * Vector named label from Point P to Q

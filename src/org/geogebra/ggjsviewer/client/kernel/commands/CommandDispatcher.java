@@ -131,7 +131,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   
     	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
     	cmdTable.put("Ray", new CmdRay(kernel));	   
-    	//AGcmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
+    	cmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
     	//AGcmdTable.put("Angle", new CmdAngle(kernel));	   
     	//AGcmdTable.put("Corner", new CmdCorner(kernel));	   
     	cmdTable.put("Midpoint", new CmdMidpoint(kernel));	   
@@ -144,7 +144,8 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Mirror", new CmdMirror(kernel));	   
     	//AGcmdTable.put("Center", new CmdCenter(kernel));	   
     	//AGcmdTable.put("Directrix", new CmdDirectrix(kernel));	   
-    	//AGcmdTable.put("Diameter", new CmdDiameter(kernel));	   
+    	//AGcmdTable.put("Diameter", new CmdDiameter(kernel));
+    	cmdTable.put("OrthogonalLine", new CmdOrthogonalLine(kernel));	  
     	cmdTable.put("Line", new CmdLine(kernel));	   
     	cmdTable.put("Intersect", new CmdIntersect(kernel));	   
     	//AGcmdTable.put("CircumcircleSector", new CmdCircumcircleSector(kernel));	   
@@ -179,7 +180,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Conic", new CmdConic(kernel));	   
     	//AGcmdTable.put("FirstAxis", new CmdFirstAxis(kernel));	   
     	cmdTable.put("Circle", new CmdCircle(kernel));	   
-    	//AGcmdTable.put("LineBisector", new CmdLineBisector(kernel));	   
+    	cmdTable.put("LineBisector", new CmdLineBisector(kernel));	   
     	//AGcmdTable.put("Area", new CmdArea(kernel));	   
     	//AGcmdTable.put("Slope", new CmdSlope(kernel));	   
     	//AGcmdTable.put("Axes", new CmdAxes(kernel));	   

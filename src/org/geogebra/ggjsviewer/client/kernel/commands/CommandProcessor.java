@@ -18,6 +18,7 @@ import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoList;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -262,7 +263,7 @@ class CmdMidpoint extends CommandProcessor {
 /*
  * Orthogonal[ <GeoPoint>, <GeoVector> ] Orthogonal[ <GeoPoint>, <GeoLine> ]
  */
-/*AG
+
 class CmdOrthogonalLine extends CommandProcessor {
 
 	public CmdOrthogonalLine(Kernel kernel) {
@@ -321,7 +322,7 @@ class CmdOrthogonalLine extends CommandProcessor {
 /*
  * LineBisector[ <GeoPoint>, <GeoPoint> ] LineBisector[ <GeoSegment> ]
  */
-/*AG
+
 class CmdLineBisector extends CommandProcessor {
 
 	public CmdLineBisector(Kernel kernel) {
@@ -383,7 +384,7 @@ class CmdLineBisector extends CommandProcessor {
  * AngularBisector[ <GeoPoint>, <GeoPoint>, <GeoPoint> ] AngularBisector[
  * <GeoLine>, <GeoLine> ]
  */
-/*AG
+
 class CmdAngularBisector extends CommandProcessor {
 
 	public CmdAngularBisector(Kernel kernel) {
