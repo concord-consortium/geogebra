@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
+import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
@@ -932,7 +933,7 @@ public class AlgebraProcessor {
 		
 		return ret;
 	}
-	
+	/*
 	private GeoElement [] processList(ExpressionNode n, MyList evalList) {		
 		String label = evalList.getLabel();		
 				

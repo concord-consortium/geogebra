@@ -5997,6 +5997,48 @@ public class Kernel {
 		
 		
 	}*/
+	/**
+	 * Checks if x is close (Kernel.MIN_PRECISION) to a decimal fraction,  
+	 * eg 2.800000000000001. If it is, the decimal fraction eg 2.8 is returned, 
+	 * otherwise x is returned.
+	 */	
+	/**
+	 * Checks if x is close (Kernel.MIN_PRECISION) to a decimal fraction, eg
+	 * 2.800000000000001. If it is, the decimal fraction eg 2.8 is returned,
+	 * otherwise x is returned.
+	 */
+	final public double checkDecimalFraction(double x, double precision) {
+		
+		//Application.debug(precision+" ");
+		precision = Math.pow(10, Math.floor(Math.log(Math.abs(precision))/Math.log(10)));
+		
+		double fracVal = x * INV_MIN_PRECISION;
+		double roundVal = Math.round(fracVal);
+		//Application.debug(precision+" "+x+" "+fracVal+" "+roundVal+" "+isEqual(fracVal, roundVal, precision)+" "+roundVal / INV_MIN_PRECISION);
+		if (isEqual(fracVal, roundVal, STANDARD_PRECISION * precision))
+			return roundVal / INV_MIN_PRECISION;
+		else
+			return x;
+	}
+	
+	/** Number dependent on arithmetic expression with variables,
+	 * represented by a tree. e.g. t = 6z - 2
+	 */
+	final public GeoNumeric DependentNumber(
+		String label,
+		ExpressionNode root,
+		boolean isAngle) {
+		AlgoDependentNumber algo =
+			new AlgoDependentNumber(cons, label, root, isAngle);
+		GeoNumeric number = algo.getNumber();
+		return number;
+	}
+
+	/**
+	 * Checks if x is very close (1E-8) to an integer. If it is,
+	 * the integer value is returned, otherwise x is returnd.
+	 */	
+	
 	
 	final public StringBuilder formatAngle(double phi) {
 		// STANDARD_PRECISION * 10 as we need a little leeway as we've converted from radians
