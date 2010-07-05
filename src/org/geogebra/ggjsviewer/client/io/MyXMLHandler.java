@@ -1,9 +1,14 @@
 package org.geogebra.ggjsviewer.client.io;
 
 
+
+
+
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
@@ -11,6 +16,7 @@ import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
@@ -60,12 +66,24 @@ public class MyXMLHandler  {
 	private Command cmd;
 	private GeoElement[] cmdOutput;
 	
+	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<GeoExpPair>();
 	//private int docPointStyle; 
 	
 	private int mode;
 	private int constMode; // submode for <construction>
 	private boolean oldVal;
 
+	private class GeoExpPair {
+		GeoElement geo;
+		String exp;
+
+		GeoExpPair(GeoElement g, String exp) {
+			geo = g;
+			this.exp = exp;
+		}
+	}
+	
+	
 	public MyXMLHandler(Kernel kernel, Construction cons) {
 		origKernel = kernel;
 		origCons = cons;
@@ -100,6 +118,14 @@ public class MyXMLHandler  {
 		}
 		
 	}
+	
+	private String getNodeAttr(Node nodeToQuery) {
+		if (nodeToQuery != null) {
+			return nodeToQuery.getNodeValue();
+		}
+		return null;
+	}
+	
 	private void startElement(Node element) {
 		switch (mode) {
 		case MODE_GEOGEBRA: // top level mode
@@ -345,10 +371,12 @@ public class MyXMLHandler  {
 			} else if (children.item(i).getNodeName().equals("show")) {
 				handleShow(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("pointSize")) {
-				handlePointSize(item,geo);
+				handlePointSize(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("pointStyle")) {
-				handlePointStyle(item,geo);
-			}	
+				handlePointStyle(children.item(i),geo);
+			}	else if (children.item(i).getNodeName().equals("objColor")) {
+				handleObjColor(children.item(i),geo);
+			}
 			
 		}
 
@@ -380,6 +408,74 @@ public class MyXMLHandler  {
 		}
 		
 	}
+	
+	private boolean handleObjColor(Node item, GeoElement geoElement) {
+		GWT.log(geoElement.toString());
+		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
+		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
+		attrs.put("b", getNodeAttr(item.getAttributes().getNamedItem("b")));
+		attrs.put("dynamicr", getNodeAttr(item.getAttributes().getNamedItem("dynamicr")));
+		attrs.put("dynamicg", getNodeAttr(item.getAttributes().getNamedItem("dynamicg")));
+		attrs.put("dynamicb", getNodeAttr(item.getAttributes().getNamedItem("dynamicb")));
+		//GWT.log(attrs.get("r"));
+		//GWT.log(attrs.get("g"));
+		//GWT.log(attrs.get("b"));
+
+		Color col = handleColorAttrs(attrs);
+		if (col == null)
+			return false;
+		geoElement.setObjColor(col);
+
+		// Dynamic colors
+		// Michael Borcherds 2008-04-02
+		String red = "";
+		String green = "";
+		String blue = "";
+		red = (String) attrs.get("dynamicr");
+		green = (String) attrs.get("dynamicg");
+		blue = (String) attrs.get("dynamicb");
+
+		if (red != null && green != null && blue != null)
+			try {
+				if (!red.equals("") || !green.equals("") || !blue.equals("")) {
+					if (red.equals(""))
+						red = "0";
+					if (green.equals(""))
+						green = "0";
+					if (blue.equals(""))
+						blue = "0";
+
+					// geo.setColorFunction(kernel.getAlgebraProcessor().evaluateToList("{"+red
+					// + ","+green+","+blue+"}"));
+					// need to to this at end of construction (dependencies!)
+					dynamicColorList.add(new GeoExpPair(geoElement, "{" + red + ","
+							+ green + "," + blue + "}"));
+
+				}
+			} catch (Exception e) {
+				System.err.println("Error loading Dynamic Colors");
+			}
+
+		String alpha = (String) attrs.get("alpha");
+		if (alpha != null ) // ignore alpha value for lists prior to GeoGebra 3.2
+			geoElement.setAlphaValue(Float.parseFloat(alpha));
+		return true;
+	}
+	
+	private Color handleColorAttrs(LinkedHashMap<String, String> attrs) {
+		try {
+			int red = Integer.parseInt((String) attrs.get("r"));
+			int green = Integer.parseInt((String) attrs.get("g"));
+			int blue = Integer.parseInt((String) attrs.get("b"));
+			return new Color(red, green, blue);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	
+	
 
 	private void handlePointSize(Node item, GeoElement geoElement) {
 		// TODO Auto-generated method stub
@@ -392,7 +488,7 @@ public class MyXMLHandler  {
 
 		try {
 			PointProperties p = (PointProperties) geoElement;
-			p.setPointSize(Integer.parseInt(item.getAttributes().getNamedItem("val").getNodeValue()));
+			p.setPointSize(Integer.parseInt(getNodeAttr(item.getAttributes().getNamedItem("val"))));
 			return;
 		} catch (Exception e) {
 			return;
@@ -406,22 +502,22 @@ public class MyXMLHandler  {
 		try {
 		//GWT.log(String.valueOf(parseBoolean(item.getAttributes().getNamedItem("object").getNodeValue())));
 		//GWT.log(String.valueOf(parseBoolean(item.getAttributes().getNamedItem("label").getNodeValue())));
-		geoElement.setEuclidianVisible(parseBoolean(item.getAttributes().getNamedItem("object").getNodeValue()));
-		geoElement.setLabelVisible(parseBoolean(item.getAttributes().getNamedItem("label").getNodeValue()));
+		geoElement.setEuclidianVisible(parseBoolean(getNodeAttr(item.getAttributes().getNamedItem("object"))));
+		geoElement.setLabelVisible(parseBoolean(getNodeAttr(item.getAttributes().getNamedItem("label"))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void handleCoords(Node item, GeoElement geoElement) {
-		GWT.log("handleChoords");
+		//GWT.log("handleChoords");
 		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
-		attrs.put("x", item.getAttributes().getNamedItem("x").getNodeValue());
-		attrs.put("y", item.getAttributes().getNamedItem("y").getNodeValue());
-		attrs.put("z", item.getAttributes().getNamedItem("z").getNodeValue());
-		GWT.log(item.getAttributes().getNamedItem("x").getNodeValue());
-		GWT.log(item.getAttributes().getNamedItem("y").getNodeValue());
-		GWT.log(item.getAttributes().getNamedItem("z").getNodeValue());
+		attrs.put("x", getNodeAttr(item.getAttributes().getNamedItem("x")));
+		attrs.put("y", getNodeAttr(item.getAttributes().getNamedItem("y")));
+		attrs.put("z", getNodeAttr(item.getAttributes().getNamedItem("z")));
+		//GWT.log(item.getAttributes().getNamedItem("x").getNodeValue());
+		//GWT.log(item.getAttributes().getNamedItem("y").getNodeValue());
+		//GWT.log(item.getAttributes().getNamedItem("z").getNodeValue());
 		kernel.handleCoords(geoElement, attrs);
 		// TODO Auto-generated method stub
 		
