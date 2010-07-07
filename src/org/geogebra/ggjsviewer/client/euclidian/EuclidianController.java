@@ -7,12 +7,14 @@ import java.util.LinkedList;
 import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
 import org.geogebra.ggjsviewer.client.kernel.AlgoDynamicCoordinates;
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Path;
@@ -107,7 +109,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	protected Point selectionStartPoint = new Point();
 
-	//protected GeoConic tempConic;
+	protected GeoConic tempConic;
 
 	//protected GeoFunction tempFunction;
 
@@ -120,11 +122,11 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	protected GeoSegment movedGeoSegment;
 
-	/*protected GeoConic movedGeoConic;
+	protected GeoConic movedGeoConic;
 
 	protected GeoVector movedGeoVector;
 
-	protected GeoText movedGeoText;
+	/*protected GeoText movedGeoText;
 
 	protected GeoImage oldImage, movedGeoImage;	
 
@@ -707,7 +709,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 		// free vector
 		else if (movedGeoElement.isGeoVector()) {
-			/*AGmovedGeoVector = (GeoVector) movedGeoElement;
+			movedGeoVector = (GeoVector) movedGeoElement;
 
 			// change vector itself or move only startpoint?
 			// if vector is dependent or
@@ -744,7 +746,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			}
 
 			view.setShowMouseCoords(true);
-			view.setDragCursor();*/
+			view.setDragCursor();
 		} 
 
 		// free text
@@ -784,7 +786,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 		// free conic
 		else if (movedGeoElement.isGeoConic()) {
-		/*AG	moveMode = MOVE_CONIC;
+			moveMode = MOVE_CONIC;
 			movedGeoConic = (GeoConic) movedGeoElement;
 			view.setShowMouseCoords(false);
 			view.setDragCursor();
@@ -796,7 +798,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			tempConic.set(movedGeoConic);
 		} 
 		else if (movedGeoElement.isGeoFunction()) {
-			moveMode = MOVE_FUNCTION;
+		/*	moveMode = MOVE_FUNCTION;
 			movedGeoFunction = (GeoFunction) movedGeoElement;
 			view.setShowMouseCoords(false);
 			view.setDragCursor();
@@ -1272,10 +1274,10 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 					return kernel.IntersectLines(null, (GeoLine) a, (GeoLine) b);
 				else 
 					return null;
-			/*AGelse if (b.isGeoConic())
+			else if (b.isGeoConic())
 				return kernel.IntersectLineConicSingle(null, (GeoLine) a,
 						(GeoConic) b, xRW, yRW);
-			else if (b.isGeoFunctionable()) {
+			/*AGelse if (b.isGeoFunctionable()) {
 				// line and function
 				GeoFunction f = ((GeoFunctionable) b).getGeoFunction();
 				if (f.isPolynomialFunction(false))
@@ -1289,7 +1291,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				}*/
 			/*AG}*/ else
 				return null;
-		/*AG}
+		}
 		//	first hit is a conic
 		else if (a.isGeoConic()) {
 			if (b.isGeoLine())
@@ -1302,6 +1304,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				return null;
 		}
 		// first hit is a function
+		/*AG
 		else if (a.isGeoFunctionable()) {
 			GeoFunction aFun = (GeoFunction) a;
 			if (b.isGeoFunctionable()) {
@@ -1329,8 +1332,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				}
 			} else
 				return null;
-				*/
-		} else
+				
+		}*/ else
 			return null;
 	}
 	
@@ -1584,15 +1587,15 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			break;
 
 		case MOVE_VECTOR:
-			//AGmoveVector(repaint);
+			moveVector(repaint);
 			break;
 
 		case MOVE_VECTOR_STARTPOINT:
-			//AGmoveVectorStartPoint(repaint);
+			moveVectorStartPoint(repaint);
 			break;
 
 		case MOVE_CONIC:
-			//AGmoveConic(repaint);
+			moveConic(repaint);
 			break;
 
 		case MOVE_FUNCTION:
@@ -1697,6 +1700,17 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		//Application.printStacktrace("Move Point");
 	}
 	
+	final protected void moveConic(boolean repaint) {
+		movedGeoConic.set(tempConic);
+		movedGeoConic.translate(xRW - startPoint.x, yRW - startPoint.y);		
+
+		if (repaint)
+			movedGeoConic.updateRepaint();
+		else
+			movedGeoConic.updateCascade();
+	}
+
+	
 	final protected void moveDependent(boolean repaint) {
 		translationVec.setX(xRW - startPoint.x);
 		translationVec.setY(yRW - startPoint.y);
@@ -1707,6 +1721,31 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		GeoElement.moveObjects(translateableGeos, translationVec, startPoint);		
 		if (repaint)
 			kernel.notifyRepaint();						
+	}
+	
+
+	final protected void moveVector(boolean repaint) {
+		GeoPoint P = movedGeoVector.getStartPoint();
+		if (P == null) {
+			movedGeoVector.setCoords(xRW, yRW, 0.0);
+		} else {
+			movedGeoVector.setCoords(xRW - P.inhomX, yRW - P.inhomY, 0.0);
+		}
+
+		if (repaint)
+			movedGeoVector.updateRepaint();
+		else
+			movedGeoVector.updateCascade();	
+	}
+
+	final protected void moveVectorStartPoint(boolean repaint) {
+		GeoPoint P = movedGeoVector.getStartPoint();
+		P.setCoords(xRW, yRW, 1.0);
+
+		if (repaint)
+			movedGeoVector.updateRepaint();
+		else
+			movedGeoVector.updateCascade();	
 	}
 
 	

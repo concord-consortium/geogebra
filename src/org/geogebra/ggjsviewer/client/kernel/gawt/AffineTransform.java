@@ -1,12 +1,12 @@
 /*
- * Copyright 1996-2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,14 +18,12 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package org.geogebra.ggjsviewer.client.kernel.gawt;
-
-
 
 /**
  * The <code>AffineTransform</code> class represents a 2D affine transform
@@ -1123,7 +1121,7 @@ public class AffineTransform implements Cloneable, java.io.Serializable {
      * a case was forgotten in a switch statement.
      */
     private void stateError() {
-        throw new Error("missing case in transform state switch");
+        throw new RuntimeException("missing case in transform state switch");
     }
 
     /**
@@ -3802,12 +3800,12 @@ public class AffineTransform implements Cloneable, java.io.Serializable {
      * of the transformed <code>Shape</code>, or null if {@code pSrc} is null.
      * @since 1.2
      */
-   /*AG public Shape createTransformedShape(Shape pSrc) {
+    public Shape createTransformedShape(Shape pSrc) {
         if (pSrc == null) {
             return null;
         }
         return new Path2D.Double(pSrc, this);
-    }*/
+    }
 
     // Round values to sane precision for printing
     // Note that Math.sin(Math.PI) has an error of about 10^-16
@@ -3849,29 +3847,25 @@ public class AffineTransform implements Cloneable, java.io.Serializable {
      * <code>AffineTransform</code> object.
      * @since 1.2
      */
-    /*AGpublic Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new InternalError();
-        }
-    }*/
+    public Object clone(){
+    	return new AffineTransform(this);
+    }
 
     /**
      * Returns the hashcode for this transform.
      * @return      a hash code for this transform.
      * @since 1.2
      */
-   /*AG public int hashCode() {
-        long bits = Double.doubleToLongBits(m00);
-        bits = bits * 31 + Double.doubleToLongBits(m01);
-        bits = bits * 31 + Double.doubleToLongBits(m02);
-        bits = bits * 31 + Double.doubleToLongBits(m10);
-        bits = bits * 31 + Double.doubleToLongBits(m11);
-        bits = bits * 31 + Double.doubleToLongBits(m12);
-        return (((int) bits) ^ ((int) (bits >> 32)));
-    }*/
+    public int hashCode() {
+    	HashCode hashCode = new HashCode();
+    	hashCode.append(m00);
+    	hashCode.append(m01);
+    	hashCode.append(m02);
+    	hashCode.append(m10);
+    	hashCode.append(m11);
+    	hashCode.append(m12);
+    	return hashCode.hashCode();
+    }
 
     /**
      * Returns <code>true</code> if this <code>AffineTransform</code>
@@ -3894,28 +3888,4 @@ public class AffineTransform implements Cloneable, java.io.Serializable {
                 (m10 == a.m10) && (m11 == a.m11) && (m12 == a.m12));
     }
 
-    /* Serialization support.  A readObject method is neccessary because
-     * the state field is part of the implementation of this particular
-     * AffineTransform and not part of the public specification.  The
-     * state variable's value needs to be recalculated on the fly by the
-     * readObject method as it is in the 6-argument matrix constructor.
-     */
-
-    /*
-     * JDK 1.2 serialVersionUID
-     */
-    private static final long serialVersionUID = 1330973210523860834L;
-
-  /*AG  private void writeObject(java.io.ObjectOutputStream s)
-        throws java.lang.ClassNotFoundException, java.io.IOException
-    {
-        s.defaultWriteObject();
-    }
-
-    private void readObject(java.io.ObjectInputStream s)
-        throws java.lang.ClassNotFoundException, java.io.IOException
-    {
-        s.defaultReadObject();
-        updateState();
-    }*/
 }

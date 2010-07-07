@@ -735,7 +735,8 @@ public abstract class Drawable {
 		g2.draw(shape);
 		g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, oldHint);			
 	}		
-	
+	*/
+	/*AG
 	final public static void fillWithValueStrokePure(Shape shape, Graphics2D g2) {
 		Object oldHint = g2.getRenderingHint(RenderingHints.KEY_STROKE_CONTROL);			
 		g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);	

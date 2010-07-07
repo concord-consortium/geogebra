@@ -60,6 +60,11 @@ public class BasicStroke {
 	public String getLineJoin() {
 		return lineJoin;
 	}
+
+	public Shape createStrokedShape(Shape shape) {
+		// TODO Auto-generated method stub
+		return shape;
+	}
 	
 	
 	

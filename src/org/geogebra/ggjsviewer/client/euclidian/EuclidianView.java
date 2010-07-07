@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.euclidian.DrawableList.DrawableIterator;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
+import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -14,7 +15,9 @@ import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
+import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -225,9 +228,9 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected Kernel kernel;
 
 	protected EuclidianController euclidianController;
-
-	AffineTransform coordTransform = new AffineTransform();
 	*/
+	AffineTransform coordTransform = new AffineTransform();
+
 	int width, height;
 	/*
 	protected NumberFormat[] axesNumberFormat;
@@ -349,6 +352,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	private String canvasFont = "normal";
 	public String fontPoint = "normal";
 	public String fontLine = "normal";
+	public String fontConic = "normal";
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -1345,7 +1349,7 @@ final public void setHits(Point p){
 			break;
 
 		case GeoElement.GEO_CLASS_POLYGON:
-			//AGd = new DrawPolygon(this, (GeoPolygon) geo);
+			//d = new DrawPolygon(this, (GeoPolygon) geo);
 			break;
 
 		/*case GeoElement.GEO_CLASS_ANGLE:
@@ -1401,15 +1405,15 @@ final public void setHits(Point p){
 		case GeoElement.GEO_CLASS_VECTOR:
 			d = new DrawVector(this, (GeoVector) geo);
 			break;
-
+		*/
 		case GeoElement.GEO_CLASS_CONICPART:
-			d = new DrawConicPart(this, (GeoConicPart) geo);
+			//AGd = new DrawConicPart(this, (GeoConicPart) geo);
 			break;
-
+	
 		case GeoElement.GEO_CLASS_CONIC:
 			d = new DrawConic(this, (GeoConic) geo);
 			break;
-
+		/*
 		case GeoElement.GEO_CLASS_FUNCTION:
 		case GeoElement.GEO_CLASS_FUNCTIONCONDITIONAL:
 			d = new DrawParametricCurve(this, (ParametricCurve) geo);
@@ -1721,4 +1725,25 @@ final public void setHits(Point p){
 		// TODO Auto-generated method stub
 		return selStroke;
 	}
+
+
+	public void drawEllipse(Ellipse2D.Double ellipse) {
+		double kappa = .5522848;
+		double ox = (ellipse.width / 2) * kappa;
+		double oy = (ellipse.height / 2) * kappa;
+		double xe = ellipse.x + ellipse.width;
+		double ye = ellipse.y + ellipse.height;
+		double xm = ellipse.x + ellipse.width / 2;
+		double ym = ellipse.y + ellipse.height /2;
+		
+		this.beginPath();
+		this.moveTo(ellipse.x, ym);
+		this.cubicCurveTo(ellipse.x, ym - oy, xm - ox, ellipse.y, xm, ellipse.y);
+		this.cubicCurveTo(xm + ox, ellipse.y, xe, ym - oy, xe, ym);
+		this.cubicCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+		this.cubicCurveTo(xm - ox, ye, ellipse.x, ym + oy, ellipse.x, ym);
+		this.closePath();
+		this.stroke();
+	}
+
 }
