@@ -1637,7 +1637,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			break;
 
 		case MOVE_MULTIPLE_OBJECTS:
-			//AGmoveMultipleObjects(repaint);
+			moveMultipleObjects(repaint);
 			break;
 
 		case MOVE_VIEW:
@@ -1709,6 +1709,19 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		else
 			movedGeoConic.updateCascade();
 	}
+	
+	protected void moveMultipleObjects(boolean repaint) {		
+		translationVec.setX(xRW - startPoint.x);
+		translationVec.setY(yRW - startPoint.y);
+		startPoint.setLocation(xRW, yRW);
+		startLoc = mouseLoc;
+
+		// move all selected geos
+		GeoElement.moveObjects(app.getSelectedGeos(), translationVec, startPoint);									
+
+		if (repaint)
+			kernel.notifyRepaint();					
+	}		
 
 	
 	final protected void moveDependent(boolean repaint) {
@@ -1957,6 +1970,21 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		kernel.Ray(null, points[0], points[1]);
 	}
 	
+	protected boolean regularPolygon(Hits hits) {
+		if (hits.isEmpty())
+			return false;
+
+		// need two points
+		addSelectedPoint(hits, 2, false);
+
+		if (selPoints() == 2) {					
+			GeoPoint [] points = getSelectedPoints();
+			//AGapp.getGuiManager().showNumberInputDialogRegularPolygon(app.getMenu(getKernel().getModeText(mode)),
+				//AG	points[0], points[1]);
+			return true;
+		}
+		return false;
+	}
 	// get point and number
 	/*AGfinal protected boolean segmentFixed(Hits hits) {
 		if (hits.isEmpty())
@@ -2271,7 +2299,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			break;
 
 		case EuclidianView.MODE_REGULAR_POLYGON:
-			//AGchangedKernel = regularPolygon(hits);
+			changedKernel = regularPolygon(hits);
 			break;
 
 		case EuclidianView.MODE_SHOW_HIDE_CHECKBOX:

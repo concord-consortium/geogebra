@@ -240,7 +240,7 @@ public abstract class GeoQuadricND extends GeoElement {
 		sbToString.setLength(0);
 		sbToString.append(label);
 		sbToString.append(": ");
-		sbToString.append(buildValueString()); 
+		sbToString.append(buildValueString().toString()); 
 		return sbToString.toString();
 	}
 		
@@ -270,7 +270,7 @@ public abstract class GeoQuadricND extends GeoElement {
 				sbToValueString.append("(");
 				sbToValueString.append(VAR_STRING[i]);
 				sbToValueString.append(" ");
-				sbToValueString.append(kernel.formatSigned(-getMidpoint().get(i+1)));
+				sbToValueString.append(kernel.formatSigned(-getMidpoint().get(i+1)).toString());
 				sbToValueString.append(")\u00b2");
 			}	
 			if (i<dimension-1)

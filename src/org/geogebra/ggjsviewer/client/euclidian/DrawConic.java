@@ -729,12 +729,18 @@ final public class DrawConic extends Drawable implements Previewable {
                     g2.setColor(conic.getSelColor());
                     g2.draw(shape);*/	
                 	view.setStroke(conic.getSelColor());
-                	view.drawEllipse((Ellipse2D.Double) shape);
+                	if (shape instanceof Ellipse2D.Double)
+                		view.drawEllipse((Ellipse2D.Double) shape);
+                	else if (shape instanceof Arc2D.Double)
+                		view.drawEllipse((Arc2D.Double) shape);
                 }                  
                 view.setStroke(objStroke);
                 view.setPaint(conic.getObjectColor());
                 //AG OR view.setStroke(conic.getObjectColor());
-                view.drawEllipse((Ellipse2D.Double) shape);    
+                if (shape instanceof Ellipse2D.Double)
+            		view.drawEllipse((Ellipse2D.Double) shape);
+            	else if (shape instanceof Arc2D.Double)
+            		view.drawEllipse((Arc2D.Double) shape);  
                 if (labelVisible) {
 					view.setFont(view.fontConic); 
 					view.setStroke(conic.getLabelColor());                   
@@ -814,7 +820,10 @@ final public class DrawConic extends Drawable implements Previewable {
 			case GeoConic.CONIC_PARABOLA: 			                                                  
 				view.setStroke(objStroke);
 				view.setPaint(conic.getObjectColor());				
-				view.drawEllipse((Ellipse2D.Double) shape);    				            
+				if (shape instanceof Ellipse2D.Double)
+            		view.drawEllipse((Ellipse2D.Double) shape);
+            	else if (shape instanceof Arc2D.Double)
+            		view.drawEllipse((Arc2D.Double) shape);				            
 				break;            
             
 		   case GeoConic.CONIC_HYPERBOLA:     

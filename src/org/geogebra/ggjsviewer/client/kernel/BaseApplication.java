@@ -80,6 +80,11 @@ public class BaseApplication {
 		return null;
 	}
 
+	public EuclidianView getEuclidianView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }

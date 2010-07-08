@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.main.Application;
+
 /**
  * A Construction consists of a construction list with objects of type
  * ConstructionElement (i.e. GeoElement or AlgoElement) and a GeoElement table
@@ -93,7 +95,7 @@ public class Construction {
 	// when many cells in the spreadsheet are redefined at once
 	private boolean collectRedefineCalls = false;
 	private HashMap redefineMap;
-
+	private Application app;
 	// showOnlyBreakpoints in construction protocol
 	private boolean showOnlyBreakpoints;
 
@@ -189,7 +191,7 @@ public class Construction {
 		geoTable.remove(xAxisLocalName);
 		geoTable.remove(yAxisLocalName);
 
-		//Application app = kernel.getApplication();
+		//Application app = kernel.getBaseApplication();
 		BaseApplication bApp = kernel.getBaseApplication();
 		xAxisLocalName = bApp.getPlain("xAxis");
 		yAxisLocalName = bApp.getPlain("yAxis");
@@ -1583,6 +1585,11 @@ public class Construction {
 	public void addRandomGeo(GeoNumeric randNum) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Object getApplication() {
+		// TODO Auto-generated method stub
+		return app;
 	}    
     
    

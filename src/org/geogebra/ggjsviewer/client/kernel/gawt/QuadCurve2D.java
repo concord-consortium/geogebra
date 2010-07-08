@@ -1,12 +1,12 @@
 /*
- * Copyright 1997-2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 1997, 2006, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,16 +18,16 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package org.geogebra.ggjsviewer.client.kernel.gawt;
 
+
+
 import java.io.Serializable;
-
-
 
 /**
  * The <code>QuadCurve2D</code> class defines a quadratic parametric curve
@@ -123,6 +123,11 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
                      float x2, float y2)
         {
             setCurve(x1, y1, ctrlx, ctrly, x2, y2);
+        }
+
+        @Override
+        public Object clone() {
+        	return new Float(x1, y1, ctrlx, ctrly, x2, y2);
         }
 
         /**
@@ -337,6 +342,12 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
         {
             setCurve(x1, y1, ctrlx, ctrly, x2, y2);
         }
+        
+
+        @Override
+        public Object clone() {
+        	return new Double(x1, y1, ctrlx, ctrly, x2, y2);
+        }
 
         /**
          * {@inheritDoc}
@@ -452,8 +463,8 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
      * the information necessary to satisfy the various accessor
      * methods below.
      *
-     * @see java.awt.geom.QuadCurve2D.Float
-     * @see java.awt.geom.QuadCurve2D.Double
+     * @see gwt.awt.geom.QuadCurve2D.Float
+     * @see gwt.awt.geom.QuadCurve2D.Double
      * @since 1.2
      */
     protected QuadCurve2D() {
@@ -1389,12 +1400,5 @@ public abstract class QuadCurve2D implements Shape, Cloneable {
      * @see        java.lang.Cloneable
      * @since      1.2
      */
-   /*AG public Object clone() {
-        try {
-            return super.clone();
-        } catch (Exception e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new Error();
-        }
-    }*/
+    public abstract Object clone();
 }
