@@ -14,6 +14,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.service.JsonHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -69,6 +70,7 @@ public class Application extends BaseApplication {
 		kernel.attach(euclidianview);
 		euclidianview.setKernel(kernel);
 		euclidianview.setApplication(this);
+		JsonHandler.setApplication(this);
 		euclidiancontroller.setEuclidianView(euclidianview);	
 		euclidianview.setEuclidianController(euclidiancontroller);
 		euclidianview.addMouseDownHandler(euclidiancontroller);

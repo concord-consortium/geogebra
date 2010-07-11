@@ -22,6 +22,31 @@
 		.base64button {
 			min-width:150px;	
 		}
+		.csbWrapper {
+			width:700px;
+			margin-bottom:10px;
+		}
+		.commandLabel {
+			padding:5px 20px 5px 20px;
+			min-width:70px;
+		}
+		
+		.commandSuggestBox {
+			width:550px;
+		}
+		.elWrapper {
+			width:700px;
+			margin-bottom:20px;
+		}
+		.elLabel {
+			padding:5px 20px 5px 20px;
+			min-width:70px;
+		}
+		.el {
+			min-width:550px;
+			text-align:right;
+			padding-right:30px;
+		}
 	</ui:style>
 	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
 		<g:HorizontalPanel styleName="{style.base64wrapper}">
@@ -30,6 +55,14 @@
 		</g:HorizontalPanel>
 		<ggjs:EuclidianView styleName="{style.euclidianview}" ui:field="euclidianview">
 		</ggjs:EuclidianView>
+		<g:HorizontalPanel styleName="{style.csbWrapper}">
+			<g:Label styleName="{style.commandLabel}">Command: </g:Label>
+			<g:SuggestBox ui:field="commandSuggestBox" styleName="{style.commandSuggestBox}"></g:SuggestBox>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.elWrapper}">
+			<g:Label styleName="{style.elLabel}">Examples: </g:Label>
+			<g:ListBox ui:field="examplesList" styleName="{style.el}"></g:ListBox>
+		</g:HorizontalPanel>
 	</g:VerticalPanel>
 	
 </ui:UiBinder> 
