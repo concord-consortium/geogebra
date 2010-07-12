@@ -34,7 +34,7 @@ public class BaseApplication {
 		return false;
 	}
 
-	public Object getKernel() {
+	public Kernel getKernel() {
 		// TODO Auto-generated method stub
 		return null;
 	}

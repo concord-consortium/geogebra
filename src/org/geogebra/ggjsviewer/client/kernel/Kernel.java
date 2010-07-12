@@ -31,6 +31,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNodeEvaluator;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
+import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.util.Unicode;
 
@@ -252,7 +253,7 @@ public class Kernel {
 	private EquationSolver eqnSolver;
 	//AGprivate RegressionMath regMath;
 	//AGprivate ExtremumFinder extrFinder;
-	//AGprotected Parser parser;
+	protected Parser parser;
 	private Object ggbCAS;
 	
 	// Continuity on or off, default: false since V3.0
@@ -404,13 +405,12 @@ public class Kernel {
 			regMath = new RegressionMath();
 		return regMath;
 	}
-	
+	*/
 	final public Parser getParser() {
     	if (parser == null)
     		parser = new Parser(this, cons);
     	return parser;
     }	
-	*/
 	/** 
      * Evaluates a JASYMCA expression and returns the result as a String.
      * e.g. exp = "diff(x^2,x)" returns "2*x"

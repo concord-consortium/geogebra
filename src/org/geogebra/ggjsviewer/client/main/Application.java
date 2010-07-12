@@ -14,6 +14,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.plugin.GgbAPI;
 import org.geogebra.ggjsviewer.client.service.JsonHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +31,7 @@ public class Application extends BaseApplication {
 	protected boolean showMenuBar = true;
 	
 	private ArrayList<GeoElement> selectedGeos = new ArrayList<GeoElement>();
+	private GgbAPI ggbapi;
 	
 	
 	public Application() {
@@ -213,6 +215,26 @@ public class Application extends BaseApplication {
 	final public String getCommand(String key) {
 		
 		return key;
+	}
+	
+	/**
+	 * PluginManager gets API with this H-P Ulven 2008-04-16
+	 */
+	public GgbAPI getGgbApi() {
+		if (ggbapi == null) {
+			ggbapi = new GgbAPI(this);
+		}
+
+		return ggbapi;
+	}
+	
+	public Kernel getKernel() {
+		return kernel;
+	}
+
+	public void storeUndoInfo() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

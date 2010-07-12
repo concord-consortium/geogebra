@@ -5,6 +5,7 @@ package org.geogebra.ggjsviewer.client.kernel.commands;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
@@ -21,6 +22,8 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Polynomial;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
+import org.geogebra.ggjsviewer.client.kernel.parser.ParseException;
+import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
 
@@ -31,7 +34,7 @@ public class AlgebraProcessor {
 	private Kernel kernel;
 	private Construction cons;
 	private Application app;
-	//AGprivate Parser parser;
+	private Parser parser;
 	protected CommandDispatcher cmdDispatcher;
 	
 	protected ExpressionValue eval; //ggb3D : used by AlgebraProcessor3D in extended processExpressionNode
@@ -42,7 +45,7 @@ public class AlgebraProcessor {
 		
 		cmdDispatcher = new CommandDispatcher(kernel);
 		app = kernel.getBaseApplication();
-		//parser = kernel.getParser();
+		parser = kernel.getParser();
 	}
 /*AG	
 	public Set getPublicCommandSet() {
@@ -138,7 +141,7 @@ public class AlgebraProcessor {
 	 * methods for processing an input string
 	 */
 	// returns non-null GeoElement array when successful
-/*AG	public GeoElement[] processAlgebraCommand(String cmd, boolean storeUndo) {
+	public GeoElement[] processAlgebraCommand(String cmd, boolean storeUndo) {
 		
 		try {
 			return processAlgebraCommandNoExceptionHandling(cmd, storeUndo);
@@ -422,7 +425,7 @@ public class AlgebraProcessor {
 /*AG	public String parseLabel(String label) throws ParseException {
 		return parser.parseLabel(label);
 	}
-
+*/
 	public GeoElement[] processValidExpression(ValidExpression ve)
 		throws MyError, Exception {
 		return processValidExpression(ve, true);
@@ -436,7 +439,7 @@ public class AlgebraProcessor {
 	 * @throws MyError
 	 * @throws Exception
 	 */
-/*AG	public GeoElement[] processValidExpression(
+	public GeoElement[] processValidExpression(
 		ValidExpression ve,
 		boolean redefineIndependent)
 		throws MyError, Exception {
@@ -564,7 +567,7 @@ public class AlgebraProcessor {
 			}
 	
 			// explicit Function in x
-			else if (ve instanceof Function) {
+			/*AGelse if (ve instanceof Function) {
 				ret = processFunction(null, (Function) ve);
 			}						
 	
@@ -576,13 +579,13 @@ public class AlgebraProcessor {
 //			// Assignment: variable
 //			else if (ve instanceof Assignment) {
 //				ret = processAssignment((Assignment) ve);
-//			} 
+//			} */
 			
 
 		return ret;
 	}
 	
-
+/*AG
 	protected GeoElement[] processFunction(ExpressionNode funNode, Function fun) {		
 		fun.initFunction();		
 		
