@@ -7,6 +7,9 @@ import org.geogebra.ggjsviewer.client.service.JsonHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -20,6 +23,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,33 +39,26 @@ public class GgjsViewerWrapper extends Composite {
 	
 	public Base64Form form = null;;
 	public JsonHandler jsonHandler = new JsonHandler();
-	private final MultiWordSuggestOracle commands = new MultiWordSuggestOracle();
-
 	@UiField
 	EuclidianView euclidianview;
 	@UiField
 	static public Button button;
-	@UiField(provided=true)
-	static public SuggestBox commandSuggestBox;
+	@UiField
+	static public TextBox commandSuggestBox;
 	@UiField
 	static public ListBox examplesList;
 	
 	public GgjsViewerWrapper(/*Possible parameters*/) {
-		commandSuggestBox = new SuggestBox(commands);	
 		initWidget(uiBinder.createAndBindUi(this));
 		commandSuggestBox.setTitle("Not working yet...");
 		//Populate listbox
 		examplesList.addItem("Euler line version 2", "0");
 		examplesList.addItem("Circles","1");
 		examplesList.addItem("Circle around a triangle","2");
-		getCommands();
 		//view.methodToCall(possibleParameters);
 	}
 	
-	private void getCommands() {
-		// TODO Auto-generated method stub
-		commands.add("Not Working Yet");
-	}
+	
 
 	public EuclidianView getEuclidianView() {
 		return euclidianview;		
@@ -89,6 +86,17 @@ public class GgjsViewerWrapper extends Composite {
 				button.setText("Open TextBox");
 				form.hide();
 				Base64Form.base64area.setText("");
+		}
+		
+	}
+	@UiHandler("commandSuggestBox")
+	void handleKeyPress(KeyPressEvent e){
+		if (e.getCharCode() == KeyCodes.KEY_ENTER) {
+			String command = commandSuggestBox.getValue();
+			if (!command.trim().isEmpty()) {
+				euclidianview.getApplication().getGgbApi().evalCommand(command);
+			}
+			
 		}
 		
 	}

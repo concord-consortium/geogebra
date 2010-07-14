@@ -57,7 +57,7 @@
 		</ggjs:EuclidianView>
 		<g:HorizontalPanel styleName="{style.csbWrapper}">
 			<g:Label styleName="{style.commandLabel}">Command: </g:Label>
-			<g:SuggestBox ui:field="commandSuggestBox" styleName="{style.commandSuggestBox}"></g:SuggestBox>
+			<g:TextBox ui:field="commandSuggestBox" styleName="{style.commandSuggestBox}"></g:TextBox>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.elWrapper}">
 			<g:Label styleName="{style.elLabel}">Examples: </g:Label>

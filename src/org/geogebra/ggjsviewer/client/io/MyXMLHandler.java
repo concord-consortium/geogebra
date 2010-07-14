@@ -87,7 +87,7 @@ public class MyXMLHandler  {
 	public MyXMLHandler(Kernel kernel, Construction cons) {
 		origKernel = kernel;
 		origCons = cons;
-		origParser = new Parser(origKernel,origCons);
+		origParser = kernel.getParser();
 		initKernelVars();
 		
 		mode = MODE_INVALID;

@@ -1638,6 +1638,10 @@ final public void setHits(Point p){
 		app = a;
 	}
 	
+	public Application getApplication() {
+		return app;
+	}
+	
 	/**
 	 * Returns xscale of this view. The scale is the number of pixels in screen
 	 * space that represent one unit in user space.
