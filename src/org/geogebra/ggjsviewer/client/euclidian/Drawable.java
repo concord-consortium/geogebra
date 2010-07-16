@@ -715,17 +715,17 @@ public abstract class Drawable {
 			lineType = geo.lineType;
 
 			float width = lineThickness / 2.0f;
-			/*AGobjStroke = EuclidianView.getStroke(width, lineType);
+			objStroke = EuclidianView.getStroke(width, lineType);
 			decoStroke = EuclidianView.getStroke(width, EuclidianView.LINE_TYPE_FULL);
 			selStroke =
 				EuclidianView.getStroke(
 					width + EuclidianView.SELECTION_ADD,
-					EuclidianView.LINE_TYPE_FULL);*/
+					EuclidianView.LINE_TYPE_FULL);
 		} else if (lineType != geo.lineType) {
 			lineType = geo.lineType;
 
 			float width = lineThickness / 2.0f;
-			/*AGobjStroke = EuclidianView.getStroke(width, lineType);*/
+			objStroke = EuclidianView.getStroke(width, lineType);
 		}
 	}
 	

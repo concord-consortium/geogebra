@@ -19,8 +19,18 @@ public class BaseApplication {
 		
 	}
 
-	public static void printStacktrace(String string) {
+	public static void printStacktrace(String message) {
 		// TODO Auto-generated method stub
+		try {
+
+			throw new Exception(message);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
 		
 	}
 

@@ -27,6 +27,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoVec3D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Line2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 import com.google.gwt.widgetideas.graphics.client.Color;
 
@@ -67,6 +68,7 @@ public final class DrawLine extends Drawable implements Previewable {
         this.g = g;
         geo = g;              
         update();
+        //Application.printStacktrace("drawline");
     }
     
 	/**

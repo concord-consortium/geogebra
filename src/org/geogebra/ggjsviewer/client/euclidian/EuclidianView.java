@@ -1208,7 +1208,7 @@ final public void setHits(Point p){
 		d = createDrawable(geo);
 		if (d != null) {
 			addToDrawableLists(d);
-			//AGrepaint();			
+			repaintView();			
 		}
 	}
 	
@@ -1772,6 +1772,52 @@ final public void setHits(Point p){
 		
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * Creates a stroke with thickness width, dashed according to line style
+	 * type.
+	 */
+	public static BasicStroke getStroke(float width, int type) {
+		float[] dash;
+
+		switch (type) {
+		case EuclidianView.LINE_TYPE_DOTTED:
+			dash = new float[2];
+			dash[0] = width; // dot
+			dash[1] = 3.0f; // space
+			break;
+
+		case EuclidianView.LINE_TYPE_DASHED_SHORT:
+			dash = new float[2];
+			dash[0] = 4.0f + width;
+			// short dash
+			dash[1] = 4.0f; // space
+			break;
+
+		case EuclidianView.LINE_TYPE_DASHED_LONG:
+			dash = new float[2];
+			dash[0] = 8.0f + width; // long dash
+			dash[1] = 8.0f; // space
+			break;
+
+		case EuclidianView.LINE_TYPE_DASHED_DOTTED:
+			dash = new float[4];
+			dash[0] = 8.0f + width; // dash
+			dash[1] = 4.0f; // space before dot
+			dash[2] = width; // dot
+			dash[3] = dash[1]; // space after dot
+			break;
+
+		default: // EuclidianView.LINE_TYPE_FULL
+			dash = null;
+		}
+
+		int endCap = dash != null ? BasicStroke.CAP_BUTT_INT : standardStroke
+				.getEndCap();
+
+		return new BasicStroke(width, endCap, standardStroke.getLineJoin(),
+				standardStroke.getMiterLimit(), dash, 0.0f);
 	}
 
 }
