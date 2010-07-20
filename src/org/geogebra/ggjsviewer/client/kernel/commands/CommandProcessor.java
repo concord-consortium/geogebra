@@ -1741,7 +1741,7 @@ class CmdMod extends CommandProcessor {
 /*
  * Ellipse[ <GeoPoint>, <GeoPoint>, <NumberValue> ]
  */
-/*AG
+
 class CmdEllipse extends CommandProcessor {
 
 	public CmdEllipse(Kernel kernel) {

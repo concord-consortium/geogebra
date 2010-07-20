@@ -19,8 +19,11 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
+import org.geogebra.ggjsviewer.client.kernel.gawt.PathIterator;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 //import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D.Double;
 import org.geogebra.ggjsviewer.client.main.Application;
 
@@ -555,7 +558,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		// ( xscale 0 xZero )
 		// ( 0 -yscale yZero )
 		// ( 0 0 1 )
-		///There is no such class AGcoordTransform.setTransform(xscale, 0.0d, 0.0d, -yscale, xZero, yZero);
+		coordTransform.setTransform(xscale, 0.0d, 0.0d, -yscale, xZero, yZero);
 
 		// real world values
 		setRealWorldBounds();
@@ -1774,6 +1777,59 @@ final public void setHits(Point p){
 		
 	}
 	
+	public void drawEllipse(Path2D.Double shape) {
+		this.beginPath();
+		PathIterator it = shape.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.stroke();
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/*public void drawEllipse(Path2D.Double arc) {
+		double kappa = .5522848;
+		double ox = (arc.width / 2) * kappa;
+		double oy = (arc.height / 2) * kappa;
+		double xe = arc.x + arc.width;
+		double ye = arc.y + arc.height;
+		double xm = arc.x + arc.width / 2;
+		double ym = arc.y + arc.height /2;
+		
+		this.beginPath();
+		this.moveTo(arc.x, ym);
+		this.cubicCurveTo(arc.x, ym - oy, xm - ox, arc.y, xm, arc.y);
+		this.cubicCurveTo(xm + ox, arc.y, xe, ym - oy, xe, ym);
+		this.cubicCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+		this.cubicCurveTo(xm - ox, ye, arc.x, ym + oy, arc.x, ym);
+		this.closePath();
+		this.stroke();
+		
+		// TODO Auto-generated method stub
+		
+	}*/
 	/**
 	 * Creates a stroke with thickness width, dashed according to line style
 	 * type.
@@ -1819,5 +1875,7 @@ final public void setHits(Point p){
 		return new BasicStroke(width, endCap, standardStroke.getLineJoin(),
 				standardStroke.getMiterLimit(), dash, 0.0f);
 	}
+
+	
 
 }

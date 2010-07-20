@@ -25,6 +25,7 @@
 
 package org.geogebra.ggjsviewer.client.kernel.gawt;
 
+
 /**
  * The <code>AffineTransform</code> class represents a 2D affine transform
  * that performs a linear mapping from 2D coordinates to other 2D

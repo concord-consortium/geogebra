@@ -14,7 +14,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class JsonHandler {
-	private static final String JSON_URL = GWT.getModuleBaseURL() + "xmlhandler.php?example=";
+	private static final String JSON_URL = GWT.getModuleBaseURL() + "../xmlhandler.php?example=";
 	
 	private JSONObject jsonObject = null;
 	private JSONValue parsedJSON = null;

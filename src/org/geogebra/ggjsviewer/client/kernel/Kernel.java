@@ -4029,7 +4029,7 @@ public class Kernel {
 	/** 
 	 * ellipse with foci A, B and length of first half axis a
 	 */
-	/*AGfinal public GeoConic Ellipse(
+	final public GeoConic Ellipse(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -4037,13 +4037,13 @@ public class Kernel {
 		AlgoEllipseFociLength algo = new AlgoEllipseFociLength(cons, label, A, B, a);
 		GeoConic ellipse = algo.getConic();
 		return ellipse;
-	}*/
+	}
 
 	/** 
 	 * ellipse with foci A, B passing thorugh C
 	 * Michael Borcherds 2008-04-06
 	 */
-	/*AGfinal public GeoConic Ellipse(
+	final public GeoConic Ellipse(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -4051,7 +4051,7 @@ public class Kernel {
 		AlgoEllipseFociPoint algo = new AlgoEllipseFociPoint(cons, label, A, B, C);
 		GeoConic ellipse = algo.getEllipse();
 		return ellipse;
-	}*/
+	}
 
 	/** 
 	 * hyperbola with foci A, B and length of first half axis a
@@ -5548,14 +5548,14 @@ public class Kernel {
 		boolean CANCEL_DOWN) {
 
 		sbBuildImplicitEquation.setLength(0);
-		sbBuildImplicitEquation.append(buildImplicitVarPart(numbers, vars, KEEP_LEADING_SIGN, CANCEL_DOWN));
+		sbBuildImplicitEquation.append(buildImplicitVarPart(numbers, vars, KEEP_LEADING_SIGN, CANCEL_DOWN).toString());
 		if (casPrintForm == ExpressionNode.STRING_TYPE_MATH_PIPER) 
 			sbBuildImplicitEquation.append(" == ");
 		else
 			sbBuildImplicitEquation.append(" = ");
 		
 		// temp is set by buildImplicitVarPart
-		sbBuildImplicitEquation.append(format(-temp[vars.length]));
+		sbBuildImplicitEquation.append(format(-temp[vars.length]).toString());
 
 		return sbBuildImplicitEquation;
 	}

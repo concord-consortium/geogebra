@@ -1,12 +1,12 @@
 /*
- * Copyright 1997-2000 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 1997, 2000, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,16 +18,16 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package org.geogebra.ggjsviewer.client.kernel.gawt;
 
 /**
  * The <code>PathIterator</code> interface provides the mechanism
- * for objects that implement the {@link java.awt.Shape Shape}
+ * for objects that implement the {@link gwt.awt.Shape Shape}
  * interface to return the geometry of their boundary by allowing
  * a caller to retrieve the path of that boundary a segment at a
  * time.  This interface allows these objects to retrieve the path of
@@ -46,14 +46,14 @@ package org.geogebra.ggjsviewer.client.kernel.gawt;
  * Be aware that manually closing an outline as opposed to using a
  * "CLOSE" segment to close the path might result in different line
  * style decorations being used at the end points of the subpath.
- * For example, the {@link java.awt.BasicStroke BasicStroke} object
+ * For example, the {@link gwt.awt.BasicStroke BasicStroke} object
  * uses a line "JOIN" decoration to connect the first and last points
  * if a "CLOSE" segment is encountered, whereas simply ending the path
  * on the same coordinate as the beginning coordinate results in line
  * "CAP" decorations being used at the ends.
  *
- * @see java.awt.Shape
- * @see java.awt.BasicStroke
+ * @see gwt.awt.Shape
+ * @see gwt.awt.BasicStroke
  *
  * @author Jim Graham
  */

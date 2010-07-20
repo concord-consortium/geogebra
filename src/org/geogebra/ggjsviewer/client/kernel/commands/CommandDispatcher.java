@@ -126,7 +126,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Root", new CmdRoot(kernel));	   
     	//AGcmdTable.put("Dilate", new CmdDilate(kernel));	   
     	//AGcmdTable.put("Vector", new CmdVector(kernel));	   
-    	//AGcmdTable.put("Ellipse", new CmdEllipse(kernel));	   
+    	cmdTable.put("Ellipse", new CmdEllipse(kernel));	   
     	//AGcmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   
     	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   

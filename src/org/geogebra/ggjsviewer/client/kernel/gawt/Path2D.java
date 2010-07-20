@@ -1,12 +1,12 @@
 /*
- * Copyright 2006 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Sun designates this
+ * published by the Free Software Foundation.  Oracle designates this
  * particular file as subject to the "Classpath" exception as provided
- * by Sun in the LICENSE file that accompanied this code.
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,17 +18,14 @@
  * 2 along with this work; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
- * CA 95054 USA or visit www.sun.com if you need additional information or
- * have any questions.
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package org.geogebra.ggjsviewer.client.kernel.gawt;
 
 import java.io.Serializable;
-import java.util.Arrays;
-
-
 
 
 /**
@@ -223,7 +220,8 @@ public abstract class Path2D implements Shape, Cloneable {
                 Path2D p2d = (Path2D) s;
                 setWindingRule(p2d.windingRule);
                 this.numTypes = p2d.numTypes;
-                this.pointTypes = p2d.pointTypes; //AG Arrays.copyOf(p2d.pointTypes, p2d.pointTypes.length);
+                this.pointTypes = CloningUtils.copyOf(p2d.pointTypes,
+                                                p2d.pointTypes.length);
                 this.numCoords = p2d.numCoords;
                 this.floatCoords = p2d.cloneCoordsFloat(at);
             } else {
@@ -238,7 +236,7 @@ public abstract class Path2D implements Shape, Cloneable {
         float[] cloneCoordsFloat(AffineTransform at) {
             float ret[];
             if (at == null) {
-                ret = this.floatCoords;//AG Arrays.copyOf(this.floatCoords, this.floatCoords.length);
+                ret = CloningUtils.copyOf(this.floatCoords, this.floatCoords.length);
             } else {
                 ret = new float[floatCoords.length];
                 at.transform(floatCoords, 0, ret, 0, numCoords / 2);
@@ -284,7 +282,7 @@ public abstract class Path2D implements Shape, Cloneable {
                 if (grow > EXPAND_MAX) {
                     grow = EXPAND_MAX;
                 }
-                pointTypes = pointTypes; //AG Arrays.copyOf(pointTypes, size+grow);
+                pointTypes = CloningUtils.copyOf(pointTypes, size+grow);
             }
             size = floatCoords.length;
             if (numCoords + newCoords > size) {
@@ -295,7 +293,7 @@ public abstract class Path2D implements Shape, Cloneable {
                 if (grow < newCoords) {
                     grow = newCoords;
                 }
-                floatCoords = floatCoords; //AG Arrays.copyOf(floatCoords, size+grow);
+                floatCoords = CloningUtils.copyOf(floatCoords, size+grow);
             }
         }
 
@@ -764,152 +762,6 @@ public abstract class Path2D implements Shape, Cloneable {
          */
         private static final long serialVersionUID = 6990832515060788886L;
 
-        /**
-         * Writes the default serializable fields to the
-         * {@code ObjectOutputStream} followed by an explicit
-         * serialization of the path segments stored in this
-         * path.
-         *
-         * @serialData
-         * <a name="Path2DSerialData"><!-- --></a>
-         * <ol>
-         * <li>The default serializable fields.
-         * There are no default serializable fields as of 1.6.
-         * <li>followed by
-         * a byte indicating the storage type of the original object
-         * as a hint (SERIAL_STORAGE_FLT_ARRAY)
-         * <li>followed by
-         * an integer indicating the number of path segments to follow (NP)
-         * or -1 to indicate an unknown number of path segments follows
-         * <li>followed by
-         * an integer indicating the total number of coordinates to follow (NC)
-         * or -1 to indicate an unknown number of coordinates follows
-         * (NC should always be even since coordinates always appear in pairs
-         *  representing an x,y pair)
-         * <li>followed by
-         * a byte indicating the winding rule
-         * ({@link #WIND_EVEN_ODD WIND_EVEN_ODD} or
-         *  {@link #WIND_NON_ZERO WIND_NON_ZERO})
-         * <li>followed by
-         * NP (or unlimited if NP < 0) sets of values consisting of
-         * a single byte indicating a path segment type
-         * followed by one or more pairs of float or double
-         * values representing the coordinates of the path segment
-         * <li>followed by
-         * a byte indicating the end of the path (SERIAL_PATH_END).
-         * </ol>
-         * <p>
-         * The following byte value constants are used in the serialized form
-         * of {@code Path2D} objects:
-         * <table>
-         * <tr>
-         * <th>Constant Name</th>
-         * <th>Byte Value</th>
-         * <th>Followed by</th>
-         * <th>Description</th>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_STORAGE_FLT_ARRAY}</td>
-         * <td>0x30</td>
-         * <td></td>
-         * <td>A hint that the original {@code Path2D} object stored
-         * the coordinates in a Java array of floats.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_STORAGE_DBL_ARRAY}</td>
-         * <td>0x31</td>
-         * <td></td>
-         * <td>A hint that the original {@code Path2D} object stored
-         * the coordinates in a Java array of doubles.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_MOVETO}</td>
-         * <td>0x40</td>
-         * <td>2 floats</td>
-         * <td>A {@link #moveTo moveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_LINETO}</td>
-         * <td>0x41</td>
-         * <td>2 floats</td>
-         * <td>A {@link #lineTo lineTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_QUADTO}</td>
-         * <td>0x42</td>
-         * <td>4 floats</td>
-         * <td>A {@link #quadTo quadTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_CUBICTO}</td>
-         * <td>0x43</td>
-         * <td>6 floats</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_MOVETO}</td>
-         * <td>0x50</td>
-         * <td>2 doubles</td>
-         * <td>A {@link #moveTo moveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_LINETO}</td>
-         * <td>0x51</td>
-         * <td>2 doubles</td>
-         * <td>A {@link #lineTo lineTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_QUADTO}</td>
-         * <td>0x52</td>
-         * <td>4 doubles</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_CUBICTO}</td>
-         * <td>0x53</td>
-         * <td>6 doubles</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_CLOSE}</td>
-         * <td>0x60</td>
-         * <td></td>
-         * <td>A {@link #closePath closePath} path segment.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_PATH_END}</td>
-         * <td>0x61</td>
-         * <td></td>
-         * <td>There are no more path segments following.</td>
-         * </table>
-         *
-         * @since 1.6
-         */
-       /*AG private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException
-        {
-            super.writeObject(s, false);
-        }*/
-
-        /**
-         * Reads the default serializable fields from the
-         * {@code ObjectInputStream} followed by an explicit
-         * serialization of the path segments stored in this
-         * path.
-         * <p>
-         * There are no default serializable fields as of 1.6.
-         * <p>
-         * The serial data for this object is described in the
-         * writeObject method.
-         *
-         * @since 1.6
-         */
-        /*private void readObject(java.io.ObjectInputStream s)
-            throws java.lang.ClassNotFoundException, java.io.IOException
-        {
-            super.readObject(s, false);
-        }*/
-
         static class CopyIterator extends Path2D.Iterator {
             float floatCoords[];
 
@@ -1056,7 +908,8 @@ public abstract class Path2D implements Shape, Cloneable {
                 Path2D p2d = (Path2D) s;
                 setWindingRule(p2d.windingRule);
                 this.numTypes = p2d.numTypes;
-                this.pointTypes = p2d.pointTypes; //AGArrays.copyOf(p2d.pointTypes, p2d.pointTypes.length);
+                this.pointTypes = CloningUtils.copyOf(p2d.pointTypes,
+                                                p2d.pointTypes.length);
                 this.numCoords = p2d.numCoords;
                 this.doubleCoords = p2d.cloneCoordsDouble(at);
             } else {
@@ -1083,7 +936,8 @@ public abstract class Path2D implements Shape, Cloneable {
         double[] cloneCoordsDouble(AffineTransform at) {
             double ret[];
             if (at == null) {
-                ret = this.doubleCoords; //AG Arrays.copyOf(this.doubleCoords, this.doubleCoords.length);
+                ret = CloningUtils.copyOf(this.doubleCoords,
+                                    this.doubleCoords.length);
             } else {
                 ret = new double[doubleCoords.length];
                 at.transform(doubleCoords, 0, ret, 0, numCoords / 2);
@@ -1117,7 +971,7 @@ public abstract class Path2D implements Shape, Cloneable {
                 if (grow > EXPAND_MAX) {
                     grow = EXPAND_MAX;
                 }
-                pointTypes = pointTypes; //AG Arrays.copyOf(pointTypes, size+grow);
+                pointTypes = CloningUtils.copyOf(pointTypes, size+grow);
             }
             size = doubleCoords.length;
             if (numCoords + newCoords > size) {
@@ -1128,7 +982,7 @@ public abstract class Path2D implements Shape, Cloneable {
                 if (grow < newCoords) {
                     grow = newCoords;
                 }
-                doubleCoords = doubleCoords; //AG Arrays.copyOf(doubleCoords, size+grow);
+                doubleCoords = CloningUtils.copyOf(doubleCoords, size+grow);
             }
         }
 
@@ -1487,151 +1341,6 @@ public abstract class Path2D implements Shape, Cloneable {
          */
         private static final long serialVersionUID = 1826762518450014216L;
 
-        /**
-         * Writes the default serializable fields to the
-         * {@code ObjectOutputStream} followed by an explicit
-         * serialization of the path segments stored in this
-         * path.
-         *
-         * @serialData
-         * <a name="Path2DSerialData"><!-- --></a>
-         * <ol>
-         * <li>The default serializable fields.
-         * There are no default serializable fields as of 1.6.
-         * <li>followed by
-         * a byte indicating the storage type of the original object
-         * as a hint (SERIAL_STORAGE_DBL_ARRAY)
-         * <li>followed by
-         * an integer indicating the number of path segments to follow (NP)
-         * or -1 to indicate an unknown number of path segments follows
-         * <li>followed by
-         * an integer indicating the total number of coordinates to follow (NC)
-         * or -1 to indicate an unknown number of coordinates follows
-         * (NC should always be even since coordinates always appear in pairs
-         *  representing an x,y pair)
-         * <li>followed by
-         * a byte indicating the winding rule
-         * ({@link #WIND_EVEN_ODD WIND_EVEN_ODD} or
-         *  {@link #WIND_NON_ZERO WIND_NON_ZERO})
-         * <li>followed by
-         * NP (or unlimited if NP < 0) sets of values consisting of
-         * a single byte indicating a path segment type
-         * followed by one or more pairs of float or double
-         * values representing the coordinates of the path segment
-         * <li>followed by
-         * a byte indicating the end of the path (SERIAL_PATH_END).
-         * </ol>
-         * <p>
-         * The following byte value constants are used in the serialized form
-         * of {@code Path2D} objects:
-         * <table>
-         * <tr>
-         * <th>Constant Name</th>
-         * <th>Byte Value</th>
-         * <th>Followed by</th>
-         * <th>Description</th>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_STORAGE_FLT_ARRAY}</td>
-         * <td>0x30</td>
-         * <td></td>
-         * <td>A hint that the original {@code Path2D} object stored
-         * the coordinates in a Java array of floats.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_STORAGE_DBL_ARRAY}</td>
-         * <td>0x31</td>
-         * <td></td>
-         * <td>A hint that the original {@code Path2D} object stored
-         * the coordinates in a Java array of doubles.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_MOVETO}</td>
-         * <td>0x40</td>
-         * <td>2 floats</td>
-         * <td>A {@link #moveTo moveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_LINETO}</td>
-         * <td>0x41</td>
-         * <td>2 floats</td>
-         * <td>A {@link #lineTo lineTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_QUADTO}</td>
-         * <td>0x42</td>
-         * <td>4 floats</td>
-         * <td>A {@link #quadTo quadTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_FLT_CUBICTO}</td>
-         * <td>0x43</td>
-         * <td>6 floats</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_MOVETO}</td>
-         * <td>0x50</td>
-         * <td>2 doubles</td>
-         * <td>A {@link #moveTo moveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_LINETO}</td>
-         * <td>0x51</td>
-         * <td>2 doubles</td>
-         * <td>A {@link #lineTo lineTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_QUADTO}</td>
-         * <td>0x52</td>
-         * <td>4 doubles</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_DBL_CUBICTO}</td>
-         * <td>0x53</td>
-         * <td>6 doubles</td>
-         * <td>A {@link #curveTo curveTo} path segment follows.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_SEG_CLOSE}</td>
-         * <td>0x60</td>
-         * <td></td>
-         * <td>A {@link #closePath closePath} path segment.</td>
-         * </tr>
-         * <tr>
-         * <td>{@code SERIAL_PATH_END}</td>
-         * <td>0x61</td>
-         * <td></td>
-         * <td>There are no more path segments following.</td>
-         * </table>
-         *
-         * @since 1.6
-         */
-        /*AGprivate void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException
-        {
-            super.writeObject(s, true);
-        }*/
-
-        /**
-         * Reads the default serializable fields from the
-         * {@code ObjectInputStream} followed by an explicit
-         * serialization of the path segments stored in this
-         * path.
-         * <p>
-         * There are no default serializable fields as of 1.6.
-         * <p>
-         * The serial data for this object is described in the
-         * writeObject method.
-         *
-         * @since 1.6
-         */
-       /* private void readObject(java.io.ObjectInputStream s)
-            throws java.lang.ClassNotFoundException, java.io.IOException
-        {
-            super.readObject(s, true);
-        }*/
 
         static class CopyIterator extends Path2D.Iterator {
             double doubleCoords[];
@@ -2358,211 +2067,6 @@ public abstract class Path2D implements Shape, Cloneable {
         // offer "public Object clone()" for backwards
         // compatibility so we cannot restrict it further.
         // REMIND: Can we do both somehow?
-
-    /*
-     * Support fields and methods for serializing the subclasses.
-     */
-    private static final byte SERIAL_STORAGE_FLT_ARRAY = 0x30;
-    private static final byte SERIAL_STORAGE_DBL_ARRAY = 0x31;
-
-    private static final byte SERIAL_SEG_FLT_MOVETO    = 0x40;
-    private static final byte SERIAL_SEG_FLT_LINETO    = 0x41;
-    private static final byte SERIAL_SEG_FLT_QUADTO    = 0x42;
-    private static final byte SERIAL_SEG_FLT_CUBICTO   = 0x43;
-
-    private static final byte SERIAL_SEG_DBL_MOVETO    = 0x50;
-    private static final byte SERIAL_SEG_DBL_LINETO    = 0x51;
-    private static final byte SERIAL_SEG_DBL_QUADTO    = 0x52;
-    private static final byte SERIAL_SEG_DBL_CUBICTO   = 0x53;
-
-    private static final byte SERIAL_SEG_CLOSE         = 0x60;
-    private static final byte SERIAL_PATH_END          = 0x61;
-
-    /*AGfinal void writeObject(java.io.ObjectOutputStream s, boolean isdbl)
-        throws java.io.IOException
-    {
-        s.defaultWriteObject();
-
-        float fCoords[];
-        double dCoords[];
-
-        if (isdbl) {
-            dCoords = ((Path2D.Double) this).doubleCoords;
-            fCoords = null;
-        } else {
-            fCoords = ((Path2D.Float) this).floatCoords;
-            dCoords = null;
-        }
-
-        int numTypes = this.numTypes;
-
-        s.writeByte(isdbl
-                    ? SERIAL_STORAGE_DBL_ARRAY
-                    : SERIAL_STORAGE_FLT_ARRAY);
-        s.writeInt(numTypes);
-        s.writeInt(numCoords);
-        s.writeByte((byte) windingRule);
-
-        int cindex = 0;
-        for (int i = 0; i < numTypes; i++) {
-            int npoints;
-            byte serialtype;
-            switch (pointTypes[i]) {
-            case SEG_MOVETO:
-                npoints = 1;
-                serialtype = (isdbl
-                              ? SERIAL_SEG_DBL_MOVETO
-                              : SERIAL_SEG_FLT_MOVETO);
-                break;
-            case SEG_LINETO:
-                npoints = 1;
-                serialtype = (isdbl
-                              ? SERIAL_SEG_DBL_LINETO
-                              : SERIAL_SEG_FLT_LINETO);
-                break;
-            case SEG_QUADTO:
-                npoints = 2;
-                serialtype = (isdbl
-                              ? SERIAL_SEG_DBL_QUADTO
-                              : SERIAL_SEG_FLT_QUADTO);
-                break;
-            case SEG_CUBICTO:
-                npoints = 3;
-                serialtype = (isdbl
-                              ? SERIAL_SEG_DBL_CUBICTO
-                              : SERIAL_SEG_FLT_CUBICTO);
-                break;
-            case SEG_CLOSE:
-                npoints = 0;
-                serialtype = SERIAL_SEG_CLOSE;
-                break;
-
-            default:
-                // Should never happen
-                throw new Error("unrecognized path type");
-            }
-            s.writeByte(serialtype);
-            while (--npoints >= 0) {
-                if (isdbl) {
-                    s.writeDouble(dCoords[cindex++]);
-                    s.writeDouble(dCoords[cindex++]);
-                } else {
-                    s.writeFloat(fCoords[cindex++]);
-                    s.writeFloat(fCoords[cindex++]);
-                }
-            }
-        }
-        s.writeByte((byte) SERIAL_PATH_END);
-    }*/
-
-   /* final void readObject(java.io.ObjectInputStream s, boolean storedbl)
-        throws java.lang.ClassNotFoundException, java.io.IOException
-    {
-        s.defaultReadObject();
-
-        // The subclass calls this method with the storage type that
-        // they want us to use (storedbl) so we ignore the storage
-        // method hint from the stream.
-        s.readByte();
-        int nT = s.readInt();
-        int nC = s.readInt();
-        try {
-            setWindingRule(s.readByte());
-        } catch (IllegalArgumentException iae) {
-            throw new java.io.InvalidObjectException(iae.getMessage());
-        }
-
-        pointTypes = new byte[(nT < 0) ? INIT_SIZE : nT];
-        if (nC < 0) {
-            nC = INIT_SIZE * 2;
-        }
-        if (storedbl) {
-            ((Path2D.Double) this).doubleCoords = new double[nC];
-        } else {
-            ((Path2D.Float) this).floatCoords = new float[nC];
-        }
-
-    PATHDONE:
-        for (int i = 0; nT < 0 || i < nT; i++) {
-            boolean isdbl;
-            int npoints;
-            byte segtype;
-
-            byte serialtype = s.readByte();
-            switch (serialtype) {
-            case SERIAL_SEG_FLT_MOVETO:
-                isdbl = false;
-                npoints = 1;
-                segtype = SEG_MOVETO;
-                break;
-            case SERIAL_SEG_FLT_LINETO:
-                isdbl = false;
-                npoints = 1;
-                segtype = SEG_LINETO;
-                break;
-            case SERIAL_SEG_FLT_QUADTO:
-                isdbl = false;
-                npoints = 2;
-                segtype = SEG_QUADTO;
-                break;
-            case SERIAL_SEG_FLT_CUBICTO:
-                isdbl = false;
-                npoints = 3;
-                segtype = SEG_CUBICTO;
-                break;
-
-            case SERIAL_SEG_DBL_MOVETO:
-                isdbl = true;
-                npoints = 1;
-                segtype = SEG_MOVETO;
-                break;
-            case SERIAL_SEG_DBL_LINETO:
-                isdbl = true;
-                npoints = 1;
-                segtype = SEG_LINETO;
-                break;
-            case SERIAL_SEG_DBL_QUADTO:
-                isdbl = true;
-                npoints = 2;
-                segtype = SEG_QUADTO;
-                break;
-            case SERIAL_SEG_DBL_CUBICTO:
-                isdbl = true;
-                npoints = 3;
-                segtype = SEG_CUBICTO;
-                break;
-
-            case SERIAL_SEG_CLOSE:
-                isdbl = false;
-                npoints = 0;
-                segtype = SEG_CLOSE;
-                break;
-
-            case SERIAL_PATH_END:
-                if (nT < 0) {
-                    break PATHDONE;
-                }
-                throw new StreamCorruptedException("unexpected PATH_END");
-
-            default:
-                throw new StreamCorruptedException("unrecognized path type");
-            }
-            needRoom(segtype != SEG_MOVETO, npoints * 2);
-            if (isdbl) {
-                while (--npoints >= 0) {
-                    append(s.readDouble(), s.readDouble());
-                }
-            } else {
-                while (--npoints >= 0) {
-                    append(s.readFloat(), s.readFloat());
-                }
-            }
-            pointTypes[numTypes++] = segtype;
-        }
-        if (nT >= 0 && s.readByte() != SERIAL_PATH_END) {
-            throw new StreamCorruptedException("missing PATH_END");
-        }
-    }*/
 
     static abstract class Iterator implements PathIterator {
         int typeIdx;

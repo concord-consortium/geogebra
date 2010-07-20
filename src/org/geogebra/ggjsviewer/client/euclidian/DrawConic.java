@@ -38,6 +38,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.QuadCurve2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
@@ -741,6 +742,8 @@ final public class DrawConic extends Drawable implements Previewable {
             		view.drawEllipse((Ellipse2D.Double) shape);
             	else if (shape instanceof Arc2D.Double)
             		view.drawEllipse((Arc2D.Double) shape);  
+            	else if (shape instanceof Path2D.Double) 
+            		view.drawEllipse((Path2D.Double) shape);
                 if (labelVisible) {
 					view.setFont(view.fontConic); 
 					view.setStroke(conic.getLabelColor());                   
