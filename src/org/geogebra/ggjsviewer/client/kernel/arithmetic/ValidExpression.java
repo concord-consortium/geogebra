@@ -104,5 +104,25 @@ public abstract class ValidExpression implements ExpressionValue {
 	   return false;
 	}
 	
+	public String getLabelForAssignment() {
+		 return getLabel();
+	 }
+	
+	 public String getAssignmentOperatorLaTeX() {
+		 return " \\, : \\! =  \\, ";
+	 }
+	
+	public String toAssignmentLaTeXString() {
+		 if (labels == null) {
+			 return toLaTeXString(true);
+		 }
+		 
+		 StringBuilder sb = new StringBuilder();
+		 sb.append(getLabelForAssignment());
+		 sb.append(getAssignmentOperatorLaTeX());
+		 sb.append(toLaTeXString(true));
+		 return sb.toString();
+	 }
+	
 	
 }

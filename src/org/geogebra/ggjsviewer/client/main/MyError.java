@@ -74,4 +74,9 @@ public class MyError extends java.lang.Error {
         return sb.toString();
     }
 
+	public String getcommandName() {
+		// TODO Auto-generated method stub
+		return "getcommandname not implemented in myerror";
+	}
+
 }

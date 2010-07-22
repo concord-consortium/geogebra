@@ -9,6 +9,7 @@ import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoFunction;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
@@ -17,6 +18,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Equation;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -323,7 +325,7 @@ public class AlgebraProcessor {
 	 * Returns null if something went wrong.
 	 * Michael Borcherds 2008-08-13
 	 */
-/*AG	public NumberValue evaluateToNumeric(String str, boolean suppressErrors) {
+	public NumberValue evaluateToNumeric(String str, boolean suppressErrors) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 
@@ -567,14 +569,14 @@ public class AlgebraProcessor {
 			}
 	
 			// explicit Function in x
-			/*AGelse if (ve instanceof Function) {
+			else if (ve instanceof Function) {
 				ret = processFunction(null, (Function) ve);
 			}						
 	
 			// Parametric Line        
-			else if (ve instanceof Parametric) {
+			/*else if (ve instanceof Parametric) {
 				ret = processParametric((Parametric) ve);
-			}
+			}*/
 	
 //			// Assignment: variable
 //			else if (ve instanceof Assignment) {
@@ -585,7 +587,7 @@ public class AlgebraProcessor {
 		return ret;
 	}
 	
-/*AG
+
 	protected GeoElement[] processFunction(ExpressionNode funNode, Function fun) {		
 		fun.initFunction();		
 		
@@ -604,7 +606,6 @@ public class AlgebraProcessor {
 		ret[0] = f;		
 		return ret;
 	}
-*/
 	protected GeoElement[] processEquation(Equation equ) throws MyError {		
 		//Application.debug("EQUATION: " + equ);        
 		//Application.debug("NORMALFORM POLYNOMIAL: " + equ.getNormalForm());        		

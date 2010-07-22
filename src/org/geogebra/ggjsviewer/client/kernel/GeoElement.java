@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
@@ -4183,6 +4184,79 @@ public abstract class GeoElement
 		setVisualStyle(geo);
 		update();
 	}
+	
+	public String getFormulaString(int ExpressionNodeType, boolean substituteNumbers)
+	{
+		
+		/*
+		 * maybe use this
+		 * doesn't work on f=Factor[x^2-1] Expand[f]
+		if (ExpressionNodeType == ExpressionNode.STRING_TYPE_MathPiper
+				 || ExpressionNodeType == ExpressionNode.STRING_TYPE_JASYMCA) {
+		
+			ExpressionValue ev;
+			if (!this.isExpressionNode()) 
+	            ev = new ExpressionNode(kernel, this);
+			else
+				ev = this;
+			
+			String ret = ((ExpressionNode)
+					ev).getCASstring(ExpressionNodeType,
+					!substituteNumbers);
+			Application.debug(ret);
+			return ret;
+		}
+		*/
+		
+    
+		int tempCASPrintForm = kernel.getCASPrintForm();
+		kernel.setCASPrintForm(ExpressionNodeType);
+
+		String ret="";
+		if (this.isGeoFunctionConditional() && ExpressionNodeType == ExpressionNode.STRING_TYPE_MATH_PIPER) {
+			GeoFunctionConditional geoFun = (GeoFunctionConditional)this;
+			
+			// get in form If(x<3, etc
+			ret = geoFun.toSymbolicString();
+			//Application.debug(ret);
+			
+		} else if (this.isGeoFunction()) {
+			GeoFunction geoFun = (GeoFunction)this;
+	 				   
+	 		if (geoFun.isIndependent()) {
+	 			ret = geoFun.toValueString();
+	 		} else {
+	 			ret = substituteNumbers ?
+	 					geoFun.getFunction().toValueString():
+	 					geoFun.getFunction().toString(); 
+	 		}
+		}
+		// matrices
+		else if (this.isGeoList() && ExpressionNodeType == ExpressionNode.STRING_TYPE_LATEX && ((GeoList)this).isMatrix()) {
+			ret = toLaTeXString(substituteNumbers);
+		}
+		else 
+		{
+			ret = substituteNumbers ? this.toValueString()
+					: this.getCommandDescription();
+		}
+		
+		// GeoNumeric eg a=1
+		if (ret.equals("") && this.isGeoNumeric() && !substituteNumbers && label != null) {
+			ret = label;
+		}
+		if (ret.equals("") && !this.isGeoText()) {
+			// eg Text[ (1,2), false]
+			ret = toOutputValueString();
+		}
+		
+		kernel.setCASPrintForm(tempCASPrintForm);
+		return ret;
+	}
+	
+	 public String getAssignmentOperator() {
+		 return " := ";
+	 }
 
 
 

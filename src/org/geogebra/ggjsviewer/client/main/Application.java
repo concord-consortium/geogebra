@@ -14,8 +14,11 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.Macro;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.plugin.GgbAPI;
 import org.geogebra.ggjsviewer.client.service.JsonHandler;
+import org.geogebra.ggjsviewer.client.util.LowerCaseDictionary;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -27,6 +30,11 @@ public class Application extends BaseApplication {
 	private EuclidianController euclidiancontroller;
 	private MyXMLHandler xmlhandler;
 	//private Hashtable translateCommandTable;
+	private LowerCaseDictionary commandDict;
+	
+	// determines which CAS is being used
+	final public static int CAS_MATHPIPER = ExpressionNode.STRING_TYPE_MATH_PIPER;
+	final public static int CAS_MAXIMA = ExpressionNode.STRING_TYPE_MAXIMA;
 	
 	protected boolean showMenuBar = true;
 	
@@ -236,6 +244,26 @@ public class Application extends BaseApplication {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void removeMacroCommands() {
+		// TODO Auto-generated method stub
+		if (commandDict == null || kernel == null || !kernel.hasMacros())
+			return;
+
+		ArrayList macros = kernel.getAllMacros();
+		for (int i = 0; i < macros.size(); i++) {
+			String cmdName = ((Macro) macros.get(i)).getCommandName();
+			commandDict.removeEntry(cmdName);
+		}
+		
+	}
+
+	public void showError(MyError e) {
+		String command = e.getcommandName();
+		GWT.log(command+" Application.showError");
+
+	}
+
 
 
 }

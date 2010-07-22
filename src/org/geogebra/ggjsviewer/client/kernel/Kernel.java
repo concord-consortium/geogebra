@@ -25,9 +25,11 @@ import java.util.LinkedHashMap;
 import java.util.Stack;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.cas.GeoGebraCAS;
 import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNodeEvaluator;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
@@ -184,6 +186,7 @@ public class Kernel {
 	
 	// angle unit: degree, radians
 	private int angleUnit = Kernel.ANGLE_DEGREE;
+	public static int DEFAULT_CAS = Application.CAS_MATHPIPER; // default
 	
 	// rounding hack, see format()
 	private static final double ROUND_HALF_UP_FACTOR_DEFAULT = 1.0 + 1E-15;
@@ -258,7 +261,7 @@ public class Kernel {
 	
 	// Continuity on or off, default: false since V3.0
 	private boolean continuous = false;
-	//AGprivate MacroManager macroManager;
+	private MacroManager macroManager;
 	
 	
 	/** Evaluator for ExpressionNode */
@@ -613,15 +616,21 @@ public class Kernel {
 	}*/
 	
 	final public void setCASPrintForm(int type) {
-		casPrintForm = type;
+casPrintForm = type;
 		
 		switch (casPrintForm) {
-			case 3: //ExpressionNode.STRING_TYPE_MATH_PIPER:
-				casPrintFormPI = "Pi";
-				
-			case 2: //ExpressionNode.STRING_TYPE_JASYMCA:
-			case 0: //ExpressionNode.STRING_TYPE_GEOGEBRA_XML:
+		case ExpressionNode.STRING_TYPE_MATH_PIPER:
+			casPrintFormPI = "Pi";
+			break;
+			
+		case ExpressionNode.STRING_TYPE_MAXIMA:
+			casPrintFormPI = "%pi";
+			break;
+			
+			case ExpressionNode.STRING_TYPE_JASYMCA:
+			case ExpressionNode.STRING_TYPE_GEOGEBRA_XML:
 				casPrintFormPI = "pi";
+				break;
 		
 			default:
 				casPrintFormPI = PI_STRING;
@@ -789,7 +798,7 @@ public class Kernel {
 				return null; //AGnew GeoConic(cons);     			
     				
     		case 'f': // function
-    			return null;//AGnew GeoFunction(cons);
+    			return new GeoFunction(cons);
     		
     		case 'h': // hyperbola			//  bug in GeoGebra 2.6c
 				return null; //AGnew GeoConic(cons);     			
@@ -1008,9 +1017,9 @@ public class Kernel {
 	}
 
 	public void clearConstruction() {		
-		/*AGif (macroManager != null)
+		if (macroManager != null)
 			macroManager.setAllMacrosUnused();
-		
+		/*AG
 		// clear animations
 		if (animationManager != null) {
 			animationManager.stopAnimation();
@@ -1345,37 +1354,37 @@ public class Kernel {
 	 * Creates a new macro within the kernel. A macro is a user defined
 	 * command in GeoGebra.
 	 */
-	/*AGpublic void addMacro(Macro macro) {
+	public void addMacro(Macro macro) {
 		if (macroManager == null) {
 			macroManager = new MacroManager();
 		}						
 		macroManager.addMacro(macro);				
-	}*/
+	}
 	
 	/**
 	 * Removes a macro from the kernel.
 	 */
-	/*AGpublic void removeMacro(Macro macro) {
+	public void removeMacro(Macro macro) {
 		if (macroManager != null)								
 			macroManager.removeMacro(macro);
 	}
-	*/
+	
 	/**
 	 * Removes all macros from the kernel. 
 	 */
-	/*AGpublic void removeAllMacros() {
+	public void removeAllMacros() {
 		if (macroManager != null) {								
-			app.removeMacroCommands();			
+			bApp.removeMacroCommands();			
 			macroManager.removeAllMacros();			
 		}
-	}*/
+	}
 	
 	/**
 	 * Sets the command name of a macro. Note: if the given name is
 	 * already used nothing is done.
 	 * @return if the command name was really set
 	 */
-	/*AGpublic boolean setMacroCommandName(Macro macro, String cmdName) {
+	public boolean setMacroCommandName(Macro macro, String cmdName) {
 		boolean nameUsed = macroManager.getMacro(cmdName) != null;
 		if (nameUsed || cmdName == null || cmdName.length() == 0) 
 			return false;
@@ -1383,40 +1392,35 @@ public class Kernel {
 		macroManager.setMacroCommandName(macro, cmdName);		
 		return true;		
 	}
-	*/
 	/**
 	 * Returns the macro object for a given macro name.
 	 * Note: null may be returned.
 	 */
-	/*AG
 	public Macro getMacro(String name) {
 		return (macroManager == null) ? null : macroManager.getMacro(name);		
 	}		
-	*/
 	/**
 	 * Returns the number of currently registered macros
 	 */
-	/*AGpublic int getMacroNumber() {
+	public int getMacroNumber() {
 		if (macroManager == null)
 			return 0;
 		else
 			return macroManager.getMacroNumber();
 	}
-	*/
 	/**
 	 * Returns a list with all currently registered macros.
 	 */
-	/*AGpublic ArrayList getAllMacros() {
+	public ArrayList getAllMacros() {
 		if (macroManager == null)
 			return null;
 		else
 			return macroManager.getAllMacros();
 	}
-	*/
+	
 	/**
 	 * Returns i-th registered macro
 	 */
-	/*AG
 	public Macro getMacro(int i) {
 		try {
 			return macroManager.getMacro(i);
@@ -1424,14 +1428,12 @@ public class Kernel {
 			return null;
 		}		
 	}
-	*/
 	/**
 	 * Returns the ID of the given macro.
 	 */
-	/*AGpublic int getMacroID(Macro macro) {
+	public int getMacroID(Macro macro) {
 		return (macroManager == null) ? -1 : macroManager.getMacroID(macro);	
 	}
-	*/
 	/**
 	 * Creates a new algorithm that uses the given macro.
 	 * @return output of macro algorithm
@@ -1451,21 +1453,18 @@ public class Kernel {
 	 * 
 	 * @return
 	 */
-	/*AGpublic String getMacroXML(ArrayList macros) {
+	public String getMacroXML(ArrayList macros) {
 		if (hasMacros())					
 			return MacroManager.getMacroXML(macros);
 		else
 			return "";
 	}
-	*/
 	/**
 	 * Returns whether any macros have been added to this kernel. 
 	 */
-	/*AG
 	public boolean hasMacros() {
 		return (macroManager != null && macroManager.getMacroNumber() > 0);
 	}
-	*/
 
 	/***********************************
 	 * FACTORY METHODS FOR GeoElements
@@ -1548,12 +1547,11 @@ public class Kernel {
 	*/
 	/** Function in x,  e.g. f(x) = 4 x� + 3 x�
 	 */
-	/*AG
+
 	final public GeoFunction Function(String label, Function fun) {
 		GeoFunction f = new GeoFunction(cons, label, fun);
 		return f;
 	}
-	*/
 	/*AG
 	final public GeoText Text(String label, String text) {
 		GeoText t = new GeoText(cons);
@@ -1642,13 +1640,13 @@ public class Kernel {
 	 * If-then-else construct for functions. 
 	 *  example: If[ x < 2, x^2, x + 2 ]
 	 */
-	/*AGfinal public GeoFunction If(String label, 
+	final public GeoFunction If(String label, 
 			GeoFunction boolFun,
 			GeoFunction ifFun, GeoFunction elseFun) {
 		
 		AlgoIfFunction algo = new AlgoIfFunction(cons, label, boolFun, ifFun, elseFun);
 		return algo.getGeoFunction();
-	}	*/
+	}
 	
 	/** 
 	 * If-then-else construct for functions. 
@@ -1759,13 +1757,13 @@ public class Kernel {
 	/** Function dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. f(x) = a x� + b x�
 	 */
-	/*AGfinal public GeoFunction DependentFunction(
+	final public GeoFunction DependentFunction(
 		String label,
 		Function fun) {
 		AlgoDependentFunction algo = new AlgoDependentFunction(cons, label, fun);
 		GeoFunction f = algo.getFunction();
 		return f;
-	}*/
+	}
 	
 	/** Text dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. text = "Radius: " + r
@@ -6503,6 +6501,74 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
 	return num;
 
 	}
+	
+	/**
+	 * Sets whether unknown variables should be resolved as GeoDummyVariable objects. 
+	 */
+	public final void setResolveUnkownVarsAsDummyGeos(boolean resolveUnkownVarsAsDummyGeos) {
+		this.resolveUnkownVarsAsDummyGeos = resolveUnkownVarsAsDummyGeos;				
+	}
+	
+
+	
+	
+	
+	/**
+	 * Returns this kernel's GeoGebraCAS object.
+	 */
+	public synchronized Object getGeoGebraCAS() {
+		if (ggbCAS == null) {
+			ggbCAS = new org.geogebra.ggjsviewer.client.cas.GeoGebraCAS(this);
+		}			
+		
+		return ggbCAS;
+	}
+	
+	/** 
+	 * Evaluates an expression in MathPiper syntax with.
+     * @return result string (null possible)
+	 * @throws Throwable 
+     */
+	final public String evaluateMathPiper(String exp) {
+		if (ggbCAS == null) {
+			getGeoGebraCAS();		
+		}
+		
+		return ((org.geogebra.ggjsviewer.client.cas.GeoGebraCAS) ggbCAS).evaluateMathPiper(exp);
+	}	
+	
+	final public int getCurrentCAS() {
+		return ((GeoGebraCAS)getGeoGebraCAS()).currentCAS;
+	}
+	
+	/** 
+	 * Evaluates an expression in GeoGebraCAS syntax.
+     * @return result string (null possible)
+	 * @throws Throwable 
+     */
+	final public String evaluateGeoGebraCAS(String exp) throws Throwable {
+		if (ggbCAS == null) {
+			getGeoGebraCAS();		
+		}
+		
+		return ((org.geogebra.ggjsviewer.client.cas.GeoGebraCAS) ggbCAS).evaluateGeoGebraCAS(exp);
+	}	
+	
+	/**
+     * Finds the polynomial coefficients of
+     * the given expression and returns it in ascending order. 
+     * If exp is not a polynomial null is returned.
+     * 
+     * example: getPolynomialCoeffs("3*a*x^2 + b"); returns
+     * ["0", "b", "3*a"]
+     */
+    final public String [] getPolynomialCoeffs(String exp, String variable) {
+    	if (ggbCAS == null) {
+    		getGeoGebraCAS();					
+		}
+    	
+    	return ((org.geogebra.ggjsviewer.client.cas.GeoGebraCAS) ggbCAS).getPolynomialCoeffs(exp, variable);
+    }
 
 
 }
