@@ -15,6 +15,6 @@ package org.geogebra.ggjsviewer.client.kernel;
 
 public interface GeoFunctionable {
 	
-	//AGpublic GeoFunction getGeoFunction();	
+	public GeoFunction getGeoFunction();	
 	public GeoElement toGeoElement();
 }

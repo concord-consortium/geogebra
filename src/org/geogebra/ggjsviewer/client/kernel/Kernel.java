@@ -3731,19 +3731,19 @@ casPrintForm = type;
 	/** 
 	 * Intersects f and g using starting point A (with Newton's root finding)
 	 */
-	/*AGfinal public GeoPoint IntersectFunctions(
+	final public GeoPoint IntersectFunctions(
 			String label,
 			GeoFunction f,
 			GeoFunction g, GeoPoint A) {
 		AlgoIntersectFunctionsNewton algo = new AlgoIntersectFunctionsNewton(cons, label, f, g, A);
 		GeoPoint S = algo.getIntersectionPoint();
 		return S;
-	}*/
+	}
 	
 	/** 
 	 * Intersects f and l using starting point A (with Newton's root finding)
 	 */
-	/*AGfinal public GeoPoint IntersectFunctionLine(
+	final public GeoPoint IntersectFunctionLine(
 			String label,
 			GeoFunction f,
 			GeoLine l, GeoPoint A) {
@@ -3751,7 +3751,7 @@ casPrintForm = type;
 		AlgoIntersectFunctionLineNewton algo = new AlgoIntersectFunctionLineNewton(cons, label, f, l, A);
 		GeoPoint S = algo.getIntersectionPoint();
 		return S;
-	}*/
+	}
 	
 	/*********************************************
 	 * CONIC PART
@@ -4147,7 +4147,7 @@ casPrintForm = type;
 	 * get only one intersection point of two polynomials a, b 
 	 * that is near to the given location (xRW, yRW)	 
 	 */
-	/*AGfinal public GeoPoint IntersectPolynomialsSingle(
+	final public GeoPoint IntersectPolynomialsSingle(
 		String label, GeoFunction a, GeoFunction b, 
 		double xRW, double yRW) 
 	{
@@ -4158,13 +4158,13 @@ casPrintForm = type;
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, index);
 		GeoPoint point = salgo.getPoint();
 		return point;
-	}*/
+	}
 	
 	/** 
 	 * get only one intersection point of two polynomials a, b 
 	 * with given index	 
 	 */
-	/*AGfinal public GeoPoint IntersectPolynomialsSingle(
+	final public GeoPoint IntersectPolynomialsSingle(
 		String label,
 		GeoFunction a,
 		GeoFunction b, NumberValue index) {
@@ -4174,7 +4174,7 @@ casPrintForm = type;
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, (int) index.getDouble() - 1);
 		GeoPoint point = salgo.getPoint();
 		return point;
-	}*/
+	}
 	
 	/** 
 	 * IntersectPolyomialLine yields all intersection points
@@ -4207,7 +4207,7 @@ casPrintForm = type;
 	/** 
 	 * one intersection point of polynomial f and line l near to (xRW, yRW)
 	 */
-	/*AGfinal public GeoPoint IntersectPolynomialLineSingle(
+	final public GeoPoint IntersectPolynomialLineSingle(
 			String label,		
 			GeoFunction f,
 			GeoLine l, double xRW, double yRW) {
@@ -4219,7 +4219,7 @@ casPrintForm = type;
 		AlgoIntersectSingle salgo = new AlgoIntersectSingle(label, algo, index);
 		GeoPoint point = salgo.getPoint();
 		return point;		
-	}	*/
+	}
 	
 	/** 
 	 * get only one intersection point of a line and a function 
@@ -4350,7 +4350,7 @@ casPrintForm = type;
 	 }
 	 
 	 // intersection of polynomials
-	 /*AGAlgoIntersectPolynomials getIntersectionAlgorithm(GeoFunction a, GeoFunction b) {
+	 AlgoIntersectPolynomials getIntersectionAlgorithm(GeoFunction a, GeoFunction b) {
 		AlgoElement existingAlgo = findExistingIntersectionAlgorithm(a, b);
 		if (existingAlgo != null) return (AlgoIntersectPolynomials) existingAlgo;
 		
@@ -4359,10 +4359,10 @@ casPrintForm = type;
 		algo.setPrintedInXML(false);
 		intersectionAlgos.add(algo); // remember this algorithm
 		return algo;
-	 }*/
+	 }
 	 
 	 // intersection of polynomials
-	/*AG AlgoIntersectPolynomialLine getIntersectionAlgorithm(GeoFunction a, GeoLine l) {
+	AlgoIntersectPolynomialLine getIntersectionAlgorithm(GeoFunction a, GeoLine l) {
 		AlgoElement existingAlgo = findExistingIntersectionAlgorithm(a, l);
 		if (existingAlgo != null) return (AlgoIntersectPolynomialLine) existingAlgo;
 		
@@ -4371,7 +4371,7 @@ casPrintForm = type;
 		algo.setPrintedInXML(false);
 		intersectionAlgos.add(algo); // remember this algorithm
 		return algo;
-	 }*/
+	 }
 	  
 	 private AlgoElement findExistingIntersectionAlgorithm(GeoElement a, GeoElement b) {
 		int size = intersectionAlgos.size();

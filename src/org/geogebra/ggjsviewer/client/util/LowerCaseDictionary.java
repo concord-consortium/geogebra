@@ -1,6 +1,7 @@
 package org.geogebra.ggjsviewer.client.util;
 
-import java.util.Hashtable;
+
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -11,7 +12,7 @@ import java.util.TreeSet;
  * default sorting.
  * All lookups are case insensitive!
  */
-public class LowerCaseDictionary extends Hashtable implements AutoCompleteDictionary {
+public class LowerCaseDictionary extends HashMap implements AutoCompleteDictionary {
 	
   private static final long serialVersionUID = 1L;
 
