@@ -8,10 +8,16 @@ import java.util.Set;
 import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
+import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoFunction;
+import org.geogebra.ggjsviewer.client.kernel.GeoFunctionable;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
+import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec3D;
+import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.BooleanValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
@@ -22,8 +28,10 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Parametric;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Polynomial;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.VectorValue;
 import org.geogebra.ggjsviewer.client.kernel.parser.ParseException;
 import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -187,7 +195,7 @@ public class AlgebraProcessor {
 			throw e;
 		} catch (Exception ex) {
 			//ex.printStackTrace();
-			throw new Exception("InvalidInput");
+			throw new Exception("InvalidInput",ex);
 		}
 		return geoElements;
 	}
@@ -574,9 +582,9 @@ public class AlgebraProcessor {
 			}						
 	
 			// Parametric Line        
-			/*else if (ve instanceof Parametric) {
+			else if (ve instanceof Parametric) {
 				ret = processParametric((Parametric) ve);
-			}*/
+			}
 	
 //			// Assignment: variable
 //			else if (ve instanceof Assignment) {
@@ -625,8 +633,8 @@ public class AlgebraProcessor {
 	
 				// quadratic equation -> CONIC                                  
 				case 2 :
-					//return processConic(equ);
-					GWT.log("processConic needed");
+					return processConic(equ);
+					//GWT.log("processConic needed");
 	
 				case 3 :
 				case 4 ://
@@ -646,7 +654,7 @@ public class AlgebraProcessor {
 			
         	// invalid equation: maybe a function of form "y = <rhs>"?			
 			String lhsStr = equ.getLHS().toString().trim();
-			/*AGif (lhsStr.equals("y")) {
+			if (lhsStr.equals("y")) {
 				try {
 					// try to create function from right hand side
 					Function fun = new Function(equ.getRHS());
@@ -658,7 +666,7 @@ public class AlgebraProcessor {
 				catch (MyError funError) {
 					funError.printStackTrace();
 				}        
-			} */
+			}
 			
 			// throw invalid equation error if we get here
 			if (eqnError.getMessage() == "InvalidEquation")
@@ -688,9 +696,7 @@ public class AlgebraProcessor {
 			c = lhs.getCoeffValue("");
 			line = kernel.Line(label, a, b, c);
 		} else
-			//AGline = kernel.DependentLine(label, equ);
-			line = null;
-			GWT.log("kernel.dependentLine needed Algebraprocessor 681");
+			line = kernel.DependentLine(label, equ);
 		if (isExplicit) {
 			line.setToExplicit();
 			line.updateRepaint();
@@ -699,7 +705,7 @@ public class AlgebraProcessor {
 		return ret;
 	}
 
-	/*protected GeoElement[] processConic(Equation equ) {
+	protected GeoElement[] processConic(Equation equ) {
 		double a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
 		GeoElement[] ret = new GeoElement[1];
 		GeoConic conic;
@@ -731,7 +737,7 @@ public class AlgebraProcessor {
 		return ret;
 	}
 
-	protected GeoElement[] processCubic(Equation equ) {
+	/*AGprotected GeoElement[] processCubic(Equation equ) {
 		double a = 0, b = 0, c = 0, d = 0, e = 0, f = 0, g = 0, h = 0, i = 0, j = 0, k = 0 , l = 0, m = 0, n = 0, o = 0, p = 0;
 		GeoElement[] ret = new GeoElement[1];
 		GeoCubic cubic = null;
@@ -762,7 +768,7 @@ public class AlgebraProcessor {
 		ret[0] = cubic;
 		return ret;
 	}
-
+*/
 	private GeoElement[] processParametric(Parametric par)
 		throws CircularDefinitionException {
 		
@@ -781,7 +787,7 @@ public class AlgebraProcessor {
         } */       
 		
 		// point and vector are created silently
-/*AG		boolean oldMacroMode = cons.isSuppressLabelsActive();
+		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 
 		// get point
@@ -818,7 +824,7 @@ public class AlgebraProcessor {
 	
 	
 
-*/
+
 	protected GeoElement[] processExpressionNode(ExpressionNode n) throws MyError {					
 		// command is leaf: process command
 		if (n.isLeaf()) {
@@ -833,9 +839,9 @@ public class AlgebraProcessor {
 				 eqn.setLabels(n.getLabels());
 				 return processEquation(eqn);
 			 }
-			/*AG else if (leaf instanceof Function) {
+			else if (leaf instanceof Function) {
 				return processFunction(n, (Function) leaf);			
-			} */
+			}
 		}											
 		
 		// ELSE:  resolve variables and evaluate expressionnode		
@@ -872,12 +878,12 @@ public class AlgebraProcessor {
 		else if (eval.isNumberValue())
 			return processNumber(n, eval);
 		else if (eval.isVectorValue())
-			//AGreturn processPointVector(n, eval);
-			GWT.log("processPointVector needed");
+			return processPointVector(n, eval);
+			//GWT.log("processPointVector needed");
 
 		else if (eval.isVector3DValue())
-			//AG return processPointVector3D(n, eval);
-			GWT.log("isVector3DValue() found CommandProcessor");
+			return processPointVector3D(n, eval);
+			//GWT.log("isVector3DValue() found CommandProcessor");
 		else if (eval.isTextValue())
 			GWT.log("processText neede");
 		//AG	return processText(n, eval);				
@@ -931,9 +937,9 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentNumber(label, n, isAngle);
 		}	
 		
-		/*AGif (n.isForcedFunction()) {
+		if (n.isForcedFunction()) {
 			ret[0] = ((GeoFunctionable)(ret[0])).getGeoFunction();
-		}*/
+		}
 		
 		return ret;
 	}
@@ -1012,7 +1018,7 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentBoolean(label, n);
 		return ret;
 	}
-	/*AG
+	
 	private GeoElement[] processPointVector(
 		ExpressionNode n,
 		ExpressionValue evaluate) {
@@ -1078,17 +1084,16 @@ public class AlgebraProcessor {
 	 * @param evaluate
 	 * @return null
 	 */
-/*AG	protected GeoElement[] processPointVector3D(
+	protected GeoElement[] processPointVector3D(
 			ExpressionNode n,
 			ExpressionValue evaluate) {
 
 		return null;
-	}
-*/		
+	}	
 	/** 
 	 * Creates a dependent copy of origGeo with label
 	 */
-/*AG	private GeoElement[] processGeoCopy(String copyLabel, ExpressionNode origGeoNode) {
+	private GeoElement[] processGeoCopy(String copyLabel, ExpressionNode origGeoNode) {
 		GeoElement[] ret = new GeoElement[1];
 		ret[0] = kernel.DependentGeoCopy(copyLabel, origGeoNode);		
 		return ret;

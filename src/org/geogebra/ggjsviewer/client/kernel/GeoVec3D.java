@@ -114,15 +114,23 @@ implements Traceable {
 		return trace;
 	}
     
+    //G.Sturr 2010-5-14: no longer needed
+	/*
 	public void setSpreadsheetTrace(boolean spreadsheetTrace) {
 		this.spreadsheetTrace = spreadsheetTrace;
 		
 		if (spreadsheetTrace) resetTraceColumns();
 	}
+	 
+	
 
 	public boolean getSpreadsheetTrace() {
 		return spreadsheetTrace;
 	}
+	
+	*/
+	//END G.Sturr
+	
 	
     /** Yields true if this vector and v are linear dependent 
      * This is done by calculating the cross product
@@ -225,6 +233,16 @@ implements Traceable {
 							 u.x * vy - u.y * vx );                                 
     }
     
+    /** Calculates the cross product of vectors u and v.
+     * The result is stored in w.
+     */
+    final public static void cross(double ux, double uy, double uz, 
+                                   double vx, double vy, double vz, GeoVec3D w) {
+		w.setCoords( uy * vz - uz * vy, 
+							 uz * vx - ux * vz,  
+							 ux * vy - uy * vx );                                 
+    }
+    
      /** Calculates the inner product of this vector and vector v.
      */
     final public double inner(GeoVec3D v) {
@@ -284,26 +302,23 @@ implements Traceable {
      * returns all class-specific xml tags for saveXML
      * Geogebra File Format
      */
-   /*AG protected String getXMLtags() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getXMLtags());
+	protected void getXMLtags(StringBuilder sb) {
+        super.getXMLtags(sb);
         
         sb.append("\t<coords");
                 sb.append(" x=\"" + x + "\"");
                 sb.append(" y=\"" + y + "\"");
                 sb.append(" z=\"" + z + "\"");
         sb.append("/>\n");
-        
-        return sb.toString();
-    }*/
+
+    }
 
     /**
      * returns all class-specific i2g tags for saveI2G
      * Intergeo File Format (Yves Kreis)
      */
-    protected String getI2Gtags() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.getI2Gtags());
+    protected void getI2Gtags(StringBuilder sb) {
+        super.getI2Gtags();
 
         sb.append("\t\t\t<homogeneous_coordinates>\n");
         		sb.append("\t\t\t\t<double>" + x + "</double>\n");
@@ -311,7 +326,6 @@ implements Traceable {
         		sb.append("\t\t\t\t<double>" + z + "</double>\n");
         sb.append("\t\t\t</homogeneous_coordinates>\n");
         
-        return sb.toString();
     }
     
 	public boolean isNumberValue() {

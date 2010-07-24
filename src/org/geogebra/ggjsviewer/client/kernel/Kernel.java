@@ -27,6 +27,7 @@ import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.cas.GeoGebraCAS;
 import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Equation;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNodeEvaluator;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
@@ -778,47 +779,47 @@ casPrintForm = type;
     			
     		case 'b': //angle
     			if (type.equals("boolean"))
-    				return null; //AG new GeoBoolean(cons);
+    				return new GeoBoolean(cons);
     			else
         			return null; //AGnew GeoButton(cons); // "button"
     		
     		case 'c': // conic
     			if (type.equals("conic"))
-    				return null; //AGnew GeoConic(cons);   
+    				return new GeoConic(cons);   
     			else if (type.equals("conicpart"))    					
     				return null; //AGnew GeoConicPart(cons, 0);
     			else if (type.equals("circle")) { // bug in GeoGebra 2.6c
-    				return null; //AGnew GeoConic(cons);
+    				return new GeoConic(cons);
     			}
     			
     		case 'd': // doubleLine 			// bug in GeoGebra 2.6c
-    			return null; //AGnew GeoConic(cons);    			
+    			return new GeoConic(cons);    			
     			
     		case 'e': // ellipse, emptyset	//  bug in GeoGebra 2.6c
-				return null; //AGnew GeoConic(cons);     			
+				return new GeoConic(cons);     			
     				
     		case 'f': // function
     			return new GeoFunction(cons);
     		
     		case 'h': // hyperbola			//  bug in GeoGebra 2.6c
-				return null; //AGnew GeoConic(cons);     			
+				return new GeoConic(cons);     			
     			
     		case 'i': // image
     			if (type.equals("image"))    				
     				return null; //AGnew GeoImage(cons);
     			else if (type.equals("intersectinglines")) //  bug in GeoGebra 2.6c
-    				return null; //AGnew GeoConic(cons);
+    				return new GeoConic(cons);
     		
     		case 'l': // line, list, locus
     			if (type.equals("line"))
     				return new GeoLine(cons);
     			else if (type.equals("list"))
-    				return null; //AGnew GeoList(cons);    			
+    				return new GeoList(cons);    			
     			else 
     				return null; //AGnew GeoLocus(cons);
     		
     		case 'n': // numeric
-    			return null; //AGnew GeoNumeric(cons);
+    			return new GeoNumeric(cons);
     			
     		case 'p': // point, polygon
     			if (type.equals("point")) 
@@ -826,7 +827,7 @@ casPrintForm = type;
     			else if (type.equals("polygon"))
     				return new GeoPolygon(cons, null);
     			else // parabola, parallelLines, point //  bug in GeoGebra 2.6c
-    				return null; //AGnew GeoConic(cons);
+    				return new GeoConic(cons);
     			
     		case 'r': // ray
     			return new GeoRay(cons, null);
@@ -841,7 +842,7 @@ casPrintForm = type;
         			return null; //AGnew GeoTextField(cons); // textfield
    			
     		case 'v': // vector
-				return null; //AG new GeoVector(cons);
+				return  new GeoVector(cons);
     		
     		default:    			
     			throw new Error(/*AGcons.getBaseApplication(),*/"Kernel: GeoElement of type "
@@ -1438,7 +1439,7 @@ casPrintForm = type;
 	 * Creates a new algorithm that uses the given macro.
 	 * @return output of macro algorithm
 	 */
-	/*AGfinal public GeoElement [] useMacro(String [] labels, Macro macro, GeoElement [] input) {		
+	final public GeoElement [] useMacro(String [] labels, Macro macro, GeoElement [] input) {		
 		try {
 			AlgoMacro algo = new AlgoMacro(cons, labels, macro, input);
 			return algo.getOutput();
@@ -1447,7 +1448,6 @@ casPrintForm = type;
 			return null;
 		}						
 	}
-	*/
 	/**
 	 * Returns an XML represenation of the given macros in this kernel.
 	 * 
@@ -1504,14 +1504,13 @@ casPrintForm = type;
 	}
 
 	/** Vector label with cartesian coordinates (x,y)   */
-	/*AGfinal public GeoVector Vector(String label, double x, double y) {
+	final public GeoVector Vector(String label, double x, double y) {
 		GeoVector v = new GeoVector(cons);
 		v.setCoords(x, y, 0.0);
 		v.setMode(COORD_CARTESIAN);
 		v.setLabel(label); // invokes add()                
 		return v;
 	}
-	*/
 	/** Line a x + b y + c = 0 named label */
 	
 	final public GeoLine Line(
@@ -1524,7 +1523,6 @@ casPrintForm = type;
 	}
 
 	/** Conic label with equation ax� + bxy + cy� + dx + ey + f = 0  */
-	/*AG
 	final public GeoConic Conic(
 		String label,
 		double a,
@@ -1537,7 +1535,7 @@ casPrintForm = type;
 		GeoConic conic = new GeoConic(cons, label, coeffs);
 		return conic;
 	}
-	*/
+
 	/** Converts number to angle */
 	/*AGfinal public GeoAngle Angle(String label, GeoNumeric num) {
 		AlgoAngleNumeric algo = new AlgoAngleNumeric(cons, label, num);
@@ -1717,42 +1715,42 @@ casPrintForm = type;
 	/** Point dependent on arithmetic expression with variables,
 	 * represented by a tree. e.g. P = (4t, 2s)
 	 */
-	/*AGfinal public GeoPoint DependentPoint(
+	final public GeoPoint DependentPoint(
 		String label,
 		ExpressionNode root, boolean complex) {
 		AlgoDependentPoint algo = new AlgoDependentPoint(cons, label, root, complex);
 		GeoPoint P = algo.getPoint();
 		return P;
-	}*/
+	}
 
 	/** Vector dependent on arithmetic expression with variables,
 	 * represented by a tree. e.g. v = u + 3 w
 	 */
-	/*AGfinal public GeoVector DependentVector(
+	final public GeoVector DependentVector(
 		String label,
 		ExpressionNode root) {
 		AlgoDependentVector algo = new AlgoDependentVector(cons, label, root);
 		GeoVector v = algo.getVector();
 		return v;
-	}*/
+	}
 
 	/** Line dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. y = k x + d
 	 */
-	/*AGfinal public GeoLine DependentLine(String label, Equation equ) {
+	final public GeoLine DependentLine(String label, Equation equ) {
 		AlgoDependentLine algo = new AlgoDependentLine(cons, label, equ);
 		GeoLine line = algo.getLine();
 		return line;
-	}*/
+	}
 	
 	/** Conic dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. y� = 2 p x 
 	 */
-	/*AGfinal public GeoConic DependentConic(String label, Equation equ) {
+	final public GeoConic DependentConic(String label, Equation equ) {
 		AlgoDependentConic algo = new AlgoDependentConic(cons, label, equ);
 		GeoConic conic = algo.getConic();
 		return conic;
-	}*/
+	}
 
 	/** Function dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. f(x) = a x� + b x�
@@ -1780,10 +1778,10 @@ casPrintForm = type;
 	/** 
 	 * Creates a dependent copy of origGeo with label
 	 */
-	/*AGfinal public GeoElement DependentGeoCopy(String label, ExpressionNode origGeoNode) {
+	final public GeoElement DependentGeoCopy(String label, ExpressionNode origGeoNode) {
 		AlgoDependentGeoCopy algo = new AlgoDependentGeoCopy(cons, label, origGeoNode);
 		return algo.getGeo();
-	}*/
+	}
 	
 	/** 
 	 * Name of geo.
@@ -4083,11 +4081,11 @@ casPrintForm = type;
 	/** 
 	 * conic through five points
 	 */
-	/*AGfinal public GeoConic Conic(String label, GeoPoint[] points) {
+	final public GeoConic Conic(String label, GeoPoint[] points) {
 		AlgoConicFivePoints algo = new AlgoConicFivePoints(cons, label, points);
 		GeoConic conic = algo.getConic();
 		return conic;
-	}*/
+	}
 
 	/** 
 	 * IntersectLineConic yields intersection points named label1, label2

@@ -26,6 +26,8 @@ import java.util.TreeSet;
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.FunctionVariable;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 
@@ -591,7 +593,7 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animata
 	 * Creates a GeoFunction of the form f(x) = thisNumber 
 	 * @return
 	 */	
-	/*AGpublic GeoFunction getGeoFunction() {
+	public GeoFunction getGeoFunction() {
 		ExpressionNode en = new ExpressionNode(kernel, this);
 		Function fun = new Function(en, new FunctionVariable(kernel));			
 		GeoFunction ret;
@@ -609,7 +611,7 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animata
 		}					
 				
 		return ret;
-	}*/
+	}
 	
 	public boolean isGeoFunctionable() {
 		return true;

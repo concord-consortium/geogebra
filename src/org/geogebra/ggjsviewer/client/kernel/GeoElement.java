@@ -1235,7 +1235,7 @@ public abstract class GeoElement
 			case GEO_CLASS_POLYGON:
 				return containsOnlyMoveableGeos(getFreeInputPoints());
 				
-			/*AGcase GEO_CLASS_VECTOR:
+			case GEO_CLASS_VECTOR:
 				if (hasOnlyFreeInputPoints() && containsOnlyMoveableGeos(getFreeInputPoints())) {
 					// check if first free input point is start point of vector
 					ArrayList freeInputPoints = getFreeInputPoints();
@@ -1245,7 +1245,7 @@ public abstract class GeoElement
 						return (firstInputPoint == startPoint);
 					}
 				}
-				break;	*/			
+				break;			
 		}
 		
 		return false;
@@ -2414,7 +2414,7 @@ public abstract class GeoElement
 	 * Returns all predecessors of this GeoElement that are random numbers
 	 * and don't have labels.
 	 */
-	/*AGpublic ArrayList getRandomNumberPredecessorsWithoutLabels() {		
+	public ArrayList getRandomNumberPredecessorsWithoutLabels() {		
 		if (isIndependent()) 
 			return null;
 		else {
@@ -2436,7 +2436,7 @@ public abstract class GeoElement
 			
 			return randNumbers;
 		}
-	}*/	
+	}
 		
 	/**
 	 * Returns all predecessors (of type GeoElement) that this object depends on.

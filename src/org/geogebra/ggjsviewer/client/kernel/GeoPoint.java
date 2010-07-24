@@ -23,6 +23,7 @@ package org.geogebra.ggjsviewer.client.kernel;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
@@ -31,6 +32,8 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.VectorValue;
 
+
+
 /**
  * 2D Point
  * @author  Markus
@@ -38,7 +41,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.VectorValue;
  */
 final public class GeoPoint extends GeoVec3D 
 implements VectorValue, 
-Translateable, PointRotateable, /*AGMirrorable,*/ Dilateable, PointProperties,
+Translateable, PointRotateable, Mirrorable, Dilateable, PointProperties,
 GeoPointInterface {   	
 	
 	private static final long serialVersionUID = 1L;
@@ -147,11 +150,11 @@ GeoPointInterface {
 	    	setCoords(p.x, p.y, p.z);     
 	    	setMode(p.toStringMode); // complex etc
     	}
-    	/*AGelse if (geo.isGeoVector()) {
+    	else if (geo.isGeoVector()) {
     		GeoVector v = (GeoVector) geo; 
     		setCoords(v.x, v.y, 1d);   
 	    	setMode(v.toStringMode); // complex etc
-    	}*/
+    	}
     } 
     
     
@@ -204,7 +207,7 @@ GeoPointInterface {
 		
 		// if we drag a AlgoDynamicCoordinates, we want its point to be dragged
 		AlgoElement algo = getParentAlgorithm();
-		//AGif (algo != null && algo instanceof AlgoDynamicCoordinates) return true;
+		if (algo != null && algo instanceof AlgoDynamicCoordinates) return true;
 
 		return !isFixed() && (isIndependent() || isPointOnPath() || isPointInRegion()); 
 	}	 
@@ -226,10 +229,10 @@ GeoPointInterface {
 		
 		if (num1 == null || num2 == null) return false;
 	
-	/*AG	boolean ret = ((GeoNumeric)num1).isChangeable() && 
-				((GeoNumeric)num2).isChangeable();*/
+		boolean ret = ((GeoNumeric)num1).isChangeable() && 
+				((GeoNumeric)num2).isChangeable();
 
-		return true; //AG return ret
+		return ret;
 	}
 	
 	
@@ -292,7 +295,7 @@ GeoPointInterface {
 	 * For "a + x(A)" this returns a, for "x(A)" this returns null where A is a free point.
 	 * If A is a dependent point, "a + x(A)" throws an Exception.
 	 */
-	/*AGprivate GeoNumeric getCoordNumber(ExpressionValue ev, boolean allowPlusNode) throws Throwable {
+	private GeoNumeric getCoordNumber(ExpressionValue ev, boolean allowPlusNode) throws Throwable {
 		// simple variable "a"
 		if (ev.isLeaf()) {
 			return (GeoNumeric) kernel.lookupLabel(ev.toString(), false);
@@ -325,7 +328,7 @@ GeoPointInterface {
 		}			
 		
 		return coordNumeric;
-	}*/
+	}
 	
 	final public boolean isPointOnPath() {
 		return path != null;
@@ -667,7 +670,7 @@ GeoPointInterface {
     }
     
 // Michael Borcherds 2008-02-10
-   /*AG final public void mirror(GeoConic c) {
+   final public void mirror(GeoConic c) {
     	if (c.getType()==GeoConic.CONIC_CIRCLE)
     	{ // Mirror point in circle
     		double r =  c.getHalfAxes()[0];
@@ -681,12 +684,12 @@ GeoPointInterface {
     	{
     		setUndefined();
     	}
-    }*/
+    }
     
     /**
      * mirror this point at line g
      */
-    /*AGfinal public void mirror(GeoLine g) {
+    final public void mirror(GeoLine g) {
         // Y = S(phi).(X - Q) + Q
         // where Q is a point on g, S(phi) is the mirrorTransform(phi)
         // and phi/2 is the line's slope angle
@@ -714,7 +717,7 @@ GeoPointInterface {
         
          // update inhom coords
          updateCoords();
-    }*/
+    }
     
     /**
      * mirror transform with angle phi
@@ -1122,6 +1125,19 @@ GeoPointInterface {
 		@Override
 		public GgbVector getInhomCoords() {
 			return new GgbVector(new double[] {inhomX, inhomY});
+		}
+
+		
+
+		@Override
+		public boolean getSpreadsheetTrace() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public void setSpreadsheetTrace(boolean spreadsheetTrace) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	

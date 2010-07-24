@@ -22,8 +22,6 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 
 
 
-
-
 /**
  *
  * @author  Markus + ggb3D
