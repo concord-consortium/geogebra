@@ -22,6 +22,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.PathIterator;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
+import org.geogebra.ggjsviewer.client.kernel.gawt.QuadCurve2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 //import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D.Double;
@@ -1874,6 +1875,11 @@ final public void setHits(Point p){
 
 		return new BasicStroke(width, endCap, standardStroke.getLineJoin(),
 				standardStroke.getMiterLimit(), dash, 0.0f);
+	}
+
+	public void drawParabola(QuadCurve2D shape) {
+		//this.quadraticCurveTo(shape.getCtrlX(), shape.getCtrlY(), shape.getX1(), shape.getY1());
+		this.cubicCurveTo(shape.getCtrlX(), shape.getCtrlY(), shape.getX2(), shape.getY2(), shape.getX1(), shape.getY1());
 	}
 
 	

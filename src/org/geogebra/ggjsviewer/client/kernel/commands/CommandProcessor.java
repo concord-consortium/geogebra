@@ -92,7 +92,7 @@ public abstract class CommandProcessor  {
 	 * at the  position varPos. Initializes the variable with the NumberValue
 	 * at initPos.  
 	 */
-	/*AGprotected final GeoElement [] resArgsLocalNumVar(Command c, int varPos, int initPos) {
+	protected final GeoElement [] resArgsLocalNumVar(Command c, int varPos, int initPos) {
 		// check if there is a local variable in arguments    	
 		String localVarName = c.getVariableName(varPos);
 		if (localVarName == null) {        		    
@@ -121,7 +121,7 @@ public abstract class CommandProcessor  {
 		cmdCons.removeLocalVariable(localVarName);     	    
 		return arg;
 	}
-	*/
+
 	 final MyError argErr(Application app, String cmd, Object arg) {
 		String localName = app.getCommand(cmd);
 		StringBuilder sb = new StringBuilder();
@@ -161,7 +161,7 @@ public abstract class CommandProcessor  {
 	 * @author Markus Hohenwarter
 	 * @date Jan 26, 2008
 	 */
-	/*AGpublic static GeoList wrapInList(Kernel kernel, GeoElement [] args, int length, int type) {
+	public static GeoList wrapInList(Kernel kernel, GeoElement [] args, int length, int type) {
 		Construction cons=kernel.getConstruction();
 		boolean correctType = true;		        
 		ArrayList geoElementList = new ArrayList();
@@ -187,8 +187,7 @@ public abstract class CommandProcessor  {
 			list = null;
 
 		return list;
-	}
-	*/           	
+	}        	
 }
 
 
@@ -451,7 +450,7 @@ class CmdAngularBisector extends CommandProcessor {
 /*
  * Direction[ <GeoLine> ]
  */
-/*AG
+
 class CmdDirection extends CommandProcessor {
 
 	public CmdDirection(Kernel kernel) {
@@ -484,7 +483,7 @@ class CmdDirection extends CommandProcessor {
 /*
  * Slope[ <GeoLine> ] Slope[ <GeoFunction> ]
  */
-/*AG
+
 class CmdSlope extends CommandProcessor {
 
 	public CmdSlope(Kernel kernel) {
@@ -1602,7 +1601,7 @@ class CmdCircumcircleSector extends CommandProcessor {
 /*
  * Parabola[ <GeoPoint>, <GeoLine> ]
  */
-/*AG
+
 class CmdParabola extends CommandProcessor {
 
 	public CmdParabola(Kernel kernel) {
@@ -1795,7 +1794,7 @@ class CmdEllipse extends CommandProcessor {
 /*
  * Hyperbola[ <GeoPoint>, <GeoPoint>, <NumberValue> ]
  */
-/*AG
+
 class CmdHyperbola extends CommandProcessor {
 
 	public CmdHyperbola(Kernel kernel) {
@@ -1848,7 +1847,7 @@ class CmdHyperbola extends CommandProcessor {
 /*
  * Conic[ five GeoPoints ]
  */
-/*AG
+
 class CmdConic extends CommandProcessor {
 
 	public CmdConic(Kernel kernel) {

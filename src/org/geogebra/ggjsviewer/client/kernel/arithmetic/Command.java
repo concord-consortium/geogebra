@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.geogebra.ggjsviewer.client.cas.GeoGebraCAS;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.Macro;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
 /**
@@ -44,7 +46,7 @@ implements ExpressionValue {
     private Kernel kernel;
     private Application app;
     private GeoElement[] evalGeos; // evaluated Elements
-    //AGprivate Macro macro; // command may correspond to a macro 
+    private Macro macro; // command may correspond to a macro 
     private boolean allowEvaluation = true;
     
     /** Creates new Command */
@@ -135,8 +137,8 @@ implements ExpressionValue {
 		case ExpressionNode.STRING_TYPE_MATH_PIPER:
 		case ExpressionNode.STRING_TYPE_MAXIMA:
     			// MathPiper command syntax
-    	/*AG		return ((geogebra.cas.GeoGebraCAS) kernel.getGeoGebraCAS()).
-    				getCASCommand(name, args, symbolic); */   			    	
+    		return ((org.geogebra.ggjsviewer.client.cas.GeoGebraCAS) kernel.getGeoGebraCAS()).
+    				getCASCommand(name, args, symbolic);   			    	
     			
     		default:
     	    	if (sbToString == null)
@@ -305,13 +307,13 @@ implements ExpressionValue {
 		return false;
 	}
 
-	/*AGpublic final Macro getMacro() {
+	public final Macro getMacro() {
 		return macro;
 	}
 
 	public final void setMacro(Macro macro) {
 		this.macro = macro;
-	}   */ 
+	}    
 	
     final public boolean isVector3DValue() {
     	return false;

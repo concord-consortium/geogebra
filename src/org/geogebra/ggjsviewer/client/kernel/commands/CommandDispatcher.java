@@ -20,9 +20,12 @@ import java.util.Set;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.Macro;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
+
+import com.google.gwt.core.client.GWT;
 
 
 public class CommandDispatcher {
@@ -33,7 +36,7 @@ public class CommandDispatcher {
     
     // stores (String name, CommandProcessor cmdProc) pairs   
     protected HashMap cmdTable;
-   //AG private MacroProcessor macroProc;
+    private MacroProcessor macroProc;
     
     public CommandDispatcher(Kernel kernel) {             
     	this.kernel = kernel;
@@ -73,16 +76,17 @@ public class CommandDispatcher {
         CommandProcessor cmdProc;
         
         // MACRO: is there a macro with this command name?        
-       /*AG Macro macro = kernel.getMacro(cmdName);
+       Macro macro = kernel.getMacro(cmdName);
         if (macro != null) {    
         	c.setMacro(macro);
         	cmdProc = macroProc;
+        	GWT.log("CommandDispatcher macro 83 needed");
         } 
         // STANDARD CASE
-        else {*/
+        else {
         	// get CommandProcessor object for command name from command table
         	cmdProc = (CommandProcessor) cmdTable.get(cmdName);            
-       //AG }
+        }
                 
         GeoElement[] ret = null;
         try {            
@@ -127,7 +131,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Dilate", new CmdDilate(kernel));	   
     	//AGcmdTable.put("Vector", new CmdVector(kernel));	   
     	cmdTable.put("Ellipse", new CmdEllipse(kernel));	   
-    	//AGcmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
+    	cmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   
     	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
     	cmdTable.put("Ray", new CmdRay(kernel));	   
@@ -160,7 +164,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Polar", new CmdPolar(kernel));	   
     	//AGcmdTable.put("Semicircle", new CmdSemicircle(kernel));	   
     	//AGcmdTable.put("FirstAxisLength", new CmdFirstAxisLength(kernel));	   
-    	//AGcmdTable.put("Parabola", new CmdParabola(kernel));	   
+    	cmdTable.put("Parabola", new CmdParabola(kernel));	   
     	//AGcmdTable.put("Rotate", new CmdRotate(kernel));	   
     	//AGcmdTable.put("Function", new CmdFunction(kernel));	   
     	//AGcmdTable.put("Extremum", new CmdExtremum(kernel));	   

@@ -264,6 +264,11 @@ public class Application extends BaseApplication {
 
 	}
 
+	public String getMenu(String string) {
+		// TODO Auto-generated method stub
+		return "getMenu needed Application 268"+string;
+	}
+
 
 
 }

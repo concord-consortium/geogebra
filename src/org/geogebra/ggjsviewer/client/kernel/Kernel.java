@@ -1571,7 +1571,6 @@ casPrintForm = type;
 	 * @param geoElementList: list of GeoElement objects
 	 * @return
 	 */
-	/*AG
 	final public GeoList List(String label, ArrayList geoElementList, boolean isIndependent) {
 		if (isIndependent) {
 			GeoList list = new GeoList(cons);		
@@ -2273,20 +2272,20 @@ casPrintForm = type;
 	/** 
 	 * Direction vector of line g
 	 */
-	/*AGfinal public GeoVector Direction(String label, GeoLine g) {
+	final public GeoVector Direction(String label, GeoLine g) {
 		AlgoDirection algo = new AlgoDirection(cons, label, g);
 		GeoVector v = algo.getVector();
 		return v;
-	}*/
+	}
 
 	/** 
 	 * Slope of line g
 	 */
-	/*AGfinal public GeoNumeric Slope(String label, GeoLine g) {
+	final public GeoNumeric Slope(String label, GeoLine g) {
 		AlgoSlope algo = new AlgoSlope(cons, label, g);
 		GeoNumeric slope = algo.getSlope();
 		return slope;
-	}*/	
+	}	
 	
 	/** 
 	 * BarChart	
@@ -4013,14 +4012,14 @@ casPrintForm = type;
 	/** 
 	 * parabola with focus F and line l
 	 */
-	/*AGfinal public GeoConic Parabola(
+	final public GeoConic Parabola(
 		String label,
 		GeoPoint F,
 		GeoLine l) {
 		AlgoParabolaPointLine algo = new AlgoParabolaPointLine(cons, label, F, l);
 		GeoConic parabola = algo.getParabola();
 		return parabola;
-	}*/
+	}
 
 	/** 
 	 * ellipse with foci A, B and length of first half axis a
@@ -4052,7 +4051,7 @@ casPrintForm = type;
 	/** 
 	 * hyperbola with foci A, B and length of first half axis a
 	 */
-	/*AGfinal public GeoConic Hyperbola(
+	final public GeoConic Hyperbola(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -4061,13 +4060,13 @@ casPrintForm = type;
 			new AlgoHyperbolaFociLength(cons, label, A, B, a);
 		GeoConic hyperbola = algo.getConic();
 		return hyperbola;
-	}*/
+	}
 
 	/** 
 	 * hyperbola with foci A, B passing thorugh C
 	 * Michael Borcherds 2008-04-06
 	 */
-	/*AGfinal public GeoConic Hyperbola(
+	final public GeoConic Hyperbola(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -4076,7 +4075,7 @@ casPrintForm = type;
 			new AlgoHyperbolaFociPoint(cons, label, A, B, C);
 		GeoConic hyperbola = algo.getHyperbola();
 		return hyperbola;
-	}*/
+	}
 
 	/** 
 	 * conic through five points
