@@ -1877,9 +1877,12 @@ final public void setHits(Point p){
 				standardStroke.getMiterLimit(), dash, 0.0f);
 	}
 
-	public void drawParabola(QuadCurve2D shape) {
-		//this.quadraticCurveTo(shape.getCtrlX(), shape.getCtrlY(), shape.getX1(), shape.getY1());
-		this.cubicCurveTo(shape.getCtrlX(), shape.getCtrlY(), shape.getX2(), shape.getY2(), shape.getX1(), shape.getY1());
+	public void drawParabola(QuadCurve2D.Double shape) {
+		this.beginPath();
+		this.moveTo(shape.getX1(), shape.getY1());
+		this.quadraticCurveTo(shape.getCtrlX(), shape.getCtrlY(), shape.getX2(), shape.getY2());
+		this.closePath();
+		this.stroke();
 	}
 
 	

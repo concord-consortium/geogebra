@@ -745,7 +745,7 @@ final public class DrawConic extends Drawable implements Previewable {
             	else if (shape instanceof Path2D.Double) 
             		view.drawEllipse((Path2D.Double) shape);
             	else if (shape instanceof QuadCurve2D.Double) {
-            		view.drawParabola((QuadCurve2D) shape);
+            		view.drawParabola((QuadCurve2D.Double) shape);
             	}
                 if (labelVisible) {
 					view.setFont(view.fontConic); 
