@@ -1,0 +1,11 @@
+#Thu Jul 22 23:04:18 CEST 2010
+CLEAR_CONSOLE=true
+JAVACC_OPTIONS=-STATIC\=false
+JJDOC_OPTIONS=
+JJTREE_OPTIONS=
+JJ_NATURE=true
+JTB_OPTIONS=-ia -jd -tk
+RUNTIME_JJJAR=/home/apa/Programok/eclipse_java/plugins/sf.eclipse.javacc_1.5.22/javacc.jar
+RUNTIME_JTBJAR=/home/apa/Programok/eclipse_java/plugins/sf.eclipse.javacc_1.5.22/jtb-1.4.3.jar
+SUPPRESS_WARNINGS=false
+eclipse.preferences.version=1

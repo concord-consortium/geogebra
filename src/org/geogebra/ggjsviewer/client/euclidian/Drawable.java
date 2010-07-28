@@ -22,6 +22,7 @@ package org.geogebra.ggjsviewer.client.euclidian;
 
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
@@ -746,6 +747,15 @@ public abstract class Drawable {
 	
 	//private StringBuilder command = new StringBuilder();
 	private double[] coords = new double[2];
+
+	public void fillWithValueStrokePure(GeneralPathClipped shape) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void drawWithValueStrokePure(GeneralPathClipped shape) {
+		view.drawHyperbola(shape);
+		
+	}
 	
 	/*AGpublic void recordToSpreadsheet(GeoElement geo) {
 		

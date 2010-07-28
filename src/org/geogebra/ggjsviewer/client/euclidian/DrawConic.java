@@ -756,28 +756,28 @@ final public class DrawConic extends Drawable implements Previewable {
             
            
 			case GeoConic.CONIC_HYPERBOLA:               		          
-			/*AG	if (conic.alphaValue > 0.0f) {
-					g2.setColor(conic.getFillColor());
-					if (hypLeftOnScreen) Drawable.fillWithValueStrokePure(hypLeft, g2);                                                
-					if (hypRightOnScreen) Drawable.fillWithValueStrokePure(hypRight, g2); 
+				if (conic.alphaValue > 0.0f) {
+					view.setPaint(conic.getFillColor());
+					if (hypLeftOnScreen) fillWithValueStrokePure(hypLeft);                                                
+					if (hypRightOnScreen) fillWithValueStrokePure(hypRight); 
 				}	
 				if (geo.doHighlighting()) {
-					 g2.setStroke(selStroke);
-					 g2.setColor(conic.getSelColor());
+					 view.setStroke(selStroke);
+					 view.setStroke(conic.getSelColor());
 					 
-					 if (hypLeftOnScreen) Drawable.drawWithValueStrokePure(hypLeft, g2);                                               
-					 if (hypRightOnScreen) Drawable.drawWithValueStrokePure(hypRight, g2); 				
+					 if (hypLeftOnScreen) drawWithValueStrokePure(hypLeft);                                               
+					 if (hypRightOnScreen) drawWithValueStrokePure(hypRight); 				
 				 }  
-				 g2.setStroke(objStroke);
-				 g2.setColor(conic.getObjectColor());				 
-				 if (hypLeftOnScreen) Drawable.drawWithValueStrokePure(hypLeft, g2);                                                
-				 if (hypRightOnScreen) Drawable.drawWithValueStrokePure(hypRight, g2); 
+				 view.setStroke(objStroke);
+				 view.setStroke(conic.getObjectColor());				 
+				 if (hypLeftOnScreen) drawWithValueStrokePure(hypLeft);                                                
+				 if (hypRightOnScreen) drawWithValueStrokePure(hypRight); 
 				             
 				 if (labelVisible) {
-					 g2.setFont(view.fontConic); 
-					 g2.setColor(conic.getLabelColor());                   
-					 drawLabel(g2);                                                                     
-				 }         */                   
+					 view.setFont(view.fontConic); 
+					 view.setStroke(conic.getLabelColor());                   
+					 drawLabel();                                                                     
+				 }                     
                 break;      
         }
     }

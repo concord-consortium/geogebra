@@ -1885,6 +1885,37 @@ final public void setHits(Point p){
 		this.stroke();
 	}
 
+	public void drawHyperbola(GeneralPathClipped shape) {
+		this.beginPath();
+		PathIterator it = shape.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.stroke();
+		
+	}
+
 	
 
 }

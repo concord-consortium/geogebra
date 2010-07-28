@@ -13,7 +13,7 @@
   
   <servlet-mapping>
     <servlet-name>xmlHandlingServlet</servlet-name>
-    <url-pattern>/ggjsviewer/xmlhandler</url-pattern>
+    <url-pattern>/ggjsviewer/server</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
