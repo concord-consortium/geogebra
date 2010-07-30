@@ -734,6 +734,10 @@ final public class DrawConic extends Drawable implements Previewable {
                 		view.drawEllipse((Ellipse2D.Double) shape);
                 	else if (shape instanceof Arc2D.Double)
                 		view.drawEllipse((Arc2D.Double) shape);
+                	else if (shape instanceof Path2D.Double) 
+                		view.drawEllipse((Path2D.Double) shape);
+                	else if (shape instanceof QuadCurve2D.Double) 
+                		view.drawParabola((QuadCurve2D.Double) shape);
                 }                  
                 view.setStroke(objStroke);
                 view.setPaint(conic.getObjectColor());
@@ -744,9 +748,9 @@ final public class DrawConic extends Drawable implements Previewable {
             		view.drawEllipse((Arc2D.Double) shape);  
             	else if (shape instanceof Path2D.Double) 
             		view.drawEllipse((Path2D.Double) shape);
-            	else if (shape instanceof QuadCurve2D.Double) {
+            	else if (shape instanceof QuadCurve2D.Double) 
             		view.drawParabola((QuadCurve2D.Double) shape);
-            	}
+                
                 if (labelVisible) {
 					view.setFont(view.fontConic); 
 					view.setStroke(conic.getLabelColor());                   
@@ -762,13 +766,13 @@ final public class DrawConic extends Drawable implements Previewable {
 					if (hypRightOnScreen) fillWithValueStrokePure(hypRight); 
 				}	
 				if (geo.doHighlighting()) {
-					 view.setStroke(selStroke);
+					 //view.setStroke(selStroke);
 					 view.setStroke(conic.getSelColor());
 					 
 					 if (hypLeftOnScreen) drawWithValueStrokePure(hypLeft);                                               
 					 if (hypRightOnScreen) drawWithValueStrokePure(hypRight); 				
 				 }  
-				 view.setStroke(objStroke);
+				 //view.setStroke(objStroke);
 				 view.setStroke(conic.getObjectColor());				 
 				 if (hypLeftOnScreen) drawWithValueStrokePure(hypLeft);                                                
 				 if (hypRightOnScreen) drawWithValueStrokePure(hypRight); 
