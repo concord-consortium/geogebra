@@ -5,6 +5,8 @@
 	<ui:style>
 		.euclidianview {
 			border:1px solid black;	
+			-webkit-touch-callout: none ;
+			-webkit-user-select: none ;
 		}
 		.euclidianwrapper {
 			margin:50px auto;
