@@ -816,7 +816,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 		// free number
 		else if (movedGeoElement.isGeoNumeric()) {															
-		/*	movedGeoNumeric = (GeoNumeric) movedGeoElement;
+			movedGeoNumeric = (GeoNumeric) movedGeoElement;
 			moveMode = MOVE_NUMERIC;
 
 			Drawable d = view.getDrawableFor(movedGeoNumeric);
@@ -842,7 +842,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			} 						
 
 			view.setShowMouseCoords(false);
-			view.setDragCursor();*/					
+			view.setDragCursor();			
 		}
 
 		//  checkbox
@@ -1620,15 +1620,15 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		case MOVE_NUMERIC:
 			//view.incrementTraceRow(); // for spreadsheet/trace
 
-			//AGmoveNumeric(repaint);
+			moveNumeric(repaint);
 			break;
 
 		case MOVE_SLIDER:
-			//AGmoveSlider(repaint);
+			moveSlider(repaint);
 			break;
 
 		case MOVE_BOOLEAN:
-			//AGmoveBoolean(repaint);
+			moveBoolean(repaint);
 			break;
 
 		case MOVE_BUTTON:
@@ -1721,6 +1721,85 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			movedGeoFunction.updateRepaint();
 		else
 			movedGeoFunction.updateCascade();
+	}
+	
+	final protected void moveBoolean(boolean repaint) {
+		movedGeoBoolean.setAbsoluteScreenLoc( oldLoc.x + mouseLoc.x-startLoc.x, 
+				oldLoc.y + mouseLoc.y-startLoc.y);
+
+		if (repaint)
+			movedGeoBoolean.updateRepaint();
+		else
+			movedGeoBoolean.updateCascade();
+	}
+	
+	final protected void moveNumeric(boolean repaint) {
+		double min = movedGeoNumeric.getIntervalMin();
+		double max = movedGeoNumeric.getIntervalMax();
+		double param;
+		if (movedGeoNumeric.isSliderHorizontal()) {
+			if (movedGeoNumeric.isAbsoluteScreenLocActive()) {				
+				param = mouseLoc.x - startPoint.x;
+			} else {
+				param = xRW - startPoint.x;
+			}
+		}			
+		else {
+			if (movedGeoNumeric.isAbsoluteScreenLocActive()) {
+				param = startPoint.y - mouseLoc.y ;
+			} else {
+				param = yRW - startPoint.y;
+			}
+		}							
+		param = param * (max - min) / movedGeoNumeric.getSliderWidth();					
+
+		// round to animation step scale				
+		param = Kernel.roundToScale(param, movedGeoNumeric.animationIncrement);
+		double val = min + param;	
+
+		if (movedGeoNumeric.animationIncrement > Kernel.MIN_PRECISION) {
+			// round to decimal fraction, e.g. 2.800000000001 to 2.8
+			val = kernel.checkDecimalFraction(val);
+		}
+
+		if (movedGeoNumeric.isGeoAngle()) {
+			if (val < 0) 
+				val = 0;
+			else if (val > Kernel.PI_2)
+				val = Kernel.PI_2;
+			
+			val = kernel.checkDecimalFraction(val * Kernel.CONST_180_PI) / Kernel.CONST_180_PI;
+
+		}
+
+		// do not set value unless it really changed!
+		if (movedGeoNumeric.getValue() == val)
+			return;
+
+		movedGeoNumeric.setValue(val);		
+		movedGeoNumericDragged = true;
+
+		//movedGeoNumeric.setAnimating(false); // stop animation if slider dragged
+
+		//if (repaint)
+		movedGeoNumeric.updateRepaint();
+		//else
+		//	movedGeoNumeric.updateCascade();
+	}
+	
+	final protected void moveSlider(boolean repaint) {
+		if (movedGeoNumeric.isAbsoluteScreenLocActive()) {
+			movedGeoNumeric.setAbsoluteScreenLoc( oldLoc.x + mouseLoc.x-startLoc.x, 
+					oldLoc.y + mouseLoc.y-startLoc.y);
+		} else {
+			movedGeoNumeric.setSliderLocation(xRW - startPoint.x, yRW - startPoint.y);
+		}		
+
+		// don't cascade, only position of the slider has changed
+		movedGeoNumeric.update();
+
+		if (repaint)
+			kernel.notifyRepaint();					
 	}
 	
 	protected void moveMultipleObjects(boolean repaint) {		
@@ -2400,26 +2479,26 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 
 
 		//if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) view.resetTraceRow(); // for trace/spreadsheet
-		/*AGif (getMovedGeoPoint() != null){
+		if (getMovedGeoPoint() != null){
 
-			processReleaseForMovedGeoPoint();
+			//AG used for 3dprocessReleaseForMovedGeoPoint();
 			/*
 			// deselect point after drag, but not on click
 			if (movedGeoPointDragged) getMovedGeoPoint().setSelected(false);
 
 			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) getMovedGeoPoint().resetTraceColumns();
-			 
-		}*/
-		/*AGif (movedGeoNumeric != null) {
+			 */
+		}
+		if (movedGeoNumeric != null) {
 
 			// deselect slider after drag, but not on click
 			if (movedGeoNumericDragged) movedGeoNumeric.setSelected(false);
 
 			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) movedGeoNumeric.resetTraceColumns();
-		}*/
+		}
 
 		movedGeoPointDragged = false;
-		//AGmovedGeoNumericDragged = false;
+		movedGeoNumericDragged = false;
 
 		//AG((JPanel) view).requestFocusInWindow();
 		setMouseLocation(e);

@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.geogebra.ggjsviewer.client.euclidian.DrawableList.DrawableIterator;
+import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
+import org.geogebra.ggjsviewer.client.kernel.ConstructionDefaults;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
@@ -1201,6 +1204,10 @@ final public void setHits(Point p){
 		return (Drawable) DrawableMap.get(geo);
 	}
 	
+	final public Drawable getDrawableFor(GeoElement geo) {
+		return (Drawable) DrawableMap.get(geo);
+	}
+	
 
 	@Override
 	public void add(GeoElement geo) {
@@ -1375,31 +1382,31 @@ final public void setHits(Point p){
 				}
 			}
 			break;
-
+		*/
 		case GeoElement.GEO_CLASS_NUMERIC:
 			AlgoElement algo = geo.getParentAlgorithm();
 			if (algo == null) {
 				// independent number may be shown as slider
 				d = new DrawSlider(this, (GeoNumeric) geo);
-			} else if (algo instanceof AlgoSlope) {
+			/*AG} else if (algo instanceof AlgoSlope) {
 				d = new DrawSlope(this, (GeoNumeric) geo);
 			} else if (algo instanceof AlgoIntegralDefinite) {
 				d = new DrawIntegral(this, (GeoNumeric) geo);
 			} else if (algo instanceof AlgoIntegralFunctions) {
 				d = new DrawIntegralFunctions(this, (GeoNumeric) geo);
 			} else if (algo instanceof AlgoFunctionAreaSums) {
-				d = new DrawUpperLowerSum(this, (GeoNumeric) geo);
+				d = new DrawUpperLowerSum(this, (GeoNumeric) geo);*/
 			}
 			if (d != null) {
 				if (!geo.isColorSet()) {
 					ConstructionDefaults consDef = geo.getConstruction()
 							.getConstructionDefaults();
 					if (geo.isIndependent()) {
-						Color col = consDef.getDefaultGeo(
+						org.geogebra.ggjsviewer.client.kernel.gawt.Color col = consDef.getDefaultGeo(
 								ConstructionDefaults.DEFAULT_NUMBER).getObjectColor();
 						geo.setObjColor(col);
 					} else {
-						Color col = consDef.getDefaultGeo(
+						org.geogebra.ggjsviewer.client.kernel.gawt.Color col = consDef.getDefaultGeo(
 								ConstructionDefaults.DEFAULT_POLYGON)
 								.getObjectColor();
 						geo.setObjColor(col);
@@ -1407,11 +1414,11 @@ final public void setHits(Point p){
 				}			
 			}
 			break;
-
+		/*	AG
 		case GeoElement.GEO_CLASS_VECTOR:
 			d = new DrawVector(this, (GeoVector) geo);
 			break;
-		*/
+			*/
 		case GeoElement.GEO_CLASS_CONICPART:
 			//AGd = new DrawConicPart(this, (GeoConicPart) geo);
 			break;

@@ -4667,7 +4667,8 @@ casPrintForm = type;
 	/**
 	 * mirror geoMir at point Q
 	 */
-	/*AGfinal public GeoElement [] Mirror(String label, Mirrorable geoMir, GeoPoint Q) {	
+	/*AG
+	final public GeoElement [] Mirror(String label, Mirrorable geoMir, GeoPoint Q) {	
 		if (label == null)
 			label = transformedGeoLabel(geoMir.toGeoElement());
 		
@@ -4679,7 +4680,7 @@ casPrintForm = type;
 		AlgoMirror algo = new AlgoMirror(cons, label, geoMir, Q);		
 		GeoElement [] geos = {algo.getResult()};
 		return geos;	
-	}*/
+	}
 
 	/**
 	 * mirror point Q in conic 
@@ -4968,25 +4969,25 @@ casPrintForm = type;
 	/**
 	 * first derivative of deriveable f
 	 */
-	/*AGfinal public GeoElement Derivative(
+	final public GeoElement Derivative(
 		String label,
 		GeoDeriveable f) {
 		
 		AlgoDerivative algo = new AlgoDerivative(cons, label, f);
 		return algo.getDerivative();				
-	}*/	
+	}	
 	
 	/**
 	 * n-th derivative of deriveable f
 	 */
-	/*AGfinal public GeoElement Derivative(
+	final public GeoElement Derivative(
 		String label,
 		GeoDeriveable f,
 		NumberValue n) {
 		
 		AlgoDerivative algo = new AlgoDerivative(cons, label, f, n);
 		return algo.getDerivative();	
-	}	*/		
+	}		
 	
 	/**
 	 * Tries to expand a function f to a polynomial.

@@ -17,14 +17,17 @@ import java.util.ArrayList;
 import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
+import org.geogebra.ggjsviewer.client.kernel.GeoDeriveable;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoList;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.Mirrorable;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -2896,8 +2899,8 @@ class CmdMirror extends CommandProcessor {
                     }
 					 */
 
-/*AG
-					ret = kernel.Mirror(label, p, line);
+
+/*AG					ret = kernel.Mirror(label, p, line);
 					return ret;
 				}
 			}              
@@ -3004,7 +3007,7 @@ class CmdDelete extends CommandProcessor {
  * Derivative[ <GeoFunction> ]
  * Derivative[ <GeoCurveCartesian> ]
  */
-/*AG
+
 class CmdDerivative extends CommandProcessor {
 
 	public CmdDerivative (Kernel kernel) {

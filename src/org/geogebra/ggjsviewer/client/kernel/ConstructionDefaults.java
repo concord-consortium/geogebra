@@ -195,7 +195,7 @@ public class ConstructionDefaults {
 		defaultGeoElements.put(DEFAULT_POINT_COMPLEX, complexPoint);
 		
 		// line
-		/*AGGeoLine line = new GeoLine(cons);	
+		GeoLine line = new GeoLine(cons);	
 //		line.setLocalVariableLabel(app.getPlain("Line"));
 		line.setLocalVariableLabel("Line");
 		line.setObjColor(colLine);
@@ -223,12 +223,12 @@ public class ConstructionDefaults {
 		defaultGeoElements.put(DEFAULT_CONIC, conic);	
 		
 		// conic sector
-		GeoConicPart conicSector = new GeoConicPart(cons, GeoConicPart.CONIC_PART_SECTOR);	
+		/*AGGeoConicPart conicSector = new GeoConicPart(cons, GeoConicPart.CONIC_PART_SECTOR);	
 //		conicSector.setLocalVariableLabel(app.getPlain("Sector"));
 		conicSector.setLocalVariableLabel("Sector");
 		conicSector.setObjColor(colPolygon);
 		conicSector.setAlphaValue(DEFAULT_POLYGON_ALPHA);
-		defaultGeoElements.put(DEFAULT_CONIC_SECTOR, conicSector);	
+		defaultGeoElements.put(DEFAULT_CONIC_SECTOR, conicSector);	*/
 		
 		
 		// number
@@ -258,6 +258,7 @@ public class ConstructionDefaults {
 		defaultGeoElements.put(DEFAULT_FUNCTION, function);
 		
 		// locus
+		/*AG
 		GeoLocus locus = new GeoLocus(cons);	
 //		locus.setLocalVariableLabel(app.getPlain("Locus"));
 		locus.setLocalVariableLabel("Locus");
@@ -283,7 +284,7 @@ public class ConstructionDefaults {
 		bool.setLocalVariableLabel("Boolean");
 		defaultGeoElements.put(DEFAULT_BOOLEAN, bool);
 		
-		// list
+		// list*/
 		GeoList list = new GeoList(cons);	
 //		list.setLocalVariableLabel(app.getPlain("List"));
 		list.setShowAllProperties(true); // show all properties in the defaults dialog
@@ -293,7 +294,6 @@ public class ConstructionDefaults {
 								// then we will use the alphaValue of the first element in the list
 								// see GeoList.setAlphaValue() and getAlphaValue()
 		defaultGeoElements.put(DEFAULT_LIST, list);
-		*/
 	}
 	
 	/**

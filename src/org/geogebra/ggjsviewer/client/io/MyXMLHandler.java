@@ -12,6 +12,7 @@ import java.util.LinkedList;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
@@ -376,6 +377,8 @@ public class MyXMLHandler  {
 				handlePointStyle(children.item(i),geo);
 			}	else if (children.item(i).getNodeName().equals("objColor")) {
 				handleObjColor(children.item(i),geo);
+			}	else if (children.item(i).getNodeName().equals("slider")) {
+				handleSlider(children.item(i),geo);
 			}
 			
 		}
@@ -521,6 +524,50 @@ public class MyXMLHandler  {
 		kernel.handleCoords(geoElement, attrs);
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private boolean handleSlider(Node item, GeoElement geoElement) {
+		if (!(geoElement.isGeoNumeric())) {
+			System.err.println("wrong element type for <slider>: "
+					+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			// don't create sliders in macro construction
+			if (geoElement.getKernel().isMacroKernel())
+				return true;
+
+			GeoNumeric num = (GeoNumeric) geoElement;
+
+			String str = (String) getNodeAttr(item.getAttributes().getNamedItem("min"));
+			if (str != null) {
+				num.setIntervalMin(Double.parseDouble(str));
+			}
+
+			str = (String) getNodeAttr(item.getAttributes().getNamedItem("max"));
+			if (str != null) {
+				num.setIntervalMax(Double.parseDouble(str));
+			}
+
+			str = (String) getNodeAttr(item.getAttributes().getNamedItem("absoluteScreenLocation"));
+			if (str != null) {
+				num.setAbsoluteScreenLocActive(parseBoolean(str));
+			} else {
+				num.setAbsoluteScreenLocActive(false);
+			}
+
+			double x = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("x")));
+			double y = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("y")));
+			num.setSliderLocation(x, y);
+			num.setSliderWidth(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("width"))));
+			num.setSliderFixed(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("fixed"))));
+			num.setSliderHorizontal(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("horizontal"))));
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	//utils

@@ -124,7 +124,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("CircleArc", new CmdCircleArc(kernel));	   
     	//AGcmdTable.put("Parameter", new CmdParameter(kernel));	   
     	//AGcmdTable.put("TurningPoint", new CmdTurningPoint(kernel));	   
-    	//AGcmdTable.put("Derivative", new CmdDerivative(kernel));	   
+    	cmdTable.put("Derivative", new CmdDerivative(kernel));	   
     	//AGcmdTable.put("Integral", new CmdIntegral(kernel));	   
     	//AGcmdTable.put("LowerSum", new CmdLowerSum(kernel));	   
     	//AGcmdTable.put("Root", new CmdRoot(kernel));	   
