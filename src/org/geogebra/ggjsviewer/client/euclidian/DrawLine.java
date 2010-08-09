@@ -318,7 +318,7 @@ public final class DrawLine extends Drawable implements Previewable {
                 g2.setStroke(selStroke);            
                 g2.draw(line);*/
             	view.setPaint(geo.getSelColor());
-        		//view.setStroke(geo.getSelColor());
+        		view.setStroke(geo.getSelColor());
         		view.beginPath();
         		view.moveTo(line.x1, line.y1);
         		view.lineTo(line.x2, line.y2);

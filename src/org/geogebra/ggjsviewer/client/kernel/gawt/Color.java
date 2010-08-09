@@ -5,7 +5,7 @@ public class Color {
 		private int r;
 		private int g;
 		private int b;
-		private int alpha;
+		private float alpha;
 	public static final Color black = new Color();
 	public static final Color white = new Color(255,255,255);
 	public static final Color blue = new Color(0,0,255);
@@ -15,16 +15,18 @@ public class Color {
 		setRed(0);
 		setGreen(0);
 		setBlue(0);
+		setAlpha(1);
 	}
 
 	public Color(int r, int g, int b) {
 		setRed(r);
 		setGreen(g);
 		setBlue(b);
+		setAlpha(1);
 		// TODO Auto-generated constructor stub
 	}
 
-	public Color(int r, int g, int b, int alpha) {
+	public Color(int r, int g, int b, float alpha) {
 		setRed(r);
 		setGreen(g);
 		setBlue(b);
@@ -49,15 +51,11 @@ public class Color {
 		if (b<0)
 			b=0;
 		
-		if (alpha>1)
-			alpha=1;
-		if (alpha<0)
-			alpha=0;
 		
 		setRed((int) (r*255));
 		setGreen((int) (g*255));
 		setBlue((int) (b*255));
-		setAlpha((int)(b*255));
+		setAlpha(alpha);
 		
 		// TODO Auto-generated constructor stub
 	}
@@ -86,11 +84,11 @@ public class Color {
 		return b;
 	}
 
-	public void setAlpha(int alpha) {
-		this.alpha = alpha;
+	public void setAlpha(float alpha2) {
+		this.alpha = alpha2;
 	}
 
-	public int getAlpha() {
+	public float getAlpha() {
 		return alpha;
 	}
 

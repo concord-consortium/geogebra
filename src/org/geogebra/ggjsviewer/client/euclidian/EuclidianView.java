@@ -14,6 +14,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
 import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
@@ -171,7 +172,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 	public static final int DEFAULT_LINE_TYPE = LINE_TYPE_FULL;
 
-	public static final float SELECTION_ADD = 2.0f;
+	public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 
 	// ggb3D 2008-10-27 : mode constants moved to EuclidianConstants.java
 	
@@ -1362,7 +1363,7 @@ final public void setHits(Point p){
 			break;
 
 		case GeoElement.GEO_CLASS_POLYGON:
-			//d = new DrawPolygon(this, (GeoPolygon) geo);
+			d = new DrawPolygon(this, (GeoPolygon) geo);
 			break;
 
 		/*case GeoElement.GEO_CLASS_ANGLE:
@@ -1686,14 +1687,14 @@ final public void setHits(Point p){
 
 	public void setPaint(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue()));	
+		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()));	
 		//AGGWT.log(String.valueOf(color.getAlpha()));
 		//Alfa value will needed to implement properly
 	}
 
 	public void setStroke(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue()/* Alfa value buggy! color.getAlpha()/100*/));
+		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()));
 	}
 	
 	public void setStroke(BasicStroke stroke) {
@@ -1922,6 +1923,74 @@ final public void setHits(Point p){
 		this.stroke();
 		
 	}
+
+	public void fill(GeneralPathClipped gp) {
+		// TODO Auto-generated method stub
+		this.beginPath();
+		PathIterator it = gp.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.fill();
+		
+		
+		
+	}
+
+	public void draw(GeneralPathClipped gp) {
+		// TODO Auto-generated method stub
+		this.beginPath();
+		PathIterator it = gp.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.stroke();
+		
+	}
+	
+	
 
 	
 

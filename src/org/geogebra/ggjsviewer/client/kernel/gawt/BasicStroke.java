@@ -18,7 +18,7 @@ public class BasicStroke {
 	public static final Integer CAP_ROUND_INT =1;
 	public static final Integer CAP_SQUARE_INT = 2;
 	
-	private float lineWidth;
+	private float lineWidth  = 1;
 	private int miterLimit;
 	private String lineCap;
 	private String lineJoin;

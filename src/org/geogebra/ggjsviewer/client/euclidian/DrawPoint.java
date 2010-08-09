@@ -19,6 +19,7 @@ the Free Software Foundation.
 package org.geogebra.ggjsviewer.client.euclidian;
 
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
+import org.geogebra.ggjsviewer.client.kernel.AlgoIntersectAbstract;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -329,12 +330,12 @@ public final class DrawPoint extends Drawable {
         	 if (geo.getShowTrimmedIntersectionLines()) {
 	        	AlgoElement algo = geo.getParentAlgorithm();
 	        	
-	        	/*AGif ( algo instanceof AlgoIntersectAbstract ){
+	        	if ( algo instanceof AlgoIntersectAbstract ){
 	        		GeoElement[] geos = algo.getInput();
-	        		drawClippedSection(geos[0], g2);
+	        		drawClippedSection(geos[0]/*AG, g2*/);
 	        		if (geos.length > 1)
-	        			drawClippedSection(geos[1], g2);
-	        	} */
+	        			drawClippedSection(geos[1]/*AG, g2*/);
+	        	} 
         	 }
         	
         	// Florian Sonner 2008-07-17
