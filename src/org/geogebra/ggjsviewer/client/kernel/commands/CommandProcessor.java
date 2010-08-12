@@ -2808,7 +2808,7 @@ class CmdDilate extends CommandProcessor {
  * Mirror[ <GeoConic>, <GeoLine> ] 
  * Mirror[ <GeoPolygon>, <GeoLine> ]
  */ 
-/*AG
+
 class CmdMirror extends CommandProcessor {
 
 	public CmdMirror(Kernel kernel) {
@@ -2875,7 +2875,7 @@ class CmdMirror extends CommandProcessor {
                         ret = kernel.Mirror(label, p, Q);
                     }
 					 */
-/*
+
 					ret = kernel.Mirror(label, p, Q);
 					return ret;
 				} 
@@ -2900,7 +2900,7 @@ class CmdMirror extends CommandProcessor {
 					 */
 
 
-/*AG					ret = kernel.Mirror(label, p, line);
+					ret = kernel.Mirror(label, p, line);
 					return ret;
 				}
 			}              

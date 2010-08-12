@@ -146,7 +146,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("UnitOrthogonalVector", new CmdUnitOrthogonalVector(kernel));	   
     	//AGcmdTable.put("Distance", new CmdDistance(kernel));	   
     	//AGcmdTable.put("Asymptote", new CmdAsymptote(kernel));	   
-    	//AGcmdTable.put("Mirror", new CmdMirror(kernel));	   
+    	cmdTable.put("Mirror", new CmdMirror(kernel));	   
     	//AGcmdTable.put("Center", new CmdCenter(kernel));	   
     	//AGcmdTable.put("Directrix", new CmdDirectrix(kernel));	   
     	//AGcmdTable.put("Diameter", new CmdDiameter(kernel));

@@ -4667,7 +4667,6 @@ casPrintForm = type;
 	/**
 	 * mirror geoMir at point Q
 	 */
-	/*AG
 	final public GeoElement [] Mirror(String label, Mirrorable geoMir, GeoPoint Q) {	
 		if (label == null)
 			label = transformedGeoLabel(geoMir.toGeoElement());
@@ -4677,28 +4676,47 @@ casPrintForm = type;
 			return ((LimitedPath) geoMir).createTransformedObject(TRANSFORM_MIRROR_AT_POINT, label, Q, null, null, null);
 		
 		// standard case
-		AlgoMirror algo = new AlgoMirror(cons, label, geoMir, Q);		
-		GeoElement [] geos = {algo.getResult()};
-		return geos;	
+		AlgoMirror algo = new AlgoMirror(cons, label, geoMir, Q);
+		GeoElement ret = algo.getResult();
+		ret.setVisualStyleForTransformations((GeoElement) geoMir);
+		GeoElement[] geos = { ret };
+		return geos;
 	}
-
+	
 	/**
 	 * mirror point Q in conic 
 	 * Michael Borcherds 2008-02-10
 	 */
-	/*AGfinal public GeoElement [] Mirror(String label, GeoPoint Q, GeoConic conic) {	
+	final public GeoElement [] Mirror(String label, GeoPoint Q, GeoConic conic) {	
 		if (label == null)
 			label = transformedGeoLabel(Q);
 	
-		AlgoMirror algo = new AlgoMirror(cons, label, Q, conic);		
-		GeoElement [] geos = {algo.getResult()};
-		return geos;	
-	}*/
+		AlgoMirror algo = new AlgoMirror(cons, label, Q, conic);
+		GeoElement ret = algo.getResult();
+		ret.setVisualStyleForTransformations((GeoElement) Q);
+		GeoElement[] geos = { ret };
+		return geos;
+	}
 
+	/**
+	 * mirror (invert) circle conic0 in circle conic1 
+	 * Michael Borcherds 2008-02-10
+	 */
+	final public GeoElement [] Mirror(String label, GeoConic conic0, GeoConic conic1) {	
+		if (label == null)
+			label = transformedGeoLabel(conic0);
+	
+		AlgoMirror algo = new AlgoMirror(cons, label, conic0, conic1);		
+		GeoElement ret = algo.getResult();
+		ret.setVisualStyleForTransformations((GeoElement) conic0);
+		GeoElement[] geos = { ret };
+		return geos;	
+	}
+	
 	/**
 	 * mirror geoMir at line g
 	 */
-	/*AGfinal public GeoElement [] Mirror(String label, Mirrorable geoMir, GeoLine g) {
+	final public GeoElement [] Mirror(String label, Mirrorable geoMir, GeoLine g) {
 		if (label == null)
 			label = transformedGeoLabel(geoMir.toGeoElement());
 		
@@ -4712,11 +4730,12 @@ casPrintForm = type;
 			return geos;
 		}
 		// standard case
-		AlgoMirror algo = new AlgoMirror(cons, label, geoMir, g);		
-		GeoElement [] geos = {algo.getResult()};
-		
-		return geos;				
-	}*/			
+		AlgoMirror algo = new AlgoMirror(cons, label, geoMir, g);
+		GeoElement ret = algo.getResult();
+		ret.setVisualStyleForTransformations((GeoElement) geoMir);
+		GeoElement[] geos = { ret };
+		return geos;
+	}		
 	
 	/* ******************************
 	 * Transformations for polygons 
@@ -4793,17 +4812,18 @@ casPrintForm = type;
 	/**
 	 * mirror geoMir at point Q
 	 */
-	/*AGfinal public GeoElement [] Mirror(String label, GeoPolygon poly, GeoPoint Q) {
+	final public GeoElement [] Mirror(String label, GeoPolygon poly, GeoPoint Q) {
 		return transformPoly(label, poly, mirrorPoints(poly.getPoints(), Q, null));	
-	}*/
+	}
 
 	/**
 	 * mirror geoMir at line g
 	 */
-	/*AGfinal public GeoElement [] Mirror(String label, GeoPolygon poly, GeoLine g) {
+	final public GeoElement [] Mirror(String label, GeoPolygon poly, GeoLine g) {
 		return transformPoly(label, poly, mirrorPoints(poly.getPoints(), null, g));	
-	}	*/
-	/*AGGeoPoint [] mirrorPoints(GeoPoint [] points, GeoPoint Q, GeoLine g) {		
+	}
+	
+	GeoPoint [] mirrorPoints(GeoPoint [] points, GeoPoint Q, GeoLine g) {		
 		// mirror all points
 		GeoPoint [] newPoints = new GeoPoint[points.length];
 		for (int i = 0; i < points.length; i++) {
@@ -4812,9 +4832,10 @@ casPrintForm = type;
 				newPoints[i] = (GeoPoint) Mirror(pointLabel, points[i], g)[0]; 	
 			else
 				newPoints[i] = (GeoPoint) Mirror(pointLabel, points[i], Q)[0];
+			newPoints[i].setVisualStyleForTransformations(points[i]);
 		}			
 		return newPoints;
-	}*/		
+	}	
 	
 	private GeoElement [] transformPoly(String label, GeoPolygon oldPoly, GeoPoint [] transformedPoints) {
 		// get label for polygon
