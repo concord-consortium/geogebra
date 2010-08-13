@@ -2480,7 +2480,7 @@ class CmdRadius extends CommandProcessor {
 /*
  * Directrix[ <GeoConic> ]
  */
-/*AG
+
 class CmdDirectrix extends CommandProcessor {
 
 	public CmdDirectrix(Kernel kernel) {

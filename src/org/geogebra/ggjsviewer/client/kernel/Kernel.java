@@ -4520,11 +4520,11 @@ casPrintForm = type;
 	/** 
 	 * directrix of c
 	 */
-	/*AGfinal public GeoLine Directrix(String label, GeoConic c) {
+	final public GeoLine Directrix(String label, GeoConic c) {
 		AlgoDirectrix algo = new AlgoDirectrix(cons, label, c);
 		GeoLine directrix = algo.getDirectrix();
 		return directrix;
-	}*/
+	}
 
 	/** 
 	 * excentricity of c
