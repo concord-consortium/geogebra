@@ -24,7 +24,6 @@ import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.util.Unicode;
 
 
-
 /**
  * Explicit function in one variable ("x"). This is actually a wrapper class for Function
  * in geogebra.kernel.arithmetic. In arithmetic trees (ExpressionNode) it evaluates
@@ -34,14 +33,11 @@ import org.geogebra.ggjsviewer.client.util.Unicode;
  */
 public class GeoFunction extends GeoElement
 implements Path, Translateable, Traceable, Functional, GeoFunctionable,
-GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
+CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Function fun;		
+	protected Function fun;		
 	protected boolean isDefined = true;
 	public boolean trace, spreadsheetTrace;	
 	
@@ -173,7 +169,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	 * @param f
 	 * @param order
 	 */
-	public void setDerivative(GeoDeriveable fd, int n) {
+	public void setDerivative(CasEvaluableFunction fd, int n) {
 		GeoFunction f = (GeoFunction) fd;
 		
 		if (f.isDefined()) {
@@ -185,28 +181,23 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	}
 	
 	/**
-	 * Set this function to the integral of f
-	 * @param f
+	 * Sets this function by applying a GeoGebraCAS command to a function.
+	 * 
+	 * @param ggbCasCmd the GeoGebraCAS command needs to include % in all places
+	 * where the function f should be substituted, e.g. "Derivative(%,x)"
+	 * @param f the function that the CAS command is applied to
 	 */
-	public void setIntegral(GeoFunction f) {
-		if (f.isDefined()) {
-			fun = f.fun.getIntegral();	
-		} else {
-			isDefined = false;
-		}	
-	}
-	
-	/**
-	 * Set this function to the expanded version of f, e.g. 3*(x-2) is expanded to 3*x - 6.
-	 */
-	public void setExpanded(GeoFunction f) {
-		if (f.isDefined()) {
-			fun = f.fun.getExpanded();	
-		} else {
-			isDefined = false;
-		}	
-	}
+	public void setUsingCasCommand(String ggbCasCmd, CasEvaluableFunction f, boolean symbolic){
+		GeoFunction ff = (GeoFunction) f;
 		
+		if (ff.isDefined()) {
+			fun = (Function) ff.fun.evalCasCommand(ggbCasCmd, symbolic);
+			isDefined = fun != null;
+		} else {
+			isDefined = false;
+		}		
+	}	
+	
 	/**
 	 * Returns this function's value at position x.
 	 * @param x
@@ -350,9 +341,10 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 		sbToString.append(toValueString());
 		return sbToString.toString();
 	}
-	private StringBuilder sbToString = new StringBuilder(80);
+	protected StringBuilder sbToString = new StringBuilder(80);
 	
-	public String toValueString() {		
+	public String toValueString() {	
+
 		if (isDefined())
 			return fun.toValueString();
 		else
@@ -401,7 +393,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	   */ 
 	  public final void getXML(StringBuilder sb) {
 		 
-		/*AG // an indpendent function needs to add
+		 // an indpendent function needs to add
 		 // its expression itself
 		 // e.g. f(x) = x� - 3x
 		 if (isIndependent()) {
@@ -420,9 +412,9 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 			  sb.append(label);
 		  sb.append("\">\n");
 		  getXMLtags(sb);
-		  sb.append(getCaptionXML());
+		  //AGsb.append(getCaptionXML());
 		  sb.append("</element>\n");
-			*/
+
 	  }
 	
 	/**
@@ -432,7 +424,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	   super.getXMLtags(sb);
 	 
 	   //	line thickness and type  
-	   sb.append(getLineStyleXML());	  
+		//AGgetLineStyleXML(sb);
 
    }
 
@@ -457,7 +449,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 				P.x = intervalMax;
 		}
 		
-		P.y = fun.evaluate(P.x);
+		P.y = evaluate(P.x); // changed from fun.evaluate so that it works with eg Point[If[x < -1, x + 1, x�]]
 		P.z = 1.0;
 		
 		// set path parameter for compatibility with
@@ -528,6 +520,10 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 		return false;
 	}
 
+	final public boolean isCasEvaluableFunction() {
+		return true;
+	}
+	
 	public boolean isNumberValue() {
 		return false;		
 	}
@@ -631,10 +627,6 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	public GeoVec2D evaluateCurve(double t) {
 		return new GeoVec2D(kernel, t, evaluate(t));
 	}
-
-	public boolean isGeoDeriveable() {
-		return true;
-	}
 	
 	public String getVarString() {	
 		return fun == null ? "x" : fun.getVarString();
@@ -655,6 +647,9 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	
     // Michael Borcherds 2009-02-15
 	public boolean isEqual(GeoElement geo) {
+		
+		if (!geo.isGeoFunction() || geo.getGeoClassType() == GeoElement.GEO_CLASS_INTERVAL)
+			return false;
 		
 		
 		// return return geo.isEqual(this); rather than false
@@ -774,7 +769,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
         sb.append('(');
         sb.append(functionIn);
         sb.append(',');
-        sb.append(fun.getFunctionVariable());
+        sb.append(fun.getFunctionVariables());
         sb.append(',');
         sb.append(Double.toString(x));
         sb.append(')');
@@ -980,7 +975,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 		    		
 		    		boolean isInRange = false;
 		    		try {
-		    			Application.debug(verticalAsymptotesArray[i]+"");
+		    			//Application.debug(verticalAsymptotesArray[i]+"");
 		    			if (verticalAsymptotesArray[i].trim().equals("")) isInRange = false; // was complex root
 		    			//isInRange = parentFunction.evaluateCondition(Double.parseDouble(verticalAsymptotesArray[i]));
 		    			else isInRange = parentFunction.evaluateCondition(kernel.getAlgebraProcessor().evaluateToNumeric(verticalAsymptotesArray[i], true).getDouble());
@@ -1020,7 +1015,7 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 		if (str == null || str.length()==0) return true;
 		if (str.equals("?")) return true; // undefined/NaN
 //		if (str.indexOf("%i") > -1 ) return true; // complex answer
-		str = str.toLowerCase();
+		str = str.toLowerCase(/*AGLocale.US*/);
 		if (str.startsWith("'")) return true; // maxima error eg 'diff(
 		if (!allowInfinity && str.indexOf(Unicode.Infinity) > -1) return true;
 		if (str.length() > 6) {
@@ -1059,6 +1054,6 @@ GeoDeriveable, ParametricCurve, LineProperties, RealRootFunction {
 	public String getXML() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
+	}
 
 }

@@ -41,11 +41,11 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
     
     protected GeoElement[] input, output;
     private GeoElement [] efficientInput;
-    //AGprivate GeoNumeric [] randomUnlabeledInput;
+    private GeoNumeric [] randomUnlabeledInput;
      
     private boolean isPrintedInXML = true;
     private boolean stopUpdateCascade = false;
-    
+    StringBuilder sb = new StringBuilder();
     public AlgoElement(Construction c) {
         this(c, true);               
     }
@@ -212,7 +212,7 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
     }
     
     protected void doSetDependencies() {
-    	//AGsetRandomUnlabeledInput();
+    	setRandomUnlabeledInput();
         setOutputDependencies();           
         cons.addToAlgorithmList(this);  
     }
@@ -222,7 +222,7 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
      * These numbers need to be updated in update() before compute()
      * is called.
      */
-    /*AGprivate void setRandomUnlabeledInput() {
+    private void setRandomUnlabeledInput() {
     	ArrayList tempList = null;
         for (int i = 0; i < input.length; i++) {  
        	 if (input[i].isGeoNumeric() && !input[i].isLabelSet()) {
@@ -240,7 +240,7 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
         		randomUnlabeledInput[i] = (GeoNumeric) tempList.get(i);
         	}
         }
-    }*/
+    }
     
     
     protected final void setEfficientDependencies(GeoElement [] standardInput, GeoElement [] efficientInput) {   	
@@ -879,5 +879,43 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
 	final public AlgoElement getUpdateAfterAlgo() {
 		return updateAfterAlgo;
 	}	
+	
+	  /**
+     * initialize output list
+     * @param i 
+     * 
+     */
+    protected void setOutputLength(int n){
+    	output = new GeoElement[n];
+    }
+    
+    
+    /**
+     * set output number i
+     * @param i
+     * @param geo 
+     */
+    protected void setOutput(int i, GeoElement geo){
+    	output[i] = geo;
+    }
+    
+    /**
+     * @param i
+     * @return output i
+     */
+    protected GeoElement getOutput(int i){
+    	return output[i];
+    }
+    
+    /**
+     * 
+     * @return number of outputs
+     */
+    protected int getOutputLength(){
+    	if (output==null)
+    		return 0;
+    	
+    	return output.length;
+    }
 	
 }

@@ -257,6 +257,7 @@ public abstract class GeoElement
 	public static final int GEO_CLASS_CONIC = 40;
 	public static final int GEO_CLASS_CONICPART = 50;
 	public static final int GEO_CLASS_FUNCTION = 60;
+	public static final int GEO_CLASS_INTERVAL = 9;
 	public static final int GEO_CLASS_FUNCTIONCONDITIONAL = 70;
 	public static final int GEO_CLASS_IMAGE = 80;
 	public static final int GEO_CLASS_LINE = 90;
@@ -273,7 +274,7 @@ public abstract class GeoElement
 	public static final int GEO_CLASS_CURVE_POLAR = 191;
 	public static final int GEO_CLASS_CUBIC = 192;
 	public static final int GEO_CLASS_IMPLICIT_POLY = 193;
-	
+	public static final int GEO_CLASS_FUNCTION_NVAR = 26;
 	
 	public static final int LABEL_NAME = 0;
 	public static final int LABEL_NAME_VALUE = 1;
@@ -4257,6 +4258,11 @@ public abstract class GeoElement
 	 public String getAssignmentOperator() {
 		 return " := ";
 	 }
+
+	 public String getLabelForAssignment() {
+		 return getLabel();
+	 }
+	 
 
 
 

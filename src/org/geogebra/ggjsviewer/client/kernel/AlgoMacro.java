@@ -18,6 +18,7 @@ import java.util.HashMap;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.FunctionNVar;
 import org.geogebra.ggjsviewer.client.main.Application;
 
 
@@ -417,7 +418,7 @@ implements EuclidianViewAlgo {
 	 * Makes sure that all referenced GeoElements of fun are
 	 * in this algorithm's construction.
 	 */			
-	final public void initFunction(Function fun) {								
+	final public void initFunction(FunctionNVar fun) {								
 		// geoFun was created as a copy of macroFun, 
 		// make sure all referenced GeoElements are from the algo-construction
 		replaceReferencedMacroObjects(fun.getExpression());

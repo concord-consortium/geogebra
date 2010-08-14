@@ -21,10 +21,15 @@ import org.geogebra.ggjsviewer.client.kernel.Kernel;
  */
 public class FunctionVariable extends MyDouble {
 	
-	private String varStr = "x";
+private String varStr = "x";
 	
 	public FunctionVariable(Kernel kernel) {
 		super(kernel);
+	}
+	
+	public FunctionVariable(Kernel kernel, String varStr) {
+		super(kernel);
+		setVarString(varStr);
 	}
 	
 	/**
@@ -50,5 +55,6 @@ public class FunctionVariable extends MyDouble {
     //final public MyDouble getNumber() {    	
 		// used in expression node tree: be careful
 	//	 return new MyDouble(this);		      
+    //}   
     //}
 }

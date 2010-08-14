@@ -24,7 +24,9 @@ package org.geogebra.ggjsviewer.client.kernel.arithmetic;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.kernel.CasEvaluableFunction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic3D.Vector3DValue;
@@ -486,7 +488,7 @@ implements ExpressionValue, ExpressionNodeConstants {
     /**
      * returns true if there is at least one Polynomial in the tree
      */
-    public boolean includesPolynomial() {               
+    /*AG old? public boolean includesPolynomial() {               
         if (left.isExpressionNode()) {             
             if (((ExpressionNode)left).includesPolynomial()) return true;            
         }                                                               
@@ -2871,5 +2873,70 @@ implements ExpressionValue, ExpressionNodeConstants {
     private String multiplicationSpace(int type) {
     	return (type == STRING_TYPE_LATEX) ? " \\; " : " ";
     }
+
+
+	public boolean containsObjectType(Class type) {
+		//AG must find out something! 
+		/*AGif (type.isInstance(left) || type.isInstance(right))
+    		return true;
+    	*/
+		if (left instanceof CasEvaluableFunction || right instanceof CasEvaluableFunction)
+			return true;
+		//AG VERY DIRTY HACK!!!!
+    	if (left instanceof ExpressionNode && ((ExpressionNode) left).containsObjectType(type)) {
+    		return true;
+    	}
+     	if (right instanceof ExpressionNode && ((ExpressionNode) right).containsObjectType(type)) {
+    		return true;
+    	}
+    	
+        return false;       
+	}
+	
+	 /**
+     * returns true if there is at least one Polynomial in the tree
+     */
+    public boolean includesPolynomial() { 
+    	return getPolynomialVars().size() > 0;
+    }
+    
+    /**
+     * Returns all polynomial variables (x, y, and/or z) in this tree
+     * as a list.
+     * @return list with all variables as Strings
+     */
+    public TreeSet<String> getPolynomialVars() {
+    	TreeSet<String> vars = new TreeSet<String>();
+    	getPolynomialVars(vars);
+    	return vars;
+    }
+    
+    /**
+     * Adds all polynomial variables (x, y, and/or z) in this tree
+     * to vars.
+     * @param vars the set to add all variables as Strings
+     */
+    private void getPolynomialVars(TreeSet<String> vars) { 
+        if (left.isExpressionNode()) {             
+            ((ExpressionNode)left).getPolynomialVars(vars);            
+        }                                                               
+        else if (left.isPolynomialInstance()) {
+			vars.add(left.toString());         
+        }
+        
+        if (right != null) {
+            if (right.isExpressionNode()) {
+            	((ExpressionNode)right).getPolynomialVars(vars);           
+            } else if (right.isPolynomialInstance()) {
+            	vars.add(right.toString());           
+            }
+        }      
+    }
+    
+    /**
+     * Returns whether this ExpressionNode should evaluate to a GeoVector.
+     * This method returns true when all GeoElements in this tree are GeoVectors and
+     * there are no other constanct VectorValues (i.e. constant points)
+     */
 	
 }

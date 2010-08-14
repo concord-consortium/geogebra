@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.ConstructionDefaults;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
+import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
@@ -29,6 +30,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.QuadCurve2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
 //import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D.Double;
 import org.geogebra.ggjsviewer.client.main.Application;
 
@@ -1421,7 +1423,7 @@ final public void setHits(Point p){
 			break;
 			*/
 		case GeoElement.GEO_CLASS_CONICPART:
-			//AGd = new DrawConicPart(this, (GeoConicPart) geo);
+			d = new DrawConicPart(this, (GeoConicPart) geo);
 			break;
 	
 		case GeoElement.GEO_CLASS_CONIC:
@@ -1987,6 +1989,71 @@ final public void setHits(Point p){
 		}
 		//this.closePath();
 		this.stroke();
+		
+	}
+
+	public void fill(Shape shape) {
+		// TODO Auto-generated method stub
+		this.beginPath();
+		PathIterator it = shape.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.fill();
+		
+		
+	}
+
+	public void draw(Shape shape) {
+		this.beginPath();
+		PathIterator it = shape.getPathIterator(null);
+		double[] coords = new double[6];
+		while (!it.isDone()) {
+			int cu = it.currentSegment(coords);
+			switch (cu) {
+			case PathIterator.SEG_MOVETO:
+				this.moveTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_LINETO:
+				this.lineTo(coords[0], coords[1]);
+				break;
+			case PathIterator.SEG_CUBICTO: 
+				this.cubicCurveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case PathIterator.SEG_QUADTO:			
+				this.quadraticCurveTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case PathIterator.SEG_CLOSE:
+				this.closePath();
+			default:
+				break;
+			}
+			it.next();
+		}
+		//this.closePath();
+		this.stroke();
+		
 		
 	}
 	

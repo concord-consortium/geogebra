@@ -3844,10 +3844,10 @@ casPrintForm = type;
 	/** 
 	 * semicircle with midpoint M through point P
 	 */
-	/*AGfinal public GeoConicPart Semicircle(String label, GeoPoint M, GeoPoint P) {
+	final public GeoConicPart Semicircle(String label, GeoPoint M, GeoPoint P) {
 		AlgoSemicircle algo = new AlgoSemicircle(cons, label, M, P);
 		return algo.getSemicircle();
-	}*/
+	}
 	
 	/** 
 	 * locus line for Q dependent on P. Note: P must be a point
@@ -4946,7 +4946,7 @@ casPrintForm = type;
 		}
 	}	
 	
-	/*AGGeoConic getTransformedConic(int type, GeoConic conic, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
+	GeoConic getTransformedConic(int type, GeoConic conic, GeoPoint Q, GeoLine l, GeoVector vec, NumberValue n) {
 		switch (type) {
 			case Kernel.TRANSFORM_TRANSLATE:
 				AlgoTranslate algoTrans = new AlgoTranslate(cons, conic, vec);			
@@ -4956,7 +4956,7 @@ casPrintForm = type;
 			case Kernel.TRANSFORM_MIRROR_AT_LINE:	
 				AlgoMirror algoMirror = new AlgoMirror(cons, conic, l, Q, null);			
 				return (GeoConic) algoMirror.getResult();			
-						
+			/*AG			
 			case Kernel.TRANSFORM_ROTATE:
 				AlgoRotate algoRotate = new AlgoRotate(cons, conic, n);			
 				return (GeoConic) algoRotate.getResult();			
@@ -4968,11 +4968,11 @@ casPrintForm = type;
 			case Kernel.TRANSFORM_DILATE:
 				AlgoDilate algoDilate = new AlgoDilate(cons, conic, n, Q);			
 				return (GeoConic) algoDilate.getResult();						
-			
+			*/
 			default:
 				return null;
 		}
-	}	*/
+	}
 
 	/***********************************
 	 * CALCULUS
@@ -6481,6 +6481,10 @@ casPrintForm = type;
 
 	public Application getBaseApplication() {
 		// TODO Auto-generated method stub
+		return bApp;
+	}
+	
+	public Application getApplication() {
 		return bApp;
 	}
 	

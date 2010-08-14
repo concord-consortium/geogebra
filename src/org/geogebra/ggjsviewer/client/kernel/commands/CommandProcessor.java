@@ -1227,7 +1227,7 @@ final public GeoElement[] process(Command c) throws MyError {
 /*
  * Semicircle[ <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdSemicircle extends CommandProcessor {
 
 	public CmdSemicircle(Kernel kernel) {
