@@ -129,7 +129,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("LowerSum", new CmdLowerSum(kernel));	   
     	//AGcmdTable.put("Root", new CmdRoot(kernel));	   
     	//AGcmdTable.put("Dilate", new CmdDilate(kernel));	   
-    	//AGcmdTable.put("Vector", new CmdVector(kernel));	   
+    	cmdTable.put("Vector", new CmdVector(kernel));	   
     	cmdTable.put("Ellipse", new CmdEllipse(kernel));	   
     	cmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   

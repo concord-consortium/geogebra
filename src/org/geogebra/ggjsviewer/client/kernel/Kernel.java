@@ -2245,7 +2245,7 @@ casPrintForm = type;
 	/** 
 	 * Vector named label from Point P to Q
 	 */
-	/*AGfinal public GeoVector Vector(
+	final public GeoVector Vector(
 		String label,
 		GeoPoint P,
 		GeoPoint Q) {
@@ -2255,19 +2255,19 @@ casPrintForm = type;
 		v.update();
 		notifyUpdate(v);
 		return v;
-	}*/
+	}
 
 	/** 
 	* Vector (0,0) to P
 	*/
-	/*AGfinal public GeoVector Vector(String label, GeoPoint P) {
+	final public GeoVector Vector(String label, GeoPoint P) {
 		AlgoVectorPoint algo = new AlgoVectorPoint(cons, label, P);
 		GeoVector v = algo.getVector();
 		v.setEuclidianVisible(true);
 		v.update();
 		notifyUpdate(v);
 		return v;
-	}*/
+	}
 
 	/** 
 	 * Direction vector of line g

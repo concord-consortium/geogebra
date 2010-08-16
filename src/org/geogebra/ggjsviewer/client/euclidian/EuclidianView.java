@@ -13,6 +13,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
@@ -365,6 +366,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public String fontPoint = "normal";
 	public String fontLine = "normal";
 	public String fontConic = "normal";
+	public String fontVector = "normal";
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -1417,11 +1419,11 @@ final public void setHits(Point p){
 				}			
 			}
 			break;
-		/*	AG
+		
 		case GeoElement.GEO_CLASS_VECTOR:
 			d = new DrawVector(this, (GeoVector) geo);
 			break;
-			*/
+			
 		case GeoElement.GEO_CLASS_CONICPART:
 			d = new DrawConicPart(this, (GeoConicPart) geo);
 			break;
