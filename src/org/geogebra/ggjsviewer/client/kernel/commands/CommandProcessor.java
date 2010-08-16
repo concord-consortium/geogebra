@@ -559,7 +559,6 @@ class CmdOrthogonalVector extends CommandProcessor {
 /*
  * UnitVector[ <GeoLine> ] UnitVector[ <GeoVector> ]
  */
-/*AG
 class CmdUnitVector extends CommandProcessor {
 
 	public CmdUnitVector(Kernel kernel) {
@@ -592,6 +591,7 @@ class CmdUnitVector extends CommandProcessor {
 		}
 	}
 }
+
 
 /*
  * UnitOrthogonalVector[ <GeoLine> ] UnitOrthogonalVector[ <GeoVector> ]

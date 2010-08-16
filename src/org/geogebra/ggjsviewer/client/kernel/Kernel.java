@@ -2425,20 +2425,20 @@ casPrintForm = type;
 	/** 
 	 * unit vector of line g
 	 */
-	/*AGfinal public GeoVector UnitVector(String label, GeoLine g) {
+	final public GeoVector UnitVector(String label, GeoLine g) {
 		AlgoUnitVectorLine algo = new AlgoUnitVectorLine(cons, label, g);
 		GeoVector v = algo.getVector();
 		return v;
-	}*/
+	}
 
 	/** 
 	 * unit vector of vector v
 	 */
-	/*AGfinal public GeoVector UnitVector(String label, GeoVector v) {
+	final public GeoVector UnitVector(String label, GeoVector v) {
 		AlgoUnitVectorVector algo = new AlgoUnitVectorVector(cons, label, v);
 		GeoVector u = algo.getVector();
 		return u;
-	}*/
+	}
 
 	/** 
 	 * orthogonal vector of line g
