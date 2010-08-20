@@ -3,11 +3,11 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.base64form {
-			width:700px;
+			width:768px;
 			height:350px;	
 		}
 		.base64area {
-			width:692px;
+			width:760px;
 			height:300px;
 		}
 	</ui:style>

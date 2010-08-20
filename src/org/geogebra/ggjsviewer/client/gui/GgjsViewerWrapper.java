@@ -7,6 +7,7 @@ import org.geogebra.ggjsviewer.client.service.JsonHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -46,16 +47,61 @@ public class GgjsViewerWrapper extends Composite {
 	@UiField
 	static public TextBox commandSuggestBox;
 	@UiField
-	static public ListBox examplesList;
+	static public Button exm1;
+	@UiField
+	static public Button exm2;
+	@UiField
+	static public Button exm3;
+	//@UiField
+	//static public Button exm4;
+	//AG@UiField Nice but crashes in mobile safari
+	//AGstatic public ListBox examplesList;
 	
 	public GgjsViewerWrapper(/*Possible parameters*/) {
 		initWidget(uiBinder.createAndBindUi(this));
-		commandSuggestBox.setTitle("Not working yet...");
+		commandSuggestBox.setTitle("Type a command (No suggestions yet)");
 		//Populate listbox
-		examplesList.addItem("Euler line version 2", "0");
-		examplesList.addItem("Circles","1");
-		examplesList.addItem("Circle around a triangle","2");
+		//AGexamplesList.addItem("Euler line version 2", "0");
+		//AGexamplesList.addItem("Circles","1");
+		//AGexamplesList.addItem("Circle around a triangle","2");
 		//view.methodToCall(possibleParameters);
+		
+		exm1.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				handleExampleButtons(event);
+				
+			}
+		});
+		exm2.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				handleExampleButtons(event);
+				
+			}
+		});
+		exm3.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				handleExampleButtons(event);
+				
+			}
+		});
+		/*exm4.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				handleExampleButtons(event);
+				
+			}
+		});*/
 	}
 	
 	
@@ -101,10 +147,23 @@ public class GgjsViewerWrapper extends Composite {
 		
 	}
 	
-	@UiHandler("examplesList")
+	void handleExampleButtons(ClickEvent e) {
+		Button sender = (Button) e.getSource();
+		if (sender == exm1) 
+			jsonHandler.getXmlfromExamplesList("0");
+		else if (sender == exm2)
+			jsonHandler.getXmlfromExamplesList("1");
+		else if (sender == exm3)
+			jsonHandler.getXmlfromExamplesList("2");
+		/*else if (sender == exm4)
+			jsonHandler.getXmlfromExamplesList("3");*/
+	}
+	
+	
+	/*AG@UiHandler("examplesList")
 	void handleListChange(ChangeEvent e) {
 		jsonHandler.getXmlfromExamplesList(examplesList.getValue(examplesList.getSelectedIndex()));
-	}
+	}*/
 	
 
 }

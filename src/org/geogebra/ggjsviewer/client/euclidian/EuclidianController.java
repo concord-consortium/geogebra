@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
+import org.geogebra.ggjsviewer.client.euclidian.touch.TouchMoveEvent;
 import org.geogebra.ggjsviewer.client.kernel.AlgoDynamicCoordinates;
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
@@ -2876,6 +2877,420 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		if (toggleModeChangedKernel)
 			app.storeUndoInfo();
 	}*/
+	public void handleTouchStart(int client_x,int client_y) {
+		TouchMoveEvent event = new TouchMoveEvent();
+		event.setClientX(client_x);
+		event.setClientY(client_y);
+		
+		double screen_x = event.getClientX() - view.getAbsoluteLeft();
+		double screen_y = event.getClientY() - view.getAbsoluteTop();
+		//GWT.log("screen_x: "+String.valueOf(screen_x));
+		//GWT.log("sceenn_y: "+String.valueOf(screen_y));
+		// TODO Auto-generated method stub
+		if (mode == EuclidianView.MODE_PEN) {
+			//AGhandleMousePressedForPenMode(e);
+			return;
+		}
+		//GWT.log(String.valueOf(mode));
+		GeoElement geo;
+		Hits hits;
+		setMouseLocation(event);
+		transformCoords();	
+
+		moveModeSelectionHandled = false;
+		DRAGGING_OCCURED = false;			
+		view.setSelectionRectangle(null);
+		selectionStartPoint.setLocation(mouseLoc);	
+
+		/*AGif (hitResetIcon() || view.hitAnimationButton(e)) {				
+			// see mouseReleased
+			return;
+		}*/
+
+		/*AGif (Application.isRightClick(e)) {			
+			//ggb3D - for 3D rotation
+			processRightPressFor3D();
+			return;
+		} 
+		else if (
+				app.isShiftDragZoomEnabled() && 
+				(
+						// MacOS: shift-cmd-drag is zoom
+						(e.isShiftDown() && !Application.isControlDown(e)) // All Platforms: Shift key
+						|| 
+						e.isControlDown() && Application.WINDOWS // old Windows key: Ctrl key 
+				)) 
+		{
+			// Michael Borcherds 2007-12-08 BEGIN
+			// bugfix: couldn't select multiple objects with Ctrl		
+
+
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			if (!hits.isEmpty()) // bugfix 2008-02-19 removed this:&& ((GeoElement) hits.get(0)).isGeoPoint())
+			{
+				DONT_CLEAR_SELECTION=true;
+			}
+			//			 Michael Borcherds 2007-12-08 END
+			TEMPORARY_MODE = true;
+			oldMode = mode; // remember current mode	
+			view.setMode(EuclidianView.MODE_TRANSLATEVIEW);				
+		} 	*/	
+
+
+		switch (mode) {
+		// create new point at mouse location
+		// this point can be dragged: see mouseDragged() and mouseReleased()
+		case EuclidianView.MODE_POINT:
+		case EuclidianView.MODE_POINT_IN_REGION:				
+			view.setHits(mouseLoc);
+			hits = view.getHits();
+			// if mode==EuclidianView.MODE_POINT_INSIDE, point can be in a region
+			createNewPoint(hits, true, mode==EuclidianView.MODE_POINT_IN_REGION, true, true); 
+			break;
+		
+		case EuclidianView.MODE_SEGMENT:
+		case EuclidianView.MODE_SEGMENT_FIXED:		
+		case EuclidianView.MODE_JOIN:
+		case EuclidianView.MODE_RAY:
+		case EuclidianView.MODE_VECTOR:
+		case EuclidianView.MODE_CIRCLE_TWO_POINTS:
+		case EuclidianView.MODE_CIRCLE_POINT_RADIUS:
+		case EuclidianView.MODE_CIRCLE_THREE_POINTS:
+		case EuclidianView.MODE_ELLIPSE_THREE_POINTS:
+		case EuclidianView.MODE_HYPERBOLA_THREE_POINTS:
+		case EuclidianView.MODE_CIRCLE_ARC_THREE_POINTS:
+		case EuclidianView.MODE_CIRCLE_SECTOR_THREE_POINTS:
+		case EuclidianView.MODE_CIRCUMCIRCLE_ARC_THREE_POINTS:
+		case EuclidianView.MODE_CIRCUMCIRCLE_SECTOR_THREE_POINTS:
+		case EuclidianView.MODE_SEMICIRCLE:
+		case EuclidianView.MODE_CONIC_FIVE_POINTS:
+		case EuclidianView.MODE_POLYGON:
+		case EuclidianView.MODE_REGULAR_POLYGON:	
+			//hits = view.getHits(mouseLoc);
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			createNewPoint(hits, true, true, true); 
+			break;
+		/*	
+		case EuclidianView.MODE_PARALLEL:
+		case EuclidianView.MODE_PARABOLA: // Michael Borcherds 2008-04-08
+		case EuclidianView.MODE_ORTHOGONAL:
+		case EuclidianView.MODE_LINE_BISECTOR:
+		case EuclidianView.MODE_ANGULAR_BISECTOR:
+		case EuclidianView.MODE_TANGENTS:		
+		case EuclidianView.MODE_POLAR_DIAMETER:
+			//hits = view.getHits(mouseLoc);
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			createNewPoint(hits, false, true, true);
+			break;		
+
+		case EuclidianView.MODE_COMPASSES:		// Michael Borcherds 2008-03-13	
+			//hits = view.getHits(mouseLoc);
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			createNewPoint(hits, false, true, true);
+			break;		
+
+		case EuclidianView.MODE_ANGLE:
+			//hits = view.getTopHits(mouseLoc);
+			view.setHits(mouseLoc);
+			hits = view.getHits().getTopHits();
+			// check if we got a polygon
+			if (hits.isEmpty() || !((GeoElement) hits.get(0)).isGeoPolygon()) {
+				createNewPoint(hits, false, false, true);			
+			}			
+			break;
+
+		case EuclidianView.MODE_ANGLE_FIXED:
+		case EuclidianView.MODE_MIDPOINT:
+			//hits = view.getHits(mouseLoc);
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			createNewPoint(hits, false, false, true);			
+			break;
+
+		case EuclidianView.MODE_MOVE_ROTATE:
+			handleMousePressedForRotateMode();
+			break;
+
+		case EuclidianView.MODE_RECORD_TO_SPREADSHEET:
+			handleMousePressedForRecordToSpreadsheetMode(e);
+			break;
+
+			// move an object
+			 */
+		case EuclidianView.MODE_MOVE:	
+		case EuclidianView.MODE_VISUAL_STYLE:	
+			handleMousePressedForMoveMode(event, false);			
+			break;
+		/*
+			// move drawing pad or axis
+		case EuclidianView.MODE_TRANSLATEVIEW:		
+
+			mousePressedTranslatedView(e);
+
+			break;								
+		*/
+		default:
+			moveMode = MOVE_NONE;			 
+		}
+	}
+	
+	public void handleTouchEnd() {
+		transformCoordsOffset[0] = 0;
+		transformCoordsOffset[1] = 0;
+
+		//AGif (textfieldHasFocus) return;
+
+		if (mode == EuclidianView.MODE_PEN) {
+			//AGhandleMouseReleasedForPenMode(e);
+			return;
+		}
+
+
+		//if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) view.resetTraceRow(); // for trace/spreadsheet
+		if (getMovedGeoPoint() != null){
+
+			//AG used for 3dprocessReleaseForMovedGeoPoint();
+			/*
+			// deselect point after drag, but not on click
+			if (movedGeoPointDragged) getMovedGeoPoint().setSelected(false);
+
+			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) getMovedGeoPoint().resetTraceColumns();
+			 */
+		}
+		if (movedGeoNumeric != null) {
+
+			// deselect slider after drag, but not on click
+			if (movedGeoNumericDragged) movedGeoNumeric.setSelected(false);
+
+			if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET) movedGeoNumeric.resetTraceColumns();
+		}
+
+		movedGeoPointDragged = false;
+		movedGeoNumericDragged = false;
+
+		//AG((JPanel) view).requestFocusInWindow();
+		if (mouseLoc != null) {
+			TouchMoveEvent e = new TouchMoveEvent();
+			e.setClientX(mouseLoc.x + view.getAbsoluteLeft());
+			e.setClientY(mouseLoc.y + view.getAbsoluteTop());
+			setMouseLocation(e);
+	
+			//altDown=e.isAltKeyDown();
+	
+			transformCoords();
+			Hits hits = null;
+			GeoElement geo;
+	
+			/*AGif (hitResetIcon()) {				
+				app.reset();
+				return;
+			}
+			else if (view.hitAnimationButton(e)) {		
+				if (kernel.isAnimationRunning())
+					kernel.getAnimatonManager().stopAnimation();
+				else
+					kernel.getAnimatonManager().startAnimation();			
+				view.repaintEuclidianView();
+				app.setUnsaved();
+				return;
+			}*/
+	
+	
+	
+			// Michael Borcherds 2007-10-08 allow drag with right mouse button
+			/*AGif ((Application.isRightClick(e) || Application.isControlDown(e)))// && !TEMPORARY_MODE)
+			{		
+				if (processRightReleaseFor3D()) return;
+				if (!TEMPORARY_MODE){
+					if (!app.isRightClickEnabled()) return;
+					if (processZoomRectangle()) return;
+					//			 Michael Borcherds 2007-10-08
+	
+					// make sure cmd-click selects multiple points (not open properties)
+					if (Application.MAC_OS && Application.isControlDown(e) 
+							|| !Application.isRightClick(e))
+						return;
+	
+					// get selected GeoElements						
+					// show popup menu after right click
+					view.setHits(mouseLoc);
+					hits = view.getHits().getTopHits();
+					if (hits.isEmpty()) {
+						// no hits
+						if (app.selectedGeosSize() == 1) {
+							GeoElement selGeo = (GeoElement) app.getSelectedGeos().get(0);
+							app.getGuiManager().showPopupMenu(selGeo, (JPanel) view, mouseLoc);
+						}
+						else if (app.selectedGeosSize() > 1) {
+							// there are selected geos: show them
+							app.getGuiManager().showPropertiesDialog(app.getSelectedGeos());
+						}
+						else {
+							// there are no selected geos: show drawing pad popup menu
+							app.getGuiManager().showDrawingPadPopup((JPanel) view, mouseLoc);
+						}
+					} else {		
+						// there are hits
+						if (app.selectedGeosSize() > 0) {	
+							// selected geos: add first hit to selection and show properties
+							app.addSelectedGeo((GeoElement) hits.get(0));
+	
+							if (app.selectedGeosSize() == 1) {
+								GeoElement selGeo = (GeoElement) app.getSelectedGeos().get(0);
+								app.getGuiManager().showPopupMenu(selGeo, (JPanel) view, mouseLoc);
+							}
+							else  { // more than 1 selected					
+								app.getGuiManager().showPropertiesDialog(app.getSelectedGeos());
+							}
+						}
+						else {
+							// no selected geos: choose geo and show popup menu
+							geo = chooseGeo(hits, true);
+							if (geo!=null)
+								app.getGuiManager().showPopupMenu(geo,(JPanel) view, mouseLoc);
+							else
+								//for 3D : if the geo hitted is xOyPlane, then chooseGeo return null
+								app.getGuiManager().showDrawingPadPopup((JPanel) view, mouseLoc);
+						}																										
+					}				
+					return;
+				}
+			}*/
+	
+			// handle moving
+			boolean changedKernel = POINT_CREATED;		
+			if (DRAGGING_OCCURED) {			
+	
+				DRAGGING_OCCURED = false;
+				//			// copy value into input bar
+				//			if (mode == EuclidianView.MODE_MOVE && movedGeoElement != null) {
+				//				app.geoElementSelected(movedGeoElement,false);
+				//			}
+	
+	
+				changedKernel = (moveMode != MOVE_NONE);			
+				movedGeoElement = null;
+				rotGeoElement = null;	
+	
+				// Michael Borcherds 2007-10-08 allow dragging with right mouse button
+				if (!TEMPORARY_MODE) {
+					// Michael Borcherds 2007-10-08
+					/*AGif (allowSelectionRectangle()) {
+						processSelectionRectangle(e);	
+	
+						return;
+					}*/
+			} else {	
+				// no hits: release mouse button creates a point
+				// for the transformation tools
+				// (note: this cannot be done in mousePressed because
+				// we want to be able to select multiple objects using the selection rectangle)
+				
+				//AGchangedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
+			}
+	
+			// remember helper point, see createNewPoint()
+			//AGif (changedKernel)
+				//AGapp.storeUndoInfo();
+	
+			// make sure that when alt is pressed for creating a segment or line
+			// it works if the endpoint is on a path
+			/*AGif (useLineEndPoint && lineEndPoint != null) {
+				EuclidianView ev = (EuclidianView) view;
+				mouseLoc.x = ev.toScreenCoordX(lineEndPoint.x);
+				mouseLoc.y = ev.toScreenCoordY(lineEndPoint.y);
+				useLineEndPoint = false;	
+			}*/
+	
+			// now handle current mode
+			view.setHits(mouseLoc);
+			hits = view.getHits();
+			switchModeForRemovePolygons(hits);
+			//Application.debug(hits.toString());
+	
+	
+			// Michael Borcherds 2007-12-08 BEGIN moved up a few lines (bugfix: Tools eg Line Segment weren't working with grid on)
+			// grid capturing on: newly created point should be taken
+			if (hits.isEmpty() && POINT_CREATED) {			
+				hits = new Hits();
+				hits.add(getMovedGeoPoint());//hits.add(movedGeoPoint);				
+			}
+			POINT_CREATED = false;		
+			//		 Michael Borcherds 2007-12-08 END	
+	
+	
+	
+	
+			if (TEMPORARY_MODE) {
+	
+				//			Michael Borcherds 2007-10-13 BEGIN
+				//AGview.setMode(oldMode);
+				TEMPORARY_MODE = false;
+				// Michael Borcherds 2007-12-08 BEGIN bugfix: couldn't select multiple points with Ctrl
+				if (DONT_CLEAR_SELECTION==false)
+					//AGclearSelections();	
+				DONT_CLEAR_SELECTION=false;
+				//			 Michael Borcherds 2007-12-08 END
+				//mode = oldMode;
+				//			Michael Borcherds 2007-10-13 END
+			} 
+			//		 Michael Borcherds 2007-10-12 bugfix: ctrl-click on a point does the original mode's command at end of drag if a point was clicked on
+			//  also needed for right-drag
+			else
+			{			
+				if (mode != EuclidianView.MODE_RECORD_TO_SPREADSHEET){ 
+					changedKernel = processMode(hits, e);
+				}
+				if (changedKernel) {
+					//AGapp.storeUndoInfo();
+				}
+			}
+			//Michael Borcherds 2007-10-12
+	
+	
+	
+			//		Michael Borcherds 2007-10-12
+			//      moved up a few lines
+			//		changedKernel = processMode(hits, e);
+			//		if (changedKernel)
+			//			app.storeUndoInfo();
+			//		Michael Borcherds 2007-10-12
+	
+	
+			if (!hits.isEmpty()){
+				//Application.debug("hits ="+hits);
+				//AGview.setDefaultCursor();		
+			}else {
+				//AGview.setHitCursor();
+			}
+			refreshHighlighting(null);
+	
+			// reinit vars
+			//view.setDrawMode(EuclidianView.DRAW_MODE_BACKGROUND_IMAGE);
+			moveMode = MOVE_NONE;
+			//initShowMouseCoords();	
+			//view.setShowAxesRatio(false);
+			kernel.notifyRepaint();		
+			}
+	}
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
+	
+	
+	public void handleTouchMove(int client_x, int client_y) {
+		TouchMoveEvent event = new TouchMoveEvent();
+		event.setClientX(client_x);
+		event.setClientY(client_y);
+		setMouseLocation(event);
+		processMouseMoved(event);
+	}
 
 
 }

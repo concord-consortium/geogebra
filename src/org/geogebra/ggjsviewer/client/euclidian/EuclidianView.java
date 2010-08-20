@@ -72,7 +72,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected static final int MIN_HEIGHT = 50;
 	
 	public static final int DEFAULT_HEIGHT = 350;
-	public static final int DEFAULT_WIDTH = 700;
+	public static final int DEFAULT_WIDTH = 766;
 	
 	protected static final String PI_STRING = "\u03c0";
 	

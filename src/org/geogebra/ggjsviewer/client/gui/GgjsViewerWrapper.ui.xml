@@ -10,11 +10,11 @@
 		}
 		.euclidianwrapper {
 			margin:50px auto;
-			width:700px;
+			width:768px;
 			
 		}
 		.base64wrapper {
-			width:700px;
+			width:768px;
 			margin-bottom:20px;
 		}
 		.base64Label {
@@ -25,7 +25,7 @@
 			min-width:150px;	
 		}
 		.csbWrapper {
-			width:700px;
+			width:768px;
 			margin-bottom:10px;
 		}
 		.commandLabel {
@@ -34,10 +34,10 @@
 		}
 		
 		.commandSuggestBox {
-			width:550px;
+			width:618px;
 		}
 		.elWrapper {
-			width:700px;
+			width:768px;
 			margin-bottom:20px;
 		}
 		.elLabel {
@@ -45,9 +45,12 @@
 			min-width:70px;
 		}
 		.el {
-			min-width:550px;
+			min-width:618px;
 			text-align:right;
 			padding-right:30px;
+		}
+		.exmButton {
+			min-width: 150px;	
 		}
 	</ui:style>
 	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
@@ -63,7 +66,11 @@
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.elWrapper}">
 			<g:Label styleName="{style.elLabel}">Examples: </g:Label>
-			<g:ListBox ui:field="examplesList" styleName="{style.el}"></g:ListBox>
+			<!--<g:ListBox ui:field="examplesList" styleName="{style.el}"></g:ListBox> -->
+			<g:Button styleName="{style.exmButton}" ui:field="exm1">Euler Line version 2</g:Button>
+			<g:Button styleName="{style.exmButton}"  ui:field="exm2">Circles</g:Button>
+			<g:Button styleName="{style.exmButton}"  ui:field="exm3">Circle aroud a triangle</g:Button>
+			<!--<g:Button styleName="{style.exmButton}"  ui:field="exm4">Euler line</g:Button>-->		
 		</g:HorizontalPanel>
 	</g:VerticalPanel>
 	
