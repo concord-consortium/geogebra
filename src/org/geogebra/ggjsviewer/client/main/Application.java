@@ -273,23 +273,29 @@ public class Application extends BaseApplication {
 	public static native void registerTouchHandlers(EuclidianController x) /*-{
 	if ((navigator.platform && (navigator.platform == "iPad" || 
 		navigator.platform == "iPod" || navigator.platform == "iPhone")) || 
-		(navigator.userAgent.toLowerCase().match("android") > -1)) {
+		($wnd.navigator.userAgent.indexOf("Android") > -1)) {
 			var canvas = $doc.getElementById('eview');
 			canvas.addEventListener("touchmove",function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				var touchevent = e.targetTouches[0]; 
-			//console.log(e.clientX+", "+e.clientY);
-				x.@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::handleTouchMove(II)(touchevent.clientX,touchevent.clientY);
-				return false;
+				if (e.targetTouches.length === 1) {
+					e.preventDefault();
+					e.stopPropagation();
+					//console.log("move:"+e.targetTouches.length);	
+					var touchevent = e.targetTouches[0]; 
+					//console.log(e.clientX+", "+e.clientY);
+					x.@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::handleTouchMove(II)(touchevent.clientX,touchevent.clientY);
+					return false;
+				}
 			},false);
 		canvas.addEventListener("touchstart",function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				var touchevent = e.targetTouches[0];
-				//console.log("start:"+touchevent.clientX+", "+touchevent.clientY); 
-				x.@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::handleTouchStart(II)(touchevent.clientX,touchevent.clientY);
-				return false
+				if (e.targetTouches.length === 1) {
+					e.preventDefault();
+					e.stopPropagation();
+					//console.log("start:"+e.targetTouches.length);
+					var touchevent = e.targetTouches[0];
+					//console.log("start:"+touchevent.clientX+", "+touchevent.clientY); 
+					x.@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::handleTouchStart(II)(touchevent.clientX,touchevent.clientY);
+					return false
+				}
 			},false);
 			canvas.addEventListener("touchend",function(e) {
 				e.preventDefault();
