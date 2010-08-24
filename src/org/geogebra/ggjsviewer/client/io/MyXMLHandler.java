@@ -13,7 +13,10 @@ import java.util.LinkedList;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
+import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.Locateable;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
@@ -66,7 +69,13 @@ public class MyXMLHandler  {
 	private Application app;
 	private Command cmd;
 	private GeoElement[] cmdOutput;
+
 	
+	// List of LocateableExpPair objects
+	// for setting the start points at the end of the construction
+	// (needed for GeoText and GeoVector)
+	private LinkedList<LocateableExpPair> startPointList = new LinkedList<LocateableExpPair>();
+
 	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<GeoExpPair>();
 	//private int docPointStyle; 
 	
@@ -84,6 +93,24 @@ public class MyXMLHandler  {
 		}
 	}
 	
+	private class LocateableExpPair {
+		Locateable locateable;
+		String exp; // String with expression to create point 
+		GeoPointInterface point; // free point
+		int number; // number of startPoint
+
+		LocateableExpPair(Locateable g, String s, int n) {
+			locateable = g;
+			exp = s;
+			number = n;
+		}
+		
+		LocateableExpPair(Locateable g, GeoPointInterface p, int n) {
+			locateable = g;
+			point = p;
+			number = n;
+		}
+	}
 	
 	public MyXMLHandler(Kernel kernel, Construction cons) {
 		origKernel = kernel;
@@ -371,6 +398,8 @@ public class MyXMLHandler  {
 				handleCoords(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("show")) {
 				handleShow(children.item(i),geo);
+			} else if (children.item(i).getNodeName().equals("startPoint")) {  //EJ
+				handleStartPoint(children.item(i),geo);                         //EJ
 			} else if (children.item(i).getNodeName().equals("pointSize")) {
 				handlePointSize(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("pointStyle")) {
@@ -383,7 +412,7 @@ public class MyXMLHandler  {
 			
 		}
 
-		
+
 		
 		// TODO Auto-generated method stub
 		return geo;
@@ -569,7 +598,88 @@ public class MyXMLHandler  {
 			return false;
 		}
 	}
+//////////////////////////////EJ innen	
+	/**
+	 * Start Points have to be handled at the end of the construction, because
+	 * they could depend on objects that are defined after this GeoElement.
+	 * 
+	 * So we store all (geo, startpoint expression) pairs and process them at
+	 * the end of the construction.
+	 * 
+	 * @see processStartPointList
+	 */
+	private boolean handleStartPoint(Node item, GeoElement geoElement) {
+		if (!(geoElement instanceof Locateable)) {
+			System.err.println("wrong element type for <startPoint>: "
+					+ geoElement.getClass());
+			return false;
+		}
+		Locateable loc = (Locateable) geoElement;
+
+		// relative start point (expression or label expected)
+		String exp = (String) getNodeAttr(item.getAttributes().getNamedItem("exp"));
+		if (exp == null) // try deprecated attribute
+			exp = (String) getNodeAttr(item.getAttributes().getNamedItem("label"));
+
+		// for corners a number of the startPoint is given
+		int number = 0;
+		try {
+			number = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("number")));
+		} catch (Exception e) {
+		}
+
+		if (exp != null) {
+			// store (geo, epxression, number) values
+			// they will be processed in processStartPoints() later
+			startPointList.add(new LocateableExpPair(loc, exp, number));	
+			loc.setWaitForStartPoint();
+		}
+		else {
+			// absolute start point (coords expected)
+			try {
+				/*
+				double x = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("x")));
+				double y = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("y")));
+				double z = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("z")));
+				GeoPoint p = new GeoPoint(cons);
+				p.setCoords(x, y, z);
+				*/
+				
+				LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+				attrs.put("x", getNodeAttr(item.getAttributes().getNamedItem("x")));
+				attrs.put("y", getNodeAttr(item.getAttributes().getNamedItem("y")));
+				attrs.put("z", getNodeAttr(item.getAttributes().getNamedItem("z")));
+				
+				GeoPointInterface p = handleAbsoluteStartPoint(attrs);
+				
+				if (number == 0) {
+					// set first start point right away
+					loc.setStartPoint(p);
+				} else {
+					// set other start points later
+					// store (geo, point, number) values
+					// they will be processed in processStartPoints() later
+					startPointList.add(new LocateableExpPair(loc, p, number));	
+					loc.setWaitForStartPoint();
+				}				
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
+	/** create absolute start point (coords expected) */
+	protected GeoPointInterface handleAbsoluteStartPoint(LinkedHashMap<String, String> attrs) {
+		double x = Double.parseDouble((String) attrs.get("x"));
+		double y = Double.parseDouble((String) attrs.get("y"));
+		double z = Double.parseDouble((String) attrs.get("z"));
+		GeoPoint p = new GeoPoint(cons);
+		p.setCoords(x, y, z);
+		return p;
+	}
+///////////////////////////////////////////////////////EJ eddig	
 	//utils
 	
 	protected boolean parseBoolean(String str) throws Exception {

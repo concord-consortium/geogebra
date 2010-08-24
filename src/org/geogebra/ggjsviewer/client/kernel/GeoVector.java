@@ -321,7 +321,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 			sbToString.append(" = ");
 	}
 	
-		sbToString.append(buildValueString());
+		sbToString.append(buildValueString().toString());
   		return sbToString.toString();
     }
 	private StringBuilder sbToString = new StringBuilder(50); 
