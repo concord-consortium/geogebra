@@ -775,7 +775,7 @@ casPrintForm = type;
     	    	
     	switch (type.charAt(0)) {
     		case 'a': //angle    			
-    			return null;//AGnew GeoAngle(cons);	    			     		    			
+    			return new GeoAngle(cons);	    			     		    			
     			
     		case 'b': //angle
     			if (type.equals("boolean"))
@@ -1020,12 +1020,12 @@ casPrintForm = type;
 	public void clearConstruction() {		
 		if (macroManager != null)
 			macroManager.setAllMacrosUnused();
-		/*AG
+		
 		// clear animations
 		if (animationManager != null) {
 			animationManager.stopAnimation();
 			animationManager.clearAnimatedGeos();
-		}*/				
+		}				
 		
 	
 		cons.clearConstruction();
@@ -3615,16 +3615,16 @@ casPrintForm = type;
 	 * a new angle BAC. 
 	 * The labels[0] is for the angle, labels[1] for the new point	 
 	 */
-	/*AGfinal public GeoElement [] Angle (String [] labels, GeoPoint B, GeoPoint A, NumberValue alpha) {
+	final public GeoElement [] Angle (String [] labels, GeoPoint B, GeoPoint A, NumberValue alpha) {
 		return Angle(labels, B, A, alpha, true);	
-	}*/
+	}
 	
 	/** 
 	 * Creates a new point C by rotating B around A using angle alpha and
 	 * a new angle BAC (for positive orientation) resp. angle CAB (for negative orientation). 
 	 * The labels[0] is for the angle, labels[1] for the new point	 
 	 */
-	/*AGfinal public GeoElement [] Angle (String [] labels, GeoPoint B, GeoPoint A, NumberValue alpha, boolean posOrientation) {
+	final public GeoElement [] Angle (String [] labels, GeoPoint B, GeoPoint A, NumberValue alpha, boolean posOrientation) {
 		// this is actually a macro
 		String pointLabel = null, angleLabel = null;
 		if (labels != null) {
@@ -3653,45 +3653,45 @@ casPrintForm = type;
 		//return angle and new point
 		GeoElement [] ret = { angle, C };
 		return ret;		
-	}*/
+	}
 
 	/** 
 	 * Angle named label between line g and line h
 	 */
-	/*AGfinal public GeoAngle Angle(String label, GeoLine g, GeoLine h) {
+	final public GeoAngle Angle(String label, GeoLine g, GeoLine h) {
 		AlgoAngleLines algo = new AlgoAngleLines(cons, label, g, h);
 		GeoAngle angle = algo.getAngle();
 		return angle;
-	}*/
+	}
 
 	/** 
 	 * Angle named label between vector v and vector w
 	 */
-	/*AGfinal public GeoAngle Angle(
+	final public GeoAngle Angle(
 		String label,
 		GeoVector v,
 		GeoVector w) {
 		AlgoAngleVectors algo = new AlgoAngleVectors(cons, label, v, w);
 		GeoAngle angle = algo.getAngle();
 		return angle;
-	}*/
+	}
 	
 	/** 
 	 * Angle named label for a point or a vector
 	 */
-	/*AGfinal public GeoAngle Angle(
+	final public GeoAngle Angle(
 		String label,
 		GeoVec3D v) {
 		AlgoAngleVector algo = new AlgoAngleVector(cons, label, v);
 		GeoAngle angle = algo.getAngle();
 		return angle;
-	}*/
+	}
 
 
 	/** 
 	 * Angle named label between three points
 	 */
-	/*AGfinal public GeoAngle Angle(
+	final public GeoAngle Angle(
 		String label,
 		GeoPoint A,
 		GeoPoint B,
@@ -3699,19 +3699,19 @@ casPrintForm = type;
 		AlgoAnglePoints algo = new AlgoAnglePoints(cons, label, A, B, C);
 		GeoAngle angle = algo.getAngle();
 		return angle;
-	}*/
+	}
 	
 	/** 
 	 * all angles of given polygon
 	 */
-	/*AGfinal public GeoAngle [] Angles(String [] labels, GeoPolygon poly) {
+	final public GeoAngle [] Angles(String [] labels, GeoPolygon poly) {
 		AlgoAnglePolygon algo = new AlgoAnglePolygon(cons, labels, poly);
 		GeoAngle [] angles = algo.getAngles();
 		//for (int i=0; i < angles.length; i++) {
 		//	angles[i].setAlphaValue(0.0f);
 		//}
 		return angles;
-	}*/
+	}
 
 	/** 
 	 * IntersectLines yields intersection point named label of lines g, h
@@ -4615,7 +4615,7 @@ casPrintForm = type;
 	/**
 	 * rotate geoRot by angle phi around (0,0)
 	 */
-	/*AGfinal public GeoElement [] Rotate(String label, Rotateable geoRot, NumberValue phi) {
+	final public GeoElement [] Rotate(String label, Rotateable geoRot, NumberValue phi) {
 		if (label == null)
 			label = transformedGeoLabel(geoRot.toGeoElement());
 		
@@ -4627,13 +4627,13 @@ casPrintForm = type;
 		AlgoRotate algo = new AlgoRotate(cons, label, geoRot, phi);				
 		GeoElement [] geos = {algo.getResult()};
 		return geos;					
-	}*/
+	}
 
 
 	/**
 	 * rotate geoRot by angle phi around Q
 	 */
-	/*AGfinal public GeoElement [] Rotate(String label, PointRotateable geoRot, NumberValue phi, GeoPoint Q) {
+	final public GeoElement [] Rotate(String label, PointRotateable geoRot, NumberValue phi, GeoPoint Q) {
 		if (label == null)
 			label = transformedGeoLabel(geoRot.toGeoElement());
 		
@@ -4645,7 +4645,7 @@ casPrintForm = type;
 		AlgoRotatePoint algo = new AlgoRotatePoint(cons, label, geoRot, phi, Q);			
 		GeoElement [] geos = {algo.getResult()};
 		return geos;		
-	}*/
+	}
 		
 	/**
 	 * dilate geoRot by r from S
@@ -4768,18 +4768,18 @@ casPrintForm = type;
 	/**
 	 * rotates poly by angle phi around (0,0)
 	 */
-	/*AGfinal public GeoElement [] Rotate(String label, GeoPolygon poly, NumberValue phi) {
+	final public GeoElement [] Rotate(String label, GeoPolygon poly, NumberValue phi) {
 		return transformPoly(label, poly, rotPoints(poly.getPoints(), phi, null));
-	}*/
+	}
 	
 	/**
 	 * rotates poly by angle phi around Q
 	 */
-	/*AGfinal public GeoElement [] Rotate(String label,	GeoPolygon poly, NumberValue phi, GeoPoint Q) {		
+	final public GeoElement [] Rotate(String label,	GeoPolygon poly, NumberValue phi, GeoPoint Q) {		
 		return transformPoly(label, poly, rotPoints(poly.getPoints(), phi, Q));
-	}*/
+	}
 				
-	/*AGGeoPoint [] rotPoints(GeoPoint [] points, NumberValue phi, GeoPoint Q) {		
+	GeoPoint [] rotPoints(GeoPoint [] points, NumberValue phi, GeoPoint Q) {		
 		// rotate all points
 		GeoPoint [] rotPoints = new GeoPoint[points.length];
 		for (int i = 0; i < points.length; i++) {
@@ -4790,7 +4790,7 @@ casPrintForm = type;
 				rotPoints[i] = (GeoPoint) Rotate(pointLabel, points[i], phi, Q)[0];
 		}			
 		return rotPoints;
-	}/*
+	}
 		
 	/**
 	 * dilate geoRot by r from S
@@ -6336,7 +6336,7 @@ casPrintForm = type;
 		return false;
 	}
 	
-	/*AGprivate AnimationManager animationManager;
+private AnimationManager animationManager;
 	
 	final public AnimationManager getAnimatonManager() {		
 		if (animationManager == null) {
@@ -6359,9 +6359,9 @@ casPrintForm = type;
 	
 	final public void udpateNeedToShowAnimationButton() {
 		if (animationManager != null)
-			animationManager.udpateNeedToShowAnimationButton();		
+			animationManager.updateNeedToShowAnimationButton();		
 		
-	}	*/
+	}	
 
 	/**
 	 * Turns silent mode on (true) or off (false). In silent mode, commands can

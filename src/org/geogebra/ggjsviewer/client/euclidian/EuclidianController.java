@@ -220,6 +220,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	protected Kernel kernel;
 	protected EuclidianView view;
 	
+	public static boolean navigator_iPad = false;
+	
 	public EuclidianController() {
 		// TODO Auto-generated constructor stub
 		//FOR DEFAULT!
@@ -405,11 +407,10 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		view.setSelectionRectangle(null);
 		selectionStartPoint.setLocation(mouseLoc);	
 
-		/*AGif (hitResetIcon() || view.hitAnimationButton(e)) {				
+		if (hitResetIcon() || view.hitAnimationButton(event)) {				
 			// see mouseReleased
 			return;
-		}*/
-
+		}
 		/*AGif (Application.isRightClick(e)) {			
 			//ggb3D - for 3D rotation
 			processRightPressFor3D();
@@ -539,6 +540,11 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		default:
 			moveMode = MOVE_NONE;			 
 		}
+	}
+	
+	protected boolean hitResetIcon() {
+		return app.showResetIcon() &&
+		(mouseLoc.y < 18 && mouseLoc.x > view.getOffsetWidth() - 18);
 	}
 	
 	protected void handleMousePressedForMoveMode(MouseEvent e, boolean drag) {
@@ -1385,6 +1391,27 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			//GWT.log("move");
 			//view.strokeText(String.valueOf(mouseLoc.x)+" "+String.valueOf(mouseLoc.y), 30, 30);
 			boolean repaintNeeded = false; //AG or false should be here?
+			// reset icon
+			if (hitResetIcon()) {
+				//AGview.setToolTipText(app.getPlain("resetConstruction"));
+				//AGview.setHitCursor();
+				return;
+			} 
+
+			// animation button
+			boolean hitAnimationButton = view.hitAnimationButton(event);
+			repaintNeeded = view.setAnimationButtonsHighlighted(hitAnimationButton);
+			if (hitAnimationButton) {
+				//AGif (kernel.isAnimationPaused())
+					//AGview.setToolTipText(app.getPlain("Play"));
+				//AGelse 
+					//AGview.setToolTipText(app.getPlain("Pause"));		
+				//AGview.setHitCursor();
+				view.repaintEuclidianView();
+				return;
+			}			
+			
+			
 			// standard handling
 			Hits hits = new Hits();
 			boolean noHighlighting = false;		
@@ -2510,7 +2537,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		Hits hits = null;
 		GeoElement geo;
 
-		/*AGif (hitResetIcon()) {				
+		if (hitResetIcon()) {				
 			app.reset();
 			return;
 		}
@@ -2522,7 +2549,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			view.repaintEuclidianView();
 			app.setUnsaved();
 			return;
-		}*/
+		}
 
 
 
@@ -2902,10 +2929,10 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		view.setSelectionRectangle(null);
 		selectionStartPoint.setLocation(mouseLoc);	
 
-		/*AGif (hitResetIcon() || view.hitAnimationButton(e)) {				
+		if (hitResetIcon() || view.hitAnimationButton(event)) {				
 			// see mouseReleased
 			return;
-		}*/
+		}
 
 		/*AGif (Application.isRightClick(e)) {			
 			//ggb3D - for 3D rotation
@@ -3085,7 +3112,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			Hits hits = null;
 			GeoElement geo;
 	
-			/*AGif (hitResetIcon()) {				
+			if (hitResetIcon()) {				
 				app.reset();
 				return;
 			}
@@ -3097,7 +3124,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 				view.repaintEuclidianView();
 				app.setUnsaved();
 				return;
-			}*/
+			}
 	
 	
 	

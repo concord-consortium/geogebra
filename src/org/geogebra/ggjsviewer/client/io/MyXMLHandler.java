@@ -77,6 +77,7 @@ public class MyXMLHandler  {
 	private LinkedList<LocateableExpPair> startPointList = new LinkedList<LocateableExpPair>();
 
 	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<GeoExpPair>();
+	private LinkedList<GeoExpPair> animationSpeedList = new LinkedList<GeoExpPair>();
 	//private int docPointStyle; 
 	
 	private int mode;
@@ -394,7 +395,9 @@ public class MyXMLHandler  {
 		//look for children
 		NodeList children = item.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			if (children.item(i).getNodeName().equals("coords")) {
+			if (children.item(i).getNodeName().equals("animation")) {
+				handleAnimation(children.item(i),geo);
+			} else if (children.item(i).getNodeName().equals("coords")) {
 				handleCoords(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("show")) {
 				handleShow(children.item(i),geo);
@@ -416,6 +419,29 @@ public class MyXMLHandler  {
 		
 		// TODO Auto-generated method stub
 		return geo;
+	}
+	
+	private boolean handleAnimation(Node item, GeoElement geoElement) {
+		try {
+			geo.setAnimationStep(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("step"))));
+			
+			String strSpeed = (String) getNodeAttr(item.getAttributes().getNamedItem("speed"));
+			if (strSpeed != null) {
+				// store speed expression to be processed later
+				animationSpeedList.add(new GeoExpPair(geo, strSpeed));			
+			}
+				
+			String type = (String) getNodeAttr(item.getAttributes().getNamedItem("type"));
+			if (type != null)
+				geo.setAnimationType(Integer.parseInt(type));
+			
+			
+			geo.setAnimating(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("playing"))));
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private void handlePointStyle(Node item, GeoElement geoElement) {

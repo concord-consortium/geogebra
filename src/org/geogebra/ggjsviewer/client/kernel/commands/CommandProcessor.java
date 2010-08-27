@@ -28,6 +28,8 @@ import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Mirrorable;
+import org.geogebra.ggjsviewer.client.kernel.PointRotateable;
+import org.geogebra.ggjsviewer.client.kernel.Rotateable;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -2612,7 +2614,7 @@ class CmdTranslate extends CommandProcessor {
  * Rotate[ <GeoConic>, <NumberValue>, <GeoPoint> ]
  * Rotate[ <GeoPolygon>, <NumberValue>, <GeoPoint> ]
  */
-/*AG
+
 class CmdRotate extends CommandProcessor {
 
 	public CmdRotate(Kernel kernel) {
@@ -2654,7 +2656,6 @@ class CmdRotate extends CommandProcessor {
                     ret = kernel.Rotate(label, p, phi);           
                 }
 				 */
-/*AG
 
 				ret = kernel.Rotate(label, p, phi);  
 				return ret;
@@ -2698,7 +2699,6 @@ class CmdRotate extends CommandProcessor {
                     ret = kernel.Rotate(label, p, phi, Q);
                 }
 				 */
-/*AG
 
 				ret = kernel.Rotate(label, p, phi, Q);
 				return ret;

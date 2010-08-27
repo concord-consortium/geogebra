@@ -38,7 +38,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
  * @version
  */
 public class GeoNumeric extends GeoElement 
-implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animatable*/ {	
+implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable , Animatable {	
 	
 	private static final long serialVersionUID = 1L;
 	private static int DEFAULT_SLIDER_WIDTH_RW = 4;
@@ -660,10 +660,10 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animata
 	/**
 	 * Sets the state of this object to animating on or off.
 	 */
-	/*AGpublic synchronized void setAnimating(boolean flag) {
+	public synchronized void setAnimating(boolean flag) {
 		animationValue = Double.NaN;		
 		super.setAnimating(flag);		
-	}*/
+	}
 	
 	/**
 	 * Performs the next automatic animation step for this numbers. This changes
@@ -671,7 +671,7 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animata
 	 * 
 	 * @return whether the value of this number was changed
 	 */
-	/*AGfinal public synchronized boolean doAnimationStep(double frameRate) {
+	final public synchronized boolean doAnimationStep(double frameRate) {
 		// check that we have valid min and max values
 		if (!intervalMinActive || !intervalMaxActive) 
 			return false;
@@ -729,7 +729,7 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable /*AG, Animata
 		
 		// return whether value of slider has changed
 		return getValue() != oldValue;	
-	}	*/
+	}
 	
 	/**
 	 * Returns a comparator for GeoNumeric objects.

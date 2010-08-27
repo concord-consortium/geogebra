@@ -35,7 +35,10 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
 //import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D.Double;
 import org.geogebra.ggjsviewer.client.main.Application;
 
+
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.HasMouseDownHandlers;
 import com.google.gwt.event.dom.client.HasMouseMoveHandlers;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
@@ -44,6 +47,7 @@ import com.google.gwt.event.dom.client.HasMouseUpHandlers;
 import com.google.gwt.event.dom.client.HasMouseWheelHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -55,8 +59,10 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.widgetideas.graphics.client.Color;
 import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
+import com.google.gwt.widgetideas.graphics.client.ImageLoader;
 
 
 public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasMouseDownHandlers, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseWheelHandlers,HasMouseUpHandlers, HasMouseMoveHandlers, View {
@@ -360,7 +366,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected StringBuilder sb = new StringBuilder();
 	/*
 	protected Cursor defaultCursor;*/
-
+	protected ImageElement pauseImage, upArrowImage, downArrowImage;
 	public int fontSize = 12; //px
 	private String canvasFont = "normal";
 	public String fontPoint = "normal";
@@ -371,23 +377,12 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	/*Handling the text support with native canvas functions
 	*/
 	public native void strokeText(String text, int x, int y, String font, int fontSize) /*-{
-		//if (!$wnd.eview) {
-			//$wnd.alert(document.getElementById("eview"));
-			//$wnd.eview = $doc.getElementById("eview");
-			//$wnd.alert($wnd.eview);
-			//$wnd.econt = $wnd.eview.getContext("2d");
-		//}
-		///if ($wnd.econt.strokeText) {
-			//$wnd.econt.font = 'italic 400 12px/2 sans-serif';
-			//$wnd.econt.clearRect(x-5,y-20,500,30);
-			//$wnd.econt.strokeText(text,x,y);
-		//}
-		var eview = $doc.getElementById('eview');
-		var ctx = eview.getContext('2d');
-		ctx.font = font+' '+String.valueOf(fontSize)+'px/'+String.valueOf(fontSize)+'px sans-serif';
-		//ctx.clearRect(x-5,y-20,500,30);
-		ctx.strokeText(text,x,y);
-		
+		if (!@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::navigator_iPad) {	
+			var eview = $doc.getElementById('eview');
+			var ctx = eview.getContext('2d');
+			ctx.font = font+' '+String.valueOf(fontSize)+'px/'+String.valueOf(fontSize)+'px sans-serif';
+			ctx.strokeText(text,x,y);
+		}
 	}-*/;
 	
 	/*end text support*/
@@ -1534,7 +1529,81 @@ final public void setHits(Point p){
 		if (showMouseCoords /*AG test && (showAxes[0] || showAxes[1] || showGrid)*/)
 			drawMouseCoords();
 		// TODO Auto-generated method stub
+		if (kernel.needToShowAnimationButton()) {
+			drawAnimationButtons();
+		}
 		
+	}
+	
+	final protected void drawAnimationButtons(/*Graphics2D g2*/) {
+		int x = 6;
+		int y = height - 22;
+				
+		if (highlightAnimationButtons) {
+			// draw filled circle to highlight button
+			//AGg2.setColor(Color.darkGray);
+			setStroke(Color.GREY);
+		} else {
+			setStroke(Color.LIGHTGREY);
+			//AGg2.setColor(Color.lightGray);			
+		}
+		
+		//AGg2.setStroke(EuclidianView.getDefaultStroke());
+		setStroke(EuclidianView.getDefaultStroke());
+		// draw pause or play button
+		//g2.drawRect(x-2, y-2, 18, 18);
+		rect(x-2,y-2,18,18);
+		//Image img = kernel.isAnimationRunning() ? getPauseImage() : getPlayImage();			
+		//g2.drawImage(img, x, y, null);
+		String img = kernel.isAnimationRunning() ? getPauseImage() : getPlayImage();			
+		drawPrefetchedImage(img, x, y);
+	}
+	
+	
+	public void drawPrefetchedImage(String imageName,final int x,final int y) {
+		//this should be written in the euclidianview, and the getImage() methods sould return wit strings
+		//in this method the original drawImage should be called with fetched imageelements
+		String[] url = new String[] {imageName};
+	    
+	    ImageLoader.loadImages(url, new ImageLoader.CallBack() {
+			@Override
+			public void onImagesLoaded(ImageElement[] imageElements) {	
+				//drawImage here.
+				drawImage(imageElements[0],x,y);
+				
+			}	      
+	    });
+	}
+	
+	
+	private String getResetImage() {
+		return app.getRefreshViewImage();
+	}
+	
+	private String getPlayImage() {
+			return app.getPlayImage();
+	}
+	
+	
+	private String getPauseImage() {
+			return app.getPauseImage();
+	}
+	
+	public final boolean hitAnimationButton(MouseEvent e) {
+		return kernel.needToShowAnimationButton() && (e.getX() <= 20) && (e.getY() >= height - 20);		
+	}
+	
+	/**
+	 * Updates highlighting of animation buttons. 
+	 * @return whether status was changed
+	 */
+	public final boolean setAnimationButtonsHighlighted(boolean flag) {
+		if (flag == highlightAnimationButtons) 
+			return false;
+		else {
+			highlightAnimationButtons = flag;
+			return true;
+		}
 	}
 
 	final protected void drawMouseCoords() {

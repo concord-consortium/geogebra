@@ -21,6 +21,8 @@ import org.geogebra.ggjsviewer.client.service.JsonHandler;
 import org.geogebra.ggjsviewer.client.util.LowerCaseDictionary;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class Application extends BaseApplication {
@@ -31,7 +33,9 @@ public class Application extends BaseApplication {
 	private MyXMLHandler xmlhandler;
 	//private Hashtable translateCommandTable;
 	private LowerCaseDictionary commandDict;
-	
+	private boolean showResetIcon = false;
+	public boolean runningInFrame = false; // don't want to show resetIcon if running in Frame
+
 	// determines which CAS is being used
 	final public static int CAS_MATHPIPER = ExpressionNode.STRING_TYPE_MATH_PIPER;
 	final public static int CAS_MAXIMA = ExpressionNode.STRING_TYPE_MAXIMA;
@@ -274,6 +278,12 @@ public class Application extends BaseApplication {
 	if ((navigator.platform && (navigator.platform == "iPad" || 
 		navigator.platform == "iPod" || navigator.platform == "iPhone")) || 
 		($wnd.navigator.userAgent.indexOf("Android") > -1)) {
+		
+			if (navigator.platform && navigator.platform == "iPad") {
+				@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::navigator_iPad = true;
+			}
+			
+			
 			var canvas = $doc.getElementById('eview');
 			canvas.addEventListener("touchmove",function(e) {
 				if (e.targetTouches.length === 1) {
@@ -306,6 +316,28 @@ public class Application extends BaseApplication {
 			},false);
 	}
 }-*/;
+
+	public String getRefreshViewImage() {
+		// TODO Auto-generated method stub;
+		return "../images/main/view-refresh.png"; 
+	}
+
+	public String getPlayImage() {
+		return "../images/main/nav_play.png";
+	}
+
+	public String getPauseImage() {
+		return "../images/main/nav_pause.png";
+	}
+	
+	final public boolean showResetIcon() {
+		return showResetIcon && !runningInFrame;
+	}
+
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 

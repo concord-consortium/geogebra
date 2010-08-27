@@ -300,7 +300,7 @@ public abstract class GeoElement
 	protected Color fillColor = objColor;
 	public int layer=0; 	// Michael Borcherds 2008-02-23
 	public double animationIncrement = 0.1;
-	//AGprivate NumberValue animationSpeedObj;
+	private NumberValue animationSpeedObj;
 	private boolean animating = false;
 
 	public final static double MAX_ANIMATION_SPEED = 100;	
@@ -1315,18 +1315,18 @@ public abstract class GeoElement
 		return animationIncrement;
 	}
 	
-	/*AGpublic GeoElement getAnimationSpeedObject() {
+	public GeoElement getAnimationSpeedObject() {
 		if (animationSpeedObj == null)
 			return null;
 		else		
 			return animationSpeedObj.toGeoElement();
-	}*/
+	}
 	
 	/**
 	 * Returns the current animation speed of this slider. Note that
 	 * the speed can be negative which will change the direction of the animation.
 	 */
-	/*AGfinal public double getAnimationSpeed() {
+	final public double getAnimationSpeed() {
 		if (animationSpeedObj == null) {
 			initAnimationSpeedObject();
 		}
@@ -1392,14 +1392,14 @@ public abstract class GeoElement
 	
 	protected void changeAnimationDirection() {
 		animationDirection = -animationDirection;
-	}*/
+	}
 	
 	/**
 	 * Sets the state of this object to animating on or off. Note that this
 	 * 
 	 * @see Animatable interface
 	 */
-	/*AGGpublic synchronized void setAnimating(boolean flag) {
+	public synchronized void setAnimating(boolean flag) {
 		boolean oldValue = animating;
 		animating = flag && isAnimatable();
 		
@@ -1415,13 +1415,13 @@ public abstract class GeoElement
 
 	final public boolean isAnimating() {		
 		return animating;
-	}*/
+	}
 
 	public boolean isAnimatable() {
 		// over ridden by types that implement Animateable
 		return false;
 	}
-
+	
     public String toLaTeXString(boolean symbolic) {
     	if (symbolic)
     		return toString();

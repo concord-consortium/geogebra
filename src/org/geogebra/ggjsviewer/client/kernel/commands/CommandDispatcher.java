@@ -165,7 +165,7 @@ public class CommandDispatcher {
     	cmdTable.put("Semicircle", new CmdSemicircle(kernel));	   
     	//AGcmdTable.put("FirstAxisLength", new CmdFirstAxisLength(kernel));	   
     	cmdTable.put("Parabola", new CmdParabola(kernel));	   
-    	//AGcmdTable.put("Rotate", new CmdRotate(kernel));	   
+    	cmdTable.put("Rotate", new CmdRotate(kernel));	   
     	//AGcmdTable.put("Function", new CmdFunction(kernel));	   
     	//AGcmdTable.put("Extremum", new CmdExtremum(kernel));	   
     	//AGcmdTable.put("CircumcircleArc", new CmdCircumcircleArc(kernel));	   
