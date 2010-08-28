@@ -423,20 +423,20 @@ public class MyXMLHandler  {
 	
 	private boolean handleAnimation(Node item, GeoElement geoElement) {
 		try {
-			geo.setAnimationStep(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("step"))));
+			geoElement.setAnimationStep(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("step"))));
 			
 			String strSpeed = (String) getNodeAttr(item.getAttributes().getNamedItem("speed"));
 			if (strSpeed != null) {
 				// store speed expression to be processed later
-				animationSpeedList.add(new GeoExpPair(geo, strSpeed));			
+				animationSpeedList.add(new GeoExpPair(geoElement, strSpeed));			
 			}
 				
 			String type = (String) getNodeAttr(item.getAttributes().getNamedItem("type"));
 			if (type != null)
-				geo.setAnimationType(Integer.parseInt(type));
+				geoElement.setAnimationType(Integer.parseInt(type));
 			
 			
-			geo.setAnimating(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("playing"))));
+			geoElement.setAnimating(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("playing"))));
 			
 			return true;
 		} catch (Exception e) {

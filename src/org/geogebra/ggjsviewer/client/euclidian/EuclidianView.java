@@ -9,6 +9,7 @@ import org.geogebra.ggjsviewer.client.euclidian.DrawableList.DrawableIterator;
 import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.ConstructionDefaults;
+import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
@@ -373,6 +374,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public String fontLine = "normal";
 	public String fontConic = "normal";
 	public String fontVector = "normal";
+	public String fontAngle = "normal";
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -1365,7 +1367,7 @@ final public void setHits(Point p){
 			d = new DrawPolygon(this, (GeoPolygon) geo);
 			break;
 
-		/*case GeoElement.GEO_CLASS_ANGLE:
+		case GeoElement.GEO_CLASS_ANGLE:
 			if (geo.isIndependent()) {
 				// independent number may be shown as slider
 				d = new DrawSlider(this, (GeoNumeric) geo);
@@ -1373,7 +1375,7 @@ final public void setHits(Point p){
 				d = new DrawAngle(this, (GeoAngle) geo);
 				if (geo.isDrawable()) {
 					if (!geo.isColorSet()) {
-						Color col = geo.getConstruction()
+						org.geogebra.ggjsviewer.client.kernel.gawt.Color col = geo.getConstruction()
 								.getConstructionDefaults().getDefaultGeo(
 										ConstructionDefaults.DEFAULT_ANGLE)
 								.getObjectColor();
@@ -1382,7 +1384,6 @@ final public void setHits(Point p){
 				}
 			}
 			break;
-		*/
 		case GeoElement.GEO_CLASS_NUMERIC:
 			AlgoElement algo = geo.getParentAlgorithm();
 			if (algo == null) {
@@ -2126,6 +2127,14 @@ final public void setHits(Point p){
 		this.stroke();
 		
 		
+	}
+	
+	/**
+	 * Returns the ratio yscale / xscale of this view. The scale is the number
+	 * of pixels in screen space that represent one unit in user space.
+	 */
+	public double getScaleRatio() {
+		return yscale / xscale;
 	}
 	
 	
