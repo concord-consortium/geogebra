@@ -368,6 +368,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	/*
 	protected Cursor defaultCursor;*/
 	protected ImageElement pauseImage, upArrowImage, downArrowImage;
+	protected LinkedHashMap<String, ImageElement> prefetchedImages = new LinkedHashMap<String, ImageElement>();
 	public int fontSize = 12; //px
 	private String canvasFont = "normal";
 	public String fontPoint = "normal";
@@ -1561,19 +1562,24 @@ final public void setHits(Point p){
 	}
 	
 	
-	public void drawPrefetchedImage(String imageName,final int x,final int y) {
+	public void drawPrefetchedImage(final String imageName,final int x,final int y) {
 		//this should be written in the euclidianview, and the getImage() methods sould return wit strings
 		//in this method the original drawImage should be called with fetched imageelements
 		String[] url = new String[] {imageName};
-	    
-	    ImageLoader.loadImages(url, new ImageLoader.CallBack() {
-			@Override
-			public void onImagesLoaded(ImageElement[] imageElements) {	
-				//drawImage here.
-				drawImage(imageElements[0],x,y);
-				
-			}	      
-	    });
+	    if (!prefetchedImages.containsKey(imageName)) {
+		    ImageLoader.loadImages(url, new ImageLoader.CallBack() {
+				@Override
+				public void onImagesLoaded(ImageElement[] imageElements) {	
+					
+					//drawImage here.
+					prefetchedImages.put(imageName, imageElements[0]);
+					drawImage(imageElements[0],x,y);
+					
+				}	      
+		    });
+	    } else {
+	    	drawImage(prefetchedImages.get(imageName),x,y);
+	    }
 	}
 	
 	
