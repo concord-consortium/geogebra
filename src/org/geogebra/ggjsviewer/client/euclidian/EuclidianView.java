@@ -384,7 +384,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 			var eview = $doc.getElementById('eview');
 			var ctx = eview.getContext('2d');
 			ctx.font = font+' '+String.valueOf(fontSize)+'px/'+String.valueOf(fontSize)+'px sans-serif';
-			ctx.strokeText(text,x,y);
+			ctx.fillText(text,x,y);
 		}
 	}-*/;
 	

@@ -316,7 +316,7 @@ public class Kernel {
 		
 		//AGsf = new ScientificFormat(5, 16, false);
 		
-		setCASPrintForm(0/*AGExpressionNode.STRING_TYPE_GEOGEBRA*/);
+		setCASPrintForm(ExpressionNode.STRING_TYPE_GEOGEBRA);
 	}
 	
 	/**

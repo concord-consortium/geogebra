@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.main.Application;
 
 /**
@@ -1229,7 +1230,7 @@ public class Construction {
 		int oldCoordStlye = kernel.getCoordStyle();
 		int oldPrintForm = kernel.getCASPrintForm();
 		kernel.setCoordStyle(Kernel.COORD_STYLE_DEFAULT);	
-		kernel.setCASPrintForm(0/*AGExpressionNode.STRING_TYPE_GEOGEBRA_XML*/);
+		kernel.setCASPrintForm(ExpressionNode.STRING_TYPE_GEOGEBRA_XML);
 
 		// set label to get replaceable XML
 		if (newGeo.isLabelSet()) { // newGeo already exists in construction
@@ -1382,7 +1383,7 @@ public class Construction {
 		int oldPrintForm = kernel.getCASPrintForm();
         boolean oldValue = kernel.isTranslateCommandName();
 		kernel.setCoordStyle(Kernel.COORD_STYLE_DEFAULT);	
-		kernel.setCASPrintForm(0/*ExpressionNode.STRING_TYPE_GEOGEBRA_XML*/);
+		kernel.setCASPrintForm(ExpressionNode.STRING_TYPE_GEOGEBRA_XML);
         kernel.setTranslateCommandName(false); 
 		
 		try {
@@ -1436,7 +1437,7 @@ public class Construction {
 		int oldPrintForm = kernel.getCASPrintForm();
         boolean oldValue = kernel.isTranslateCommandName();
 		kernel.setCoordStyle(Kernel.COORD_STYLE_DEFAULT);
-		kernel.setCASPrintForm(0/*ExpressionNode.STRING_TYPE_GEOGEBRA_XML*/);
+		kernel.setCASPrintForm(ExpressionNode.STRING_TYPE_GEOGEBRA_XML);
         kernel.setTranslateCommandName(false); 
 
 		try {
