@@ -11,8 +11,8 @@ public class Timer extends com.google.gwt.user.client.Timer {
 	public Timer(int delay, AnimationManager animationManager) {
 		am = animationManager;
 		timerDelay = delay;
-		scheduleRepeating(delay);
-		isrunning = true;
+		//scheduleRepeating(delay);
+		isrunning = false;
 		// TODO Auto-generated constructor stub
 	}
 
