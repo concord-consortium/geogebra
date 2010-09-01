@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 import org.geogebra.ggjsviewer.client.kernel.Construction;
+import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
+import org.geogebra.ggjsviewer.client.kernel.GeoButton;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -183,7 +185,7 @@ public class MyXMLHandler  {
 	}
 
 	private void startKernelElement(Node item) {
-		GWT.log(item.getNodeName());
+		//GWT.log(item.getNodeName());
 		// TODO Auto-generated method stub
 		
 	}
@@ -395,6 +397,56 @@ public class MyXMLHandler  {
 		//look for children
 		NodeList children = item.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
+			String eName = children.item(i).getNodeName();
+			boolean ok = true;
+			switch (eName.charAt(0)) {
+			case 'a':
+				if (eName.equals("animation")) {
+					ok = handleAnimation(children.item(i),geo);
+					break;
+				}
+			case 'c':
+				if (eName.equals("coords")) {
+					ok = handleCoords(children.item(i),geo);
+					break;
+				}
+			case 'o':
+				if (eName.equals("objColor")) {
+					ok = handleObjColor(children.item(i), geo);
+					break;
+				}
+			case 'p':
+				if (eName.equals("pointSize")) {
+					ok = handlePointSize(children.item(i), geo);
+					break;
+				} else if (eName.equals("pointStyle")) {
+					ok = handlePointStyle(children.item(i), geo);
+					break;
+				}
+			case 's':
+				if (eName.equals("show")) {
+					ok = handleShow(children.item(i), geo);
+					break;
+				} else if (eName.equals("slider")) {
+					ok = handleSlider(children.item(i), geo);
+					break;
+				} else if (eName.equals("startPoint")) {
+					ok = handleStartPoint(children.item(i), geo);
+					break;
+				}
+			case 'v':
+				if (eName.equals("value")) {
+					ok = handleValue(children.item(i), geo);
+					break;
+				}
+			default:
+				System.err.println("unknown tag in <element>: " + eName);
+			}
+
+			if (!ok) {
+				System.err.println("error in <element>: " + eName);
+			}
+			/*AG - OLD
 			if (children.item(i).getNodeName().equals("animation")) {
 				handleAnimation(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("coords")) {
@@ -407,11 +459,13 @@ public class MyXMLHandler  {
 				handlePointSize(children.item(i),geo);
 			} else if (children.item(i).getNodeName().equals("pointStyle")) {
 				handlePointStyle(children.item(i),geo);
-			}	else if (children.item(i).getNodeName().equals("objColor")) {
+			} else if (children.item(i).getNodeName().equals("objColor")) {
 				handleObjColor(children.item(i),geo);
-			}	else if (children.item(i).getNodeName().equals("slider")) {
+			} else if (children.item(i).getNodeName().equals("slider")) {
 				handleSlider(children.item(i),geo);
-			}
+			} else if (children.item(i).getNodeName().equals("value")) {
+				handleValue(children.item(i),geo);
+			}*/
 			
 		}
 
@@ -444,11 +498,11 @@ public class MyXMLHandler  {
 		}
 	}
 
-	private void handlePointStyle(Node item, GeoElement geoElement) {
+	private boolean handlePointStyle(Node item, GeoElement geoElement) {
 		if (!(geoElement instanceof PointProperties)) {
 			Application.debug("wrong element type for <pointStyle>: "
 					+ geoElement.getClass());
-			return;
+			return false;
 		}
 
 		try {
@@ -460,15 +514,15 @@ public class MyXMLHandler  {
 				style = docPointStyle;
 			}*/
 			p.setPointStyle(style);
-			return;
+			return true;
 		} catch (Exception e) {
-			return;
+			return false;
 		}
 		
 	}
 	
 	private boolean handleObjColor(Node item, GeoElement geoElement) {
-		GWT.log(geoElement.toString());
+	//	GWT.log(geoElement.toString());
 		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
 		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
 		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
@@ -535,25 +589,25 @@ public class MyXMLHandler  {
 	
 	
 
-	private void handlePointSize(Node item, GeoElement geoElement) {
+	private boolean handlePointSize(Node item, GeoElement geoElement) {
 		// TODO Auto-generated method stub
 		//GWT.log("pointSize");
 		if (!(geoElement instanceof PointProperties)) {
 			Application.debug("wrong element type for <pointSize>: "
 					+ geoElement.getClass());
-			return;
+			return false;
 		}
 
 		try {
 			PointProperties p = (PointProperties) geoElement;
 			p.setPointSize(Integer.parseInt(getNodeAttr(item.getAttributes().getNamedItem("val"))));
-			return;
+			return true;
 		} catch (Exception e) {
-			return;
+			return false;
 		}
 	}
 
-	private void handleShow(Node item, GeoElement geoElement) {
+	private boolean handleShow(Node item, GeoElement geoElement) {
 		// TODO Auto-generated method stub
 		//GWT.log("handleshow");
 		
@@ -562,12 +616,14 @@ public class MyXMLHandler  {
 		//GWT.log(String.valueOf(parseBoolean(item.getAttributes().getNamedItem("label").getNodeValue())));
 		geoElement.setEuclidianVisible(parseBoolean(getNodeAttr(item.getAttributes().getNamedItem("object"))));
 		geoElement.setLabelVisible(parseBoolean(getNodeAttr(item.getAttributes().getNamedItem("label"))));
+		return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	private void handleCoords(Node item, GeoElement geoElement) {
+	private boolean handleCoords(Node item, GeoElement geoElement) {
 		//GWT.log("handleChoords");
 		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
 		attrs.put("x", getNodeAttr(item.getAttributes().getNamedItem("x")));
@@ -576,7 +632,7 @@ public class MyXMLHandler  {
 		//GWT.log(item.getAttributes().getNamedItem("x").getNodeValue());
 		//GWT.log(item.getAttributes().getNamedItem("y").getNodeValue());
 		//GWT.log(item.getAttributes().getNamedItem("z").getNodeValue());
-		kernel.handleCoords(geoElement, attrs);
+		return kernel.handleCoords(geoElement, attrs);
 		// TODO Auto-generated method stub
 		
 	}
@@ -624,7 +680,38 @@ public class MyXMLHandler  {
 			return false;
 		}
 	}
-//////////////////////////////EJ innen	
+	
+	private boolean handleValue(Node item, GeoElement geoElement) {
+		boolean isBoolean = geoElement.isGeoBoolean();
+		boolean isNumber = geoElement.isGeoNumeric();
+		boolean isButton = geoElement.isGeoButton();
+
+		if (!(isNumber || isBoolean || isButton)) {
+			Application.debug("wrong element type for <value>: "
+					+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			String strVal = (String) getNodeAttr(item.getAttributes().getNamedItem("val"));
+			if (isNumber) {
+				GeoNumeric n = (GeoNumeric) geoElement;
+				n.setValue(Double.parseDouble(strVal));
+			} else if (isBoolean) {
+				GeoBoolean bool = (GeoBoolean) geoElement;
+				bool.setValue(parseBoolean(strVal));
+			} else if (isButton) {
+				GeoButton button = (GeoButton) geoElement;
+				button.setJavaScript(strVal);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	
+//////////////////////////////EJ from here
 	/**
 	 * Start Points have to be handled at the end of the construction, because
 	 * they could depend on objects that are defined after this GeoElement.
@@ -705,7 +792,7 @@ public class MyXMLHandler  {
 		p.setCoords(x, y, z);
 		return p;
 	}
-///////////////////////////////////////////////////////EJ eddig	
+///////////////////////////////////////////////////////EJ ends here	
 	//utils
 	
 	protected boolean parseBoolean(String str) throws Exception {

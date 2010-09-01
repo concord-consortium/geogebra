@@ -617,7 +617,7 @@ public class Kernel {
 	}*/
 	
 	final public void setCASPrintForm(int type) {
-casPrintForm = type;
+		casPrintForm = type;
 		
 		switch (casPrintForm) {
 		case ExpressionNode.STRING_TYPE_MATH_PIPER:
