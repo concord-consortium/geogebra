@@ -27,9 +27,11 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyList;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyStringBuffer;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Parametric;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Polynomial;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.TextValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.VectorValue;
 import org.geogebra.ggjsviewer.client.kernel.parser.ParseException;
@@ -885,8 +887,7 @@ public class AlgebraProcessor {
 			return processPointVector3D(n, eval);
 			//GWT.log("isVector3DValue() found CommandProcessor");
 		else if (eval.isTextValue())
-			GWT.log("processText neede");
-		//AG	return processText(n, eval);				
+			return processText(n, eval);				
 		else if (eval instanceof MyList) {
 			GWT.log("processlist needed");
 		//AG	return processList(n, (MyList) eval);
@@ -987,7 +988,7 @@ public class AlgebraProcessor {
 		
 		return ret;
 	}
-
+*/
 	private GeoElement[] processText(
 		ExpressionNode n,
 		ExpressionValue evaluate) {
@@ -1003,7 +1004,7 @@ public class AlgebraProcessor {
 			ret[0] = kernel.DependentText(label, n);
 		return ret;
 	}
-	*/
+	
 	private GeoElement[] processBoolean(
 		ExpressionNode n,
 		ExpressionValue evaluate) {

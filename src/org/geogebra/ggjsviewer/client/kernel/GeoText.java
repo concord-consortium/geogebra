@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Comparator;
 
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyStringBuffer;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle2D;
 
 public class GeoText extends GeoElement

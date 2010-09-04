@@ -19,10 +19,12 @@ import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.GeoText;
 import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Path;
+import org.geogebra.ggjsviewer.client.kernel.PointRotateable;
 import org.geogebra.ggjsviewer.client.kernel.Region;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -131,9 +133,9 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 	protected GeoVector movedGeoVector;
 
-	/*protected GeoText movedGeoText;
+	protected GeoText movedGeoText;
 
-	protected GeoImage oldImage, movedGeoImage;	
+	/*AGprotected GeoImage oldImage, movedGeoImage;	
 	*/
 	protected GeoFunction movedGeoFunction;
 
@@ -762,7 +764,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 		// free text
 		else if (movedGeoElement.isGeoText()) {
-		/*AG	moveMode = MOVE_TEXT;
+			moveMode = MOVE_TEXT;
 			movedGeoText = (GeoText) movedGeoElement;
 			view.setShowMouseCoords(false);
 			view.setDragCursor();	
@@ -792,7 +794,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 				oldLoc.setLocation(movedGeoText.labelOffsetX,
 						movedGeoText.labelOffsetY);
 				startLoc = mouseLoc;
-			}*/							
+			}						
 		} 
 
 		// free conic
@@ -1603,7 +1605,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		// moveMode was set in mousePressed()
 		switch (moveMode) {
 		case MOVE_ROTATE:
-			//AGrotateObject(repaint);
+			rotateObject(repaint);
 			break;
 
 		case MOVE_POINT:
@@ -1634,11 +1636,11 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			break;
 
 		case MOVE_LABEL:
-			//AGmoveLabel();
+			moveLabel();
 			break;
 
 		case MOVE_TEXT:
-			//AGmoveText(repaint);
+			moveText(repaint);
 			break;
 
 		case MOVE_IMAGE:
@@ -1711,6 +1713,29 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		}
 	}		
 	
+	final protected void moveLabel() {
+		movedLabelGeoElement.setLabelOffset(oldLoc.x + mouseLoc.x
+				- startLoc.x, oldLoc.y + mouseLoc.y - startLoc.y);
+		// no update cascade needed
+		movedLabelGeoElement.update();  
+		kernel.notifyRepaint();
+	}
+	
+	final protected void rotateObject(boolean repaint) {
+		double angle = Math.atan2(yRW - rotationCenter.inhomY, 
+				xRW - rotationCenter.inhomX)
+				- rotStartAngle;
+
+		tempNum.set(angle);
+		rotGeoElement.set(rotStartGeo);	
+		((PointRotateable) rotGeoElement).rotate(tempNum, rotationCenter);
+
+		if (repaint)
+			rotGeoElement.updateRepaint();
+		else
+			rotGeoElement.updateCascade();
+	}
+	
 	final protected void moveLine(boolean repaint) {
 		// make parallel geoLine through (xRW, yRW)
 		movedGeoLine.setCoords(movedGeoLine.x, movedGeoLine.y, 
@@ -1719,6 +1744,28 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			movedGeoLine.updateRepaint();
 		else
 			movedGeoLine.updateCascade();	
+	}
+	
+	final protected void moveText(boolean repaint) {
+		if (movedGeoText.isAbsoluteScreenLocActive()) {
+			movedGeoText.setAbsoluteScreenLoc( oldLoc.x + mouseLoc.x-startLoc.x, 
+					oldLoc.y + mouseLoc.y-startLoc.y);			
+		} else {
+			if (movedGeoText.hasAbsoluteLocation()) {
+				//	absolute location: change location
+				GeoPoint loc = (GeoPoint) movedGeoText.getStartPoint();
+				loc.setCoords(xRW - startPoint.x, yRW - startPoint.y, 1.0);
+			} else {
+				// relative location: move label (change label offset)
+				movedGeoText.setLabelOffset(oldLoc.x + mouseLoc.x
+						- startLoc.x, oldLoc.y + mouseLoc.y - startLoc.y);
+			}
+		}				
+
+		if (repaint)
+			movedGeoText.updateRepaint();
+		else
+			movedGeoText.updateCascade();	
 	}
 	
 	protected void movePoint(boolean repaint) {

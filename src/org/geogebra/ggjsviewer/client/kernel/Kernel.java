@@ -837,9 +837,9 @@ public class Kernel {
     			
     		case 't': 
     			if (type.equals("text"))
-    				return null; //AGnew GeoText(cons); // text
+    				return new GeoText(cons); // text
     			else
-        			return null; //AGnew GeoTextField(cons); // textfield
+        			return null;//AG new GeoTextField(cons); // textfield
    			
     		case 'v': // vector
 				return  new GeoVector(cons);
@@ -1550,14 +1550,13 @@ public class Kernel {
 		GeoFunction f = new GeoFunction(cons, label, fun);
 		return f;
 	}
-	/*AG
+
 	final public GeoText Text(String label, String text) {
 		GeoText t = new GeoText(cons);
 		t.setTextString(text);
 		t.setLabel(label);
 		return t;
 	}
-	*/
 	final public GeoBoolean Boolean(String label, boolean value) {
 		GeoBoolean b = new GeoBoolean(cons);
 		b.setValue(value);
@@ -1765,14 +1764,13 @@ public class Kernel {
 	/** Text dependent on coefficients of arithmetic expressions with variables,
 	 * represented by trees. e.g. text = "Radius: " + r
 	 */
-	/*AGfinal public GeoText DependentText(
+	final public GeoText DependentText(
 		String label,
 		ExpressionNode root) {
 		AlgoDependentText algo = new AlgoDependentText(cons, label, root);
 		GeoText t = algo.getGeoText();
 		return t;
 	}
-	*/
 	
 	/** 
 	 * Creates a dependent copy of origGeo with label

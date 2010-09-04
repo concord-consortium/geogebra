@@ -14,6 +14,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoText;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -26,6 +27,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.PathIterator;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
@@ -339,6 +341,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected DrawableList allDrawableList = new DrawableList();
 	// Michael Borcherds 2008-03-01
 	public static final int MAX_LAYERS = 9;
+	private static final int DEFAULT_FONT_SIZE = 12;
 	private int MAX_LAYER_USED = 0;
 	public DrawableList drawLayers[]; 
 
@@ -370,22 +373,32 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected ImageElement pauseImage, upArrowImage, downArrowImage;
 	protected LinkedHashMap<String, ImageElement> prefetchedImages = new LinkedHashMap<String, ImageElement>();
 	public int fontSize = 12; //px
-	private String canvasFont = "normal";
-	public String fontPoint = "normal";
-	public String fontLine = "normal";
-	public String fontConic = "normal";
-	public String fontVector = "normal";
-	public String fontAngle = "normal";
+	private Font canvasFont = new Font("normal");
+	public Font fontPoint = new Font("normal");
+	public Font fontLine = new Font("normal");
+	public Font fontConic =new Font("normal");
+	public Font fontVector = new Font("normal");
+	public Font fontAngle = new Font("normal");
 	
 	/*Handling the text support with native canvas functions
 	*/
-	public native void strokeText(String text, int x, int y, String font, int fontSize) /*-{
+	public native void fillText(String text, int x, int y, String fullFontString) /*-{
 		if (!@org.geogebra.ggjsviewer.client.euclidian.EuclidianController::navigator_iPad) {	
 			var eview = $doc.getElementById('eview');
 			var ctx = eview.getContext('2d');
-			ctx.font = font+' '+String.valueOf(fontSize)+'px/'+String.valueOf(fontSize)+'px sans-serif';
+			ctx.font = fullFontString;
 			ctx.fillText(text,x,y);
 		}
+	}-*/;
+	
+	public native Integer measureText(String text,String fullFontString) /*-{
+		var eview = $doc.getElementById('eview');
+		var ctx = eview.getContext('2d');
+		var oldFont = ctx.font;
+		ctx.font = fullFontString;
+		var dim = ctx.measureText(text);
+		ctx.font = oldFont;
+		return dim.width;
 	}-*/;
 	
 	/*end text support*/
@@ -1433,12 +1446,12 @@ final public void setHits(Point p){
 		case GeoElement.GEO_CLASS_FUNCTIONCONDITIONAL:
 			d = new DrawParametricCurve(this, (ParametricCurve) geo);
 			break;
-
+		*/
 		case GeoElement.GEO_CLASS_TEXT:
 			GeoText text = (GeoText) geo;
 			d = new DrawText(this, text);				
 			break;
-
+/*AG
 		case GeoElement.GEO_CLASS_IMAGE:
 			d = new DrawImage(this, (GeoImage) geo);
 			break;
@@ -1639,7 +1652,7 @@ final public void setHits(Point p){
 		coordsToShow +=kernel.format(euclidianController.yRW);
 		coordsToShow +=")";
 		setStroke(Color.BLACK);
-		strokeText(coordsToShow, pos.x + 15, pos.y + 15,this.getFont(),this.getFontSize());
+		fillText(coordsToShow, pos.x + 15, pos.y + 15,this.getFont().getFullFontString());
 	}
 	
 	public int getFontSize() {
@@ -1809,12 +1822,12 @@ final public void setHits(Point p){
 		
 	}
 
-	public String getFont() {
+	public Font getFont() {
 		// The active font of the Canvas
 		return canvasFont;
 	}
 
-	public void setFont(String font) {
+	public void setFont(Font font) {
 		canvasFont = font;
 		
 	}
@@ -2141,6 +2154,17 @@ final public void setHits(Point p){
 	 */
 	public double getScaleRatio() {
 		return yscale / xscale;
+	}
+
+	public int getDefaultFontSize() {
+		// TODO Auto-generated method stub
+		return EuclidianView.DEFAULT_FONT_SIZE;
+	}
+
+	public void setPaint(Color color) {
+		setFillStyle(color);
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

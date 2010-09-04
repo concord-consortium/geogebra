@@ -22,6 +22,7 @@ import org.geogebra.ggjsviewer.client.kernel.Locateable;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -215,11 +216,12 @@ public class MyXMLHandler  {
 				if (children.item(i).getNodeName().equals("element")) {
 					startGeoElement(children.item(i));
 				} else if (children.item(i).getNodeName().equals("command")) {
-				cmd = 	getCommand(children.item(i));
-				if (cmd != null && children.item(i).hasChildNodes()) {
-					startCommandElement(children.item(i).getChildNodes());
-				}
-				
+					cmd = 	getCommand(children.item(i));
+					if (cmd != null && children.item(i).hasChildNodes()) {
+						startCommandElement(children.item(i).getChildNodes());
+					}	
+				} else if (children.item(i).getNodeName().equals("expression")) {
+					startExpressionElement(children.item(i));
 				}
 				
 			}
@@ -228,6 +230,62 @@ public class MyXMLHandler  {
 		
 	}
 	
+	// ====================================
+	// <expression>
+	// ====================================
+	
+	private void startExpressionElement(Node item) {
+		String label = (String) getNodeAttr(item.getAttributes().getNamedItem("label"));
+		String exp = (String) getNodeAttr(item.getAttributes().getNamedItem("exp"));
+		if (exp == null)
+			throw new MyError(app, "exp missing in <expression>");
+
+		// type may be vector or point, this is important to distinguish between
+		// them
+		String type = (String) getNodeAttr(item.getAttributes().getNamedItem("type"));
+
+		// parse expression and process it
+		try {
+			ValidExpression ve = parser.parseGeoGebraExpression(exp);
+			if (label != null)
+				ve.setLabel(label);
+
+			// enforce point or vector type if it was given in attribute type
+			if (type != null) {
+				if (type.equals("point")) {
+					((ExpressionNode) ve).setForcePoint();
+				} else if (type.equals("vector")) {
+					((ExpressionNode) ve).setForceVector();
+				}
+			}
+
+			GeoElement[] result = kernel.getAlgebraProcessor()
+					.processValidExpression(ve);
+
+			// ensure that labels are set for invisible objects too
+			if (result != null && label != null && result.length == 1) {
+				result[0].setLoadedLabel(label);
+			} else {
+				System.err.println("error in <expression>: " + exp + ", label: "
+						+ label);
+			}
+
+		} catch (Exception e) {
+			String msg = "error in <expression>: label=" + label + ", exp= "
+					+ exp;
+			System.err.println(msg);
+			e.printStackTrace();
+			throw new MyError(app, msg);
+		} catch (Error e) {
+			String msg = "error in <expression>: label = " + label + ", exp = "
+					+ exp;
+			System.err.println(msg);
+			e.printStackTrace();
+			throw new MyError(app, msg);
+		}
+		
+	}
+
 	private void startCommandElement(NodeList childNodes) {
 		boolean ok = true;
 		  for (int i=0; i<childNodes.getLength();i++) {

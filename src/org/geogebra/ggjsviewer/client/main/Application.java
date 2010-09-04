@@ -16,6 +16,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Macro;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
 import org.geogebra.ggjsviewer.client.plugin.GgbAPI;
 import org.geogebra.ggjsviewer.client.service.JsonHandler;
 import org.geogebra.ggjsviewer.client.util.LowerCaseDictionary;
@@ -337,6 +338,12 @@ public class Application extends BaseApplication {
 	public void reset() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Font getFontCanDisplay(String textString, boolean serifFont,
+			int fontStyle, int fontSize) {
+		// TODO Auto-generated method stub
+		return new Font("normal");
 	}
 
 

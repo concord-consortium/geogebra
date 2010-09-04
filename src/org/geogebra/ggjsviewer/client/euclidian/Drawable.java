@@ -22,6 +22,7 @@ package org.geogebra.ggjsviewer.client.euclidian;
 
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
@@ -114,8 +115,7 @@ public abstract class Drawable {
 	final protected void drawLabel(/*Graphics2D g2*/) {
 		if (labelDesc == null) return;		
 		String label = labelDesc;
-		//AGFont oldFont  = null;
-		String oldFont = null;
+		Font oldFont = null;
 		
 		// label changed: check for bold or italic tags in caption
 		if (oldLabelDesc != labelDesc || labelDesc.startsWith("<")) {					
@@ -129,7 +129,7 @@ public abstract class Drawable {
 				
 				// use Serif font so that we can get a nice curly italic x
 				//AGg2.setFont(view.getApplication().getFont(true, oldFont.getStyle() | Font.ITALIC, oldFont.getSize()));	
-				view.setFont("italic");
+				view.setFont(new Font("italic"));
 				label = label.substring(3, label.length() - 4);
 				italic = true;
 			} 
@@ -139,7 +139,11 @@ public abstract class Drawable {
 					oldFont = view.getFont();
 	
 				//AGg2.setFont(g2.getFont().deriveFont(Font.BOLD + (italic ? Font.ITALIC : 0)));
-				view.setFont("bold");
+				view.setFont(new Font("normal") {
+					{
+						setFontWeight("bold");
+					}
+				});
 				label = label.substring(3, label.length() - 4);			
 			}
 		}
@@ -148,7 +152,7 @@ public abstract class Drawable {
 		int fontSize = view.getFontSize();
 		if (oldLabelDesc == labelDesc && !labelHasIndex && lastFontSize == fontSize) {
 			lastFontSize = fontSize;
-			view.strokeText(label, xLabel, yLabel,view.getFont(),view.getFontSize());
+			view.fillText(label, xLabel, yLabel,view.getFont().getFullFontString());
 			labelRectangle.setLocation(xLabel, yLabel - fontSize);
 		} 
 		else { // label with index or label has changed:
@@ -159,7 +163,7 @@ public abstract class Drawable {
 			labelHasIndex = p.y > 0;
 			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);*/	
 			lastFontSize = fontSize;
-			view.strokeText(label, xLabel, yLabel,view.getFont(),view.getFontSize());
+			view.fillText(label, xLabel, yLabel,view.getFont().getFullFontString());
 			labelRectangle.setLocation(xLabel, yLabel - fontSize);
 		}		
 		
@@ -190,13 +194,12 @@ public abstract class Drawable {
 	
 	// Michael Borcherds 2008-06-10
 	//MUST BE IMPLEMENTED AG
-	/*final float textWidth(String str, Font font, FontRenderContext frc)
+	final float textWidth(String str, Font font)
 	{
 		if (str.equals("")) return 0f;
-		TextLayout layout = new TextLayout(str , font, frc);
-		return layout.getAdvance();	
+		return view.measureText(str,font.getFullFontString());	
 		
-	}*/
+	}
 	
 	
 	/* old version
@@ -481,16 +484,16 @@ public abstract class Drawable {
 			return dim;
 	}*/
 	
-	/*AGfinal void drawMultilineText(Graphics2D g2) {
+	final void drawMultilineText(Font font/*AGGraphics2D g2*/) {
 		
 		if (labelDesc == null) return;
 		
 		int lines = 0;				
-		int fontSize = g2.getFont().getSize();
+		int fontSize = view.getDefaultFontSize();
 		float lineSpread = fontSize * 1.5f;
 
-		Font font = g2.getFont();
-		FontRenderContext frc = g2.getFontRenderContext();
+		//Font font = g2.getFont();
+		//FontRenderContext frc = g2.getFontRenderContext();
 		int xoffset = 0, yoffset = 0;
 
 		// no index in text
@@ -501,9 +504,9 @@ public abstract class Drawable {
 			for (int i=0; i < length-1; i++) {
 				if (labelDesc.charAt(i) == '\n') {
 					//end of line reached: draw this line
-					g2.drawString(labelDesc.substring(lineBegin, i), xLabel, yLabel + lines * lineSpread);
+					view.fillText(labelDesc.substring(lineBegin, i), xLabel, Math.round(yLabel + lines * lineSpread),font.getFullFontString());
 
-					int width=(int)textWidth(labelDesc.substring(lineBegin, i), font, frc);
+					int width=(int)textWidth(labelDesc.substring(lineBegin, i),font);
 					if (width > xoffset) xoffset = width;			
 					
 					lines++;
@@ -512,9 +515,9 @@ public abstract class Drawable {
 			}
 			
 			float ypos = yLabel + lines * lineSpread;
-			g2.drawString(labelDesc.substring(lineBegin), xLabel, ypos);
+			view.fillText(labelDesc.substring(lineBegin), xLabel,Math.round(ypos),font.getFullFontString());
 
-			int width=(int)textWidth(labelDesc.substring(lineBegin), font, frc);
+			int width=(int)textWidth(labelDesc.substring(lineBegin), font);
 			if (width > xoffset) xoffset = width;			
 			
 			// Michael Borcherds 2008-06-10
@@ -537,7 +540,7 @@ public abstract class Drawable {
 			for (int i=0; i < length-1; i++) {
 				if (labelDesc.charAt(i) == '\n') {
 					//end of line reached: draw this line
-					Point p = drawIndexedString(g2, labelDesc.substring(lineBegin, i), xLabel, yLabel + lines * lineSpread);
+					Point p = drawIndexedString(labelDesc.substring(lineBegin, i), xLabel, yLabel + lines * lineSpread);
 					if (p.x > xoffset) xoffset = p.x;
 					if (p.y > yoffset) yoffset = p.y;
 					lines++;
@@ -546,14 +549,14 @@ public abstract class Drawable {
 			}
 					
 			float ypos = yLabel + lines * lineSpread;
-			Point p = drawIndexedString(g2, labelDesc.substring(lineBegin), xLabel, ypos);
+			Point p = drawIndexedString(labelDesc.substring(lineBegin), xLabel, ypos);
 			if (p.x > xoffset) xoffset = p.x;
 			if (p.y > yoffset) yoffset = p.y;
 			labelHasIndex = yoffset > 0;			
 			int height = (int) ( (lines +1)*lineSpread);
 			labelRectangle.setBounds(xLabel, yLabel - fontSize, xoffset, height );
 		}
-	}*/		
+	}
 	
 	/**
 	 * Draws a string str with possible indices to g2 at position x, y. 
@@ -563,14 +566,14 @@ public abstract class Drawable {
 	 * @param str
 	 * @return additional pixel needed to draw str (x-offset, y-offset) 
 	 */
-	/*public static Point drawIndexedString(String str, float xPos, float yPos) {
-		Font g2font = g2.getFont();
+	public Point drawIndexedString(String str, float xPos, float yPos) {
+		Font g2font =view.getFont();
 		Font indexFont = getIndexFont(g2font);
 		Font font = g2font;
-		TextLayout layout;
-		FontRenderContext frc = g2.getFontRenderContext();
+		//AGTextLayout layout;
+		//AGFontRenderContext frc = g2.getFontRenderContext();
 
-		int indexOffset = indexFont.getSize() / 2;
+		int indexOffset = Integer.valueOf(indexFont.getFontSize()) / 2;
 		float maxY = 0;
 		int depth = 0;
 		float x = xPos;
@@ -588,10 +591,10 @@ public abstract class Drawable {
 						y = yPos + depth * indexOffset;
 						if (y > maxY) maxY = y;			
 						String tempStr = str.substring(startPos, i);
-						layout = new TextLayout(tempStr, font, frc);
-						g2.setFont(font);						
-						g2.drawString(tempStr, x, y);			 	
-						x += layout.getAdvance();		
+						//AGlayout = new TextLayout(tempStr, font, frc);
+						view.setFont(font);						
+						view.fillText(tempStr, Math.round(x), Math.round(y),font.getFullFontString());			 	
+						x += view.measureText(tempStr, font.getFullFontString());		
 					}					
 					startPos = i + 1;
 					depth++;
@@ -602,10 +605,10 @@ public abstract class Drawable {
 						y = yPos + depth * indexOffset;
 						if (y > maxY) maxY = y;
 						String tempStr = str.substring(startPos, startPos+1);
-						layout = new TextLayout(tempStr, font, frc);
-						g2.setFont(font);
-						g2.drawString(tempStr, x, y);
-						x += layout.getAdvance();	
+						//AGlayout = new TextLayout(tempStr, font, frc);
+						view.setFont(font);
+						view.fillText(tempStr, Math.round(x), Math.round(y),font.getFullFontString());
+						x += view.measureText(tempStr, font.getFullFontString());	
 						depth--;																									
 					}
 					i++;
@@ -619,10 +622,9 @@ public abstract class Drawable {
 							y = yPos + depth * indexOffset;
 							if (y > maxY) maxY = y;
 							String tempStr = str.substring(startPos, i);
-							layout = new TextLayout(tempStr, font, frc);
-							g2.setFont(font);
-							g2.drawString(tempStr, x, y);
-							x += layout.getAdvance();
+							view.setFont(font);
+							view.fillText(tempStr, Math.round(x), Math.round(y),font.getFullFontString());
+							x += view.measureText(tempStr, font.getFullFontString());	
 						}												
 						startPos = i+1;
 						depth--;		
@@ -636,20 +638,19 @@ public abstract class Drawable {
 			y = yPos + depth * indexOffset;
 			if (y > maxY) maxY = y;
 			String tempStr = str.substring(startPos);
-			layout = new TextLayout(tempStr, font, frc);
-			g2.setFont(font);
-			g2.drawString(tempStr, x, y);
-			x += layout.getAdvance();
+			view.setFont(font);
+			view.fillText(tempStr, Math.round(x), Math.round(y),font.getFullFontString());
+			x += view.measureText(tempStr, font.getFullFontString());	
 		}	
-		g2.setFont(g2font);
+		view.setFont(g2font);
 		return new Point(Math.round(x - xPos), Math.round(maxY - yPos));
-	}*/
+	}
 	
-	/*AGprivate static Font getIndexFont(Font f) {
+	private static Font getIndexFont(Font f) {
 		//	index font size should be at least 8pt
-		int newSize = Math.max( (int) (f.getSize() * 0.9) , 8);	
-		return f.deriveFont(f.getStyle(), newSize);	 	 
-	}*/
+		int newSize = Math.max( (int) (Double.valueOf(f.getFontSize()) * 0.9) , 8);	
+		return f.deriveFont(f.getFontStyle(), newSize);	 	 
+	}
 
 	/**
 	 * Adds geo's label offset to xLabel and yLabel.
