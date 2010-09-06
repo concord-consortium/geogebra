@@ -391,13 +391,14 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		}
 	}-*/;
 	
-	public native Integer measureText(String text,String fullFontString) /*-{
+	public native int measureText(String text,String fullFontString) /*-{
 		var eview = $doc.getElementById('eview');
 		var ctx = eview.getContext('2d');
 		var oldFont = ctx.font;
 		ctx.font = fullFontString;
 		var dim = ctx.measureText(text);
 		ctx.font = oldFont;
+		//console.log(dim.width);
 		return dim.width;
 	}-*/;
 	

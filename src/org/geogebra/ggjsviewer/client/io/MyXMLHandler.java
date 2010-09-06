@@ -20,6 +20,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Locateable;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
+import org.geogebra.ggjsviewer.client.kernel.TextProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
@@ -468,6 +469,11 @@ public class MyXMLHandler  {
 					ok = handleCoords(children.item(i),geo);
 					break;
 				}
+			case 'f':
+				if (eName.equals("font")) {
+					ok = handleTextFont(children.item(i),geo);
+					break;
+				}
 			case 'o':
 				if (eName.equals("objColor")) {
 					ok = handleObjColor(children.item(i), geo);
@@ -533,6 +539,24 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleTextFont(Node item, GeoElement geoElement) {
+		if (!(geoElement instanceof TextProperties)) {
+			System.err.println("wrong element type for <font>: "
+					+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			TextProperties text = (TextProperties) geoElement;
+			text.setSerifFont(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("serif"))));
+			text.setFontSize(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("size"))));
+			text.setFontStyle(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("style"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private boolean handleAnimation(Node item, GeoElement geoElement) {
 		try {
 			geoElement.setAnimationStep(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("step"))));

@@ -1,22 +1,16 @@
 package org.geogebra.ggjsviewer.client.kernel;
 
-/*import geogebra.euclidian.EuclidianView;
-import geogebra.kernel.arithmetic.MyStringBuffer;
-import geogebra.kernel.arithmetic.TextValue;
-import geogebra.main.Application;
-import geogebra.util.Util;
-
-import java.awt.Font;
-import java.awt.geom.Rectangle2D;
-*/
 import java.util.Comparator;
 
+import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyStringBuffer;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.TextValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle2D;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 public class GeoText extends GeoElement
-/*AGimplements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties */ {
+implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 
 	private static final long serialVersionUID = 1L;
 	private String str; 	
@@ -85,7 +79,7 @@ public class GeoText extends GeoElement
 			}
 		}
 		catch (CircularDefinitionException e) {
-			BaseApplication.debug("set GeoText: CircularDefinitionException");
+			Application.debug("set GeoText: CircularDefinitionException");
 		}		
 	}
 	
@@ -157,7 +151,7 @@ public class GeoText extends GeoElement
 			throw new CircularDefinitionException();		
 		
 		// remove old dependencies
-		if (startPoint != null) //AGstartPoint.getLocateableList().unregisterLocateable(this);	
+		if (startPoint != null) startPoint.getLocateableList().unregisterLocateable(this);	
 		
 		// set new location	
 		if (p == null) {
@@ -170,7 +164,7 @@ public class GeoText extends GeoElement
 		} else {
 			startPoint = (GeoPoint) p;
 			//	add new dependencies
-			//AGstartPoint.getLocateableList().registerLocateable(this);
+			startPoint.getLocateableList().registerLocateable(this);
 			
 			// absolute screen position should be deactivated
 			setAbsoluteScreenLocActive(false);
@@ -182,7 +176,7 @@ public class GeoText extends GeoElement
 	protected void doRemove() {
 		super.doRemove();
 		// tell startPoint	
-		if (startPoint != null); //AGstartPoint.getLocateableList().unregisterLocateable(this);
+		if (startPoint != null) startPoint.getLocateableList().unregisterLocateable(this);
 	}
 	
 	public GeoPointInterface getStartPoint() {
@@ -277,7 +271,7 @@ public class GeoText extends GeoElement
 		return isDefined();
 	}
 
-	protected String getClassName() {
+	public String getClassName() {
 		return "GeoText";
 	}
 	
@@ -359,8 +353,7 @@ public class GeoText extends GeoElement
 	/**
 	   * save object in XML format
 	   */ 
-	  public final String getXML() {
-		 StringBuilder sb = new StringBuilder();
+	  public final void getXML(StringBuilder sb) {
 	 
 		 // an independent text needs to add
 		 // its expression itself
@@ -380,29 +373,25 @@ public class GeoText extends GeoElement
 			  sb.append(" label=\"");
 			  sb.append(Util.encodeXML(label));
 		  sb.append("\">\n");
-		  sb.append(getXMLtags());
+		  getXMLtags(sb);
 		  sb.append("</element>\n");
-	  	  
-		  return sb.toString();
+
 	  }
 
 	/**
 	* returns all class-specific xml tags for getXML
 	*/
-   	protected String getXMLtags() {   	
-	   	StringBuilder sb = new StringBuilder();
-	   	sb.append(getXMLvisualTags(false));			
+		protected void getXMLtags(StringBuilder sb) {
+	   	getXMLvisualTags(false);			
 		
-		if (isFixed()) {
-			sb.append("\t<fixed val=\"true\"/>\n");	
-		}
+	   	getXMLfixedTag();
 		
 		if (isLaTeX) {
 			sb.append("\t<isLaTeX val=\"true\"/>\n");	
 		}
 		
 		// font settings
-		if (serifFont || fontSize != 0 || fontStyle != 0) {
+		if (serifFont || fontSize != 0 || fontStyle != 0 || isLaTeX) {
 			sb.append("\t<font serif=\"");
 			sb.append(serifFont);
 			sb.append("\" size=\"");
@@ -426,12 +415,11 @@ public class GeoText extends GeoElement
 			sb.append("\"/>\n");
 		}
 						
-		sb.append(getBreakpointXML());
+		getBreakpointXML();
 
 		// store location of text (and possible labelOffset)
 		sb.append(getXMLlocation());			
-			
-	   return sb.toString();   
+
    	}
    	
    	/**
@@ -502,9 +490,9 @@ public class GeoText extends GeoElement
 		// update parent algorithm if it's not a sequence
 		if (updateParentAlgo) {
 			AlgoElement parent = getParentAlgorithm();
-			/*AGif (parent != null && !(parent instanceof AlgoSequence)) {
+			if (parent != null && !(parent instanceof AlgoSequence)) {
 				parent.update();
-			}*/
+			}
 		}			
 	}		
 
@@ -554,7 +542,7 @@ public class GeoText extends GeoElement
 		if (flag) {
 			// remove startpoint
 			if (startPoint != null) {
-				//AGstartPoint.getLocateableList().unregisterLocateable(this);				
+				startPoint.getLocateableList().unregisterLocateable(this);				
 				startPoint = null;
 			}			
 		} else {
@@ -585,9 +573,9 @@ public class GeoText extends GeoElement
 		
 		// needed for eg \sqrt in latex
 		if ((fontStyle & Font.BOLD) != 0)
-			lineThickness = EuclidianViewConstants.DEFAULT_LINE_THICKNESS * 2;
+			lineThickness = EuclidianView.DEFAULT_LINE_THICKNESS * 2;
 		else
-			lineThickness = EuclidianViewConstants.DEFAULT_LINE_THICKNESS;
+			lineThickness = EuclidianView.DEFAULT_LINE_THICKNESS;
 			
 	}
 	final public int getPrintDecimals() {
@@ -710,12 +698,11 @@ public class GeoText extends GeoElement
 	 * Returns a comparator for GeoText objects.
 	 * If equal, doesn't return zero (otherwise TreeSet deletes duplicates)
 	 */
-	public static Comparator getComparator() {
+	public static Comparator<GeoText> getComparator() {
 		if (comparator == null) {
-			comparator = new Comparator() {
-			      public int compare(Object a, Object b) {
-				        GeoText itemA = (GeoText) a;
-				        GeoText itemB = (GeoText) b;
+			comparator = new Comparator<GeoText>() {
+			      public int compare(GeoText itemA, GeoText itemB) {
+
 				        int comp = itemA.getTextString().compareTo(itemB.getTextString());
 				        
 				        
@@ -731,7 +718,7 @@ public class GeoText extends GeoElement
 		return comparator;
 	}
 	
-	private static Comparator comparator;
+	private static Comparator<GeoText> comparator;
 	
 		public void setTemporaryPrintAccuracy() {
 		if (useSignificantFigures()) {
@@ -756,8 +743,11 @@ public class GeoText extends GeoElement
 		return false;
 	}
 
-	
-	
+	@Override
+	public String getXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

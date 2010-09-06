@@ -148,6 +148,16 @@ public class BaseApplication {
 	}
 	
 	private StringBuilder sbPlain = new StringBuilder();
+
+	public boolean freeMemoryIsCritical() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public long freeMemory() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 
 }

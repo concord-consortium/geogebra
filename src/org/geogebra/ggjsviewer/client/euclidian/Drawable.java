@@ -157,11 +157,11 @@ public abstract class Drawable {
 		} 
 		else { // label with index or label has changed:
 			// do the slower index drawing routine and check for indices
-			/*AGoldLabelDesc = labelDesc;
+			oldLabelDesc = labelDesc;
 					
-			Point p = drawIndexedString(, label, xLabel, yLabel);
+			Point p = drawIndexedString(label, xLabel, yLabel);
 			labelHasIndex = p.y > 0;
-			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);*/	
+			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);	
 			lastFontSize = fontSize;
 			view.fillText(label, xLabel, yLabel,view.getFont().getFullFontString());
 			labelRectangle.setLocation(xLabel, yLabel - fontSize);

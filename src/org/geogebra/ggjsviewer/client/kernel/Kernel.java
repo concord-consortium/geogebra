@@ -34,6 +34,7 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.Function;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.MyDouble;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
+import org.geogebra.ggjsviewer.client.kernel.optimization.ExtremumFinder;
 import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.util.Unicode;
@@ -256,7 +257,7 @@ public class Kernel {
 	protected AlgebraProcessor algProcessor;
 	private EquationSolver eqnSolver;
 	//AGprivate RegressionMath regMath;
-	//AGprivate ExtremumFinder extrFinder;
+	private ExtremumFinder extrFinder;
 	protected Parser parser;
 	private Object ggbCAS;
 	
@@ -6590,6 +6591,12 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
     	
     	return ((org.geogebra.ggjsviewer.client.cas.GeoGebraCAS) ggbCAS).getPolynomialCoeffs(exp, variable);
     }
+
+    final public ExtremumFinder getExtremumFinder() {
+		if (extrFinder == null)
+			extrFinder = new ExtremumFinder();
+		return extrFinder;
+	}
 
 
 }
