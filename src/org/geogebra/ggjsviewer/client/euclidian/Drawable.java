@@ -163,7 +163,6 @@ public abstract class Drawable {
 			labelHasIndex = p.y > 0;
 			labelRectangle.setBounds(xLabel, yLabel - fontSize, p.x, fontSize + p.y);	
 			lastFontSize = fontSize;
-			view.fillText(label, xLabel, yLabel,view.getFont().getFullFontString());
 			labelRectangle.setLocation(xLabel, yLabel - fontSize);
 		}		
 		
