@@ -52,6 +52,8 @@ public final class DrawText extends Drawable {
         geo = text;
         
         textFont = view.fontPoint;
+        //AG needed for fontStyle and fontSize
+       
         
         // this is needed as (bold) LaTeX texts are created with isLaTeX = false at this stage
         updateStrokes(text);
@@ -204,6 +206,7 @@ public final class DrawText extends Drawable {
 
     final public void draw(/*AGGraphics2D g2*/) { 
         if (isVisible) {
+        	textFont.setFontStyle(text.getFontStyle());
 			if (isLaTeX) {
         		//AGg2.setPaint(geo.getObjectColor());				
     			//AGg2.setFont(textFont);    			
@@ -214,7 +217,7 @@ public final class DrawText extends Drawable {
     			//AGdrawMultilineLaTeX(g2, textFont, geo.getObjectColor(),view.getBackground());       
         	} 
         	else {
-        		view.setPaint(geo.getObjectColor());				
+        		view.setPaint(geo.getObjectColor());
     			view.setFont(textFont);    			
     			drawMultilineText(/*AGg2*/textFont);   
         	}   
