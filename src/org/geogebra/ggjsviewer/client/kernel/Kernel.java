@@ -182,6 +182,10 @@ public class Kernel {
 	// print precision
 	public static final int STANDARD_PRINT_DECIMALS = 2; 
 	private double PRINT_PRECISION = 1E-2;
+	//AG As JavaScript uses the IEEE 754 standard for storing numbers, it has the 
+	//corresponding problems for accuracy. Until I found out when it gets wrong, I 
+	//use always this precision
+	private double GGJSVIEWER_PRINT_PRECISION = 1E-1;
 	//AGprivate NumberFormat nf;
 	//AGprivate ScientificFormat sf;
 	public boolean useSignificantFigures = false;
@@ -5839,7 +5843,8 @@ public class Kernel {
 	 * Uses current NumberFormat nf to format a number.
 	 */
 	final private String formatNF(double x) {
-		if (-PRINT_PRECISION < x && x < PRINT_PRECISION) {
+		//AGif (-PRINT_PRECISION < x && x < PRINT_PRECISION) {
+		if (-GGJSVIEWER_PRINT_PRECISION < x && x< GGJSVIEWER_PRINT_PRECISION) {
 			// avoid output of "-0"
 			return "0";
 		} else {
