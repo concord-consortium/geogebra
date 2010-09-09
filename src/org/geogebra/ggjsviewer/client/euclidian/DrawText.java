@@ -206,7 +206,10 @@ public final class DrawText extends Drawable {
 
     final public void draw(/*AGGraphics2D g2*/) { 
         if (isVisible) {
+        	//AG setting font settings
         	textFont.setFontStyle(text.getFontStyle());
+        	textFont.setFontSize(text.getFontSize());
+        	
 			if (isLaTeX) {
         		//AGg2.setPaint(geo.getObjectColor());				
     			//AGg2.setFont(textFont);    			

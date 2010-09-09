@@ -379,6 +379,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public Font fontConic =new Font("normal");
 	public Font fontVector = new Font("normal");
 	public Font fontAngle = new Font("normal");
+	private Font cursorFont = new Font("normal");
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -1653,7 +1654,8 @@ final public void setHits(Point p){
 		coordsToShow +=kernel.format(euclidianController.yRW);
 		coordsToShow +=")";
 		setStroke(Color.BLACK);
-		fillText(coordsToShow, pos.x + 15, pos.y + 15,this.getFont().getFullFontString());
+		setFillStyle(Color.GREY);
+		fillText(coordsToShow, pos.x + 15, pos.y + 15,cursorFont.getFullFontString());
 	}
 	
 	public int getFontSize() {

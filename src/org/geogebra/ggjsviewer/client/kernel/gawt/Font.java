@@ -80,6 +80,52 @@ public class Font {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public void setFontStyle(int fontStyle) {
+		switch (fontStyle) {
+		case 0:
+			setFontStyle("normal");
+			break;
+		case 1:
+			setFontStyle("italic");
+			break;
+		case 2:
+			setFontWeight("bold");
+			break;
+		case 3:
+			setFontWeight("bold");
+			setFontStyle("italic");
+			break;
+		default:
+			setFontStyle("normal");
+			setFontWeight("normal");
+		}
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setFontSize(int fontSize) {
+		switch (fontSize) {
+		case -4:
+			setFontSize("8");
+			break;
+		case -2:
+			setFontSize("10");
+			break;
+		case 2:
+			setFontSize("14");
+			break;
+		case 4:
+			setFontSize("16");
+			break;
+		default:
+			setFontSize("12");
+			break;
+		}
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }
