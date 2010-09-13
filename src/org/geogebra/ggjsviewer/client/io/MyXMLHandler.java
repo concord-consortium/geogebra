@@ -18,6 +18,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.LimitedPath;
 import org.geogebra.ggjsviewer.client.kernel.Locateable;
 import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.TextProperties;
@@ -475,6 +476,16 @@ public class MyXMLHandler  {
 					ok = handleTextFont(children.item(i),geo);
 					break;
 				}
+			case 'k':
+				if (eName.equals("keepTypeOnTransform")) {
+					ok = handleKeepTypeOnTransform(children.item(i),geo);
+					break;
+				}
+			case 'l':
+				if (eName.equals("labelMode")){
+					ok = handleLabelMode(children.item(i),geo);
+					break;
+				}
 			case 'o':
 				if (eName.equals("objColor")) {
 					ok = handleObjColor(children.item(i), geo);
@@ -511,26 +522,6 @@ public class MyXMLHandler  {
 			if (!ok) {
 				System.err.println("error in <element>: " + eName);
 			}
-			/*AG - OLD
-			if (children.item(i).getNodeName().equals("animation")) {
-				handleAnimation(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("coords")) {
-				handleCoords(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("show")) {
-				handleShow(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("startPoint")) {  //EJ
-				handleStartPoint(children.item(i),geo);                         //EJ
-			} else if (children.item(i).getNodeName().equals("pointSize")) {
-				handlePointSize(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("pointStyle")) {
-				handlePointStyle(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("objColor")) {
-				handleObjColor(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("slider")) {
-				handleSlider(children.item(i),geo);
-			} else if (children.item(i).getNodeName().equals("value")) {
-				handleValue(children.item(i),geo);
-			}*/
 			
 		}
 
@@ -540,6 +531,32 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleKeepTypeOnTransform(Node item, GeoElement geoElement) {
+		if (!(geoElement instanceof LimitedPath)) {
+			Application
+					.debug("wrong element type for <outlyingIntersections>: "
+							+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			LimitedPath lpath = (LimitedPath) geoElement;
+			lpath.setKeepTypeOnGeometricTransform(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleLabelMode(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setLabelMode(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private boolean handleTextFont(Node item, GeoElement geoElement) {
 		if (!(geoElement instanceof TextProperties)) {
 			System.err.println("wrong element type for <font>: "
