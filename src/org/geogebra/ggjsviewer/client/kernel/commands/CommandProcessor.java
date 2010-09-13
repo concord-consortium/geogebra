@@ -999,7 +999,7 @@ class CmdAngle extends CommandProcessor {
  * Area[ <GeoConic> ]
  * Area[ <Polygon> ] (returns Polygon directly)
  */
-/*AG
+
 class CmdArea extends CommandProcessor {
 
 	public CmdArea(Kernel kernel) {

@@ -355,7 +355,7 @@ public class Kernel {
 		if (geo == null && resolveVariablesForCASactive) {
 			// resolve unknown variable as dummy geo to keep its name and 
 			// avoid an "unknown variable" error message
-			//AGgeo = new GeoDummyVariable(cons, label);
+			geo = new GeoDummyVariable(cons, label);
 		}
 		
 		return geo;
@@ -2532,20 +2532,20 @@ public class Kernel {
 	/** 
 	 * Area named label of  P[0], ..., P[n]
 	 */
-	/*AGfinal public GeoNumeric Area(String label, GeoPoint [] P) {
+	final public GeoNumeric Area(String label, GeoPoint [] P) {
 		AlgoAreaPoints algo = new AlgoAreaPoints(cons, label, P);
 		GeoNumeric num = algo.getArea();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Area named label of  conic
 	 */
-	/*AGfinal public GeoNumeric Area(String label, GeoConic c) {
+	final public GeoNumeric Area(String label, GeoConic c) {
 		AlgoAreaConic algo = new AlgoAreaConic(cons, label, c);
 		GeoNumeric num = algo.getArea();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Mod[a, b]
@@ -6602,6 +6602,17 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
 			extrFinder = new ExtremumFinder();
 		return extrFinder;
 	}
+    
+    /** 
+     *  Returns whether var is a defined variable in GeoGebraCAS.
+     */
+	final public boolean isCASVariableBound(String var) {
+		if (ggbCAS == null) {
+			return false;		
+		} else {
+			return ((GeoGebraCAS) ggbCAS).isVariableBound(var);
+		}
+	}	
 
 
 }

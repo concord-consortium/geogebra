@@ -138,6 +138,7 @@ public class MyXMLHandler  {
 	public void parseXml(String text) {
 		if (text.indexOf("loadBase64Unzipped") > -1) {
 			String xml = Base64.decode(text.substring(text.indexOf("(")+2, text.indexOf(")")-1));
+			//GWT.log(xml);
 			boolean oldVal = kernel.isNotifyViewsActive();
 			//clear the kernel
 			kernel.clearConstruction();

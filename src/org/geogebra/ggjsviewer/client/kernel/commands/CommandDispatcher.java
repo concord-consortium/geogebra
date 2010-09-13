@@ -186,7 +186,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("FirstAxis", new CmdFirstAxis(kernel));	   
     	cmdTable.put("Circle", new CmdCircle(kernel));	   
     	cmdTable.put("LineBisector", new CmdLineBisector(kernel));	   
-    	//AGcmdTable.put("Area", new CmdArea(kernel));	   
+    	cmdTable.put("Area", new CmdArea(kernel));	   
     	//AGcmdTable.put("Slope", new CmdSlope(kernel));	   
     	//AGcmdTable.put("Axes", new CmdAxes(kernel));	   
     	cmdTable.put("Point", new CmdPoint(kernel));	   

@@ -87,10 +87,10 @@ public class Font {
 			setFontStyle("normal");
 			break;
 		case 1:
-			setFontStyle("italic");
+			setFontWeight("bold");
 			break;
 		case 2:
-			setFontWeight("bold");
+			setFontStyle("italic");
 			break;
 		case 3:
 			setFontWeight("bold");

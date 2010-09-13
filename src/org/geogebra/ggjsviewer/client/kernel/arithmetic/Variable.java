@@ -21,8 +21,10 @@ package org.geogebra.ggjsviewer.client.kernel.arithmetic;
 
 import java.util.HashSet;
 
+import org.geogebra.ggjsviewer.client.kernel.GeoDummyVariable;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.main.MyParseError;
 
 
 /**
@@ -74,13 +76,13 @@ public class Variable extends ValidExpression implements ExpressionValue {
      */
     GeoElement resolve(boolean allowAutoCreateGeoElement) {
     	// keep bound CAS variables when resolving a CAS expression
-    	/*AGif (kernel.isResolveUnkownVarsAsDummyGeos() &&
+    	if (kernel.isResolveUnkownVarsAsDummyGeos() &&
     		kernel.isCASVariableBound(name)) 
     	{
     		// resolve unknown variable as dummy geo to keep its name and 
 			// avoid an "unknown variable" error message
 			return new GeoDummyVariable(kernel.getConstruction(), name);
-    	}*/
+    	}
        
     	// lookup variable name, create missing variables automatically if allowed
     	GeoElement geo = kernel.lookupLabel(name, allowAutoCreateGeoElement);    	
@@ -89,8 +91,7 @@ public class Variable extends ValidExpression implements ExpressionValue {
 	
         // if we get here we couldn't resolve this variable name as a GeoElement
         String [] str = { "UndefinedVariable", name };
-       //AG throw new MyParseError(kernel.getApplication(), str);
-        throw new Error(str.toString());
+        throw new MyParseError(kernel.getApplication(), str);
     }
     
     /**
