@@ -10,10 +10,14 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+import org.geogebra.ggjsviewer.client.kernel.AbsoluteScreenLocateable;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoButton;
+import org.geogebra.ggjsviewer.client.kernel.GeoConic;
+import org.geogebra.ggjsviewer.client.kernel.GeoCubic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
@@ -465,10 +469,24 @@ public class MyXMLHandler  {
 				if (eName.equals("animation")) {
 					ok = handleAnimation(children.item(i),geo);
 					break;
+				} else if (eName.equals("auxiliary")) {
+					ok = handleAuxiliary(children.item(i),geo);
+					break;
+				} else if (eName.equals("absoluteScreenLocation")) {
+					ok = handleAbsoluteScreenLocation(children.item(i),geo);
+					break;
 				}
 			case 'c':
 				if (eName.equals("coords")) {
 					ok = handleCoords(children.item(i),geo);
+					break;
+				}
+			case 'e':
+				if (eName.equals("eqnStyle")) {
+					ok = handleEqnStyle(children.item(i),geo);
+					break;
+				} else if (eName.equals("eigenvectors")) {
+					ok = handleEigenvectors(children.item(i),geo);
 					break;
 				}
 			case 'f':
@@ -485,10 +503,21 @@ public class MyXMLHandler  {
 				if (eName.equals("labelMode")){
 					ok = handleLabelMode(children.item(i),geo);
 					break;
+				} else if (eName.equals("lineStyle")) {
+					ok = handleLineStyle(children.item(i),geo);
+					break;
+				}
+			case 'm':
+				if (eName.equals("matrix")) {
+					ok = handleMatrix(children.item(i),geo);
+					break;
 				}
 			case 'o':
 				if (eName.equals("objColor")) {
 					ok = handleObjColor(children.item(i), geo);
+					break;
+				} else if (eName.equals("outlyingIntersections")) {
+					ok = handleOutlyingIntersections(children.item(i),geo);
 					break;
 				}
 			case 'p':
@@ -531,6 +560,170 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleAbsoluteScreenLocation(Node item, GeoElement geoElement) {
+		if (!(geoElement instanceof AbsoluteScreenLocateable)) {
+			Application
+					.debug("wrong element type for <absoluteScreenLocation>: "
+							+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			AbsoluteScreenLocateable absLoc = (AbsoluteScreenLocateable) geoElement;
+			int x = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("x")));
+			int y = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("y")));
+			absLoc.setAbsoluteScreenLoc(x, y);
+			absLoc.setAbsoluteScreenLocActive(true);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleAuxiliary(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setAuxiliaryObject(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleOutlyingIntersections(Node item, GeoElement geoElement) {
+		if (!(geoElement instanceof LimitedPath)) {
+			Application
+					.debug("wrong element type for <outlyingIntersections>: "
+							+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			LimitedPath lpath = (LimitedPath) geoElement;
+			lpath.setAllowOutlyingIntersections(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleMatrix(Node item, GeoElement geoElement) {
+		if (!(geoElement.isGeoConic()) && !(geoElement.isGeoCubic())) {
+			System.err.println("wrong element type for <matrix>: "
+					+ geoElement.getClass());
+			return false;
+		}
+		try {
+			if (geoElement.isGeoConic()) {
+			GeoConic conic = (GeoConic) geoElement;
+			// set matrix and classify conic now
+			// <eigenvectors> should have been set earlier
+			double[] matrix = { Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A0"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A1"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A2"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A3"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A4"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A5"))) };
+			conic.setMatrix(matrix);
+			} else {
+				GeoCubic cubic = (GeoCubic) geoElement;
+				double[] coefficients = { Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A0"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A1"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A2"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A3"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A4"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A5"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A6"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A7"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A8"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A9"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A10"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A11"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A12"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A13"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A14"))),
+						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A15"))) };
+				cubic.setCoeffs(coefficients);				
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleEigenvectors(Node item, GeoElement geoElement) {
+		if (!(geoElement.isGeoConic())) {
+			System.err.println("wrong element type for <eigenvectors>: "
+					+ geoElement.getClass());
+			return false;
+		}
+		try {
+			GeoConic conic = (GeoConic) geoElement;
+			// set eigenvectors, but don't classify conic now
+			// classifyConic() will be called in handleMatrix() by
+			// conic.setMatrix()
+			conic.setEigenvectors(Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("x0"))),
+					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("y0"))), Double
+							.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("z0"))), Double
+							.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("x1"))), Double
+							.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("y1"))), Double
+							.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("z1"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleEqnStyle(Node item, GeoElement geoElement) {
+		// line
+		if (geoElement.isGeoLine()) {
+			GeoLine line = (GeoLine) geoElement;
+			String style = (String) getNodeAttr(item.getAttributes().getNamedItem("style"));
+			if (style.equals("implicit")) {
+				line.setToImplicit();
+			} else if (style.equals("explicit")) {
+				line.setToExplicit();
+			} else if (style.equals("parametric")) {
+				String parameter = (String) getNodeAttr(item.getAttributes().getNamedItem("parameter"));
+				line.setToParametric(parameter);
+			} else {
+				System.err.println("unknown style for line in <eqnStyle>: "
+						+ style);
+				return false;
+			}
+		}
+		// conic
+		else if (geoElement.isGeoConic()) {
+			GeoConic conic = (GeoConic) geoElement;
+			String style = (String) getNodeAttr(item.getAttributes().getNamedItem("style"));
+			if (style.equals("implicit")) {
+				conic.setToImplicit();
+			} else if (style.equals("specific")) {
+				conic.setToSpecific();
+			} else if (style.equals("explicit")) {
+				conic.setToExplicit();
+			} else {
+				System.err.println("unknown style for conic in <eqnStyle>: "
+						+ style);
+				return false;
+			}
+		} else {
+			System.err.println("wrong element type for <eqnStyle>: "
+					+ geoElement.getClass());
+			return false;
+		}
+		return true;
+	}
+
+	private boolean handleLineStyle(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setLineType(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("type"))));			
+			geoElement.setLineThickness(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("thickness"))));						
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private boolean handleKeepTypeOnTransform(Node item, GeoElement geoElement) {
 		if (!(geoElement instanceof LimitedPath)) {
 			Application
