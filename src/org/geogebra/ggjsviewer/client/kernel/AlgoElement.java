@@ -123,11 +123,11 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
     	if (stopUpdateCascade) return;
     	 
     	// update input random numbers without label
-    /*AG	if (randomUnlabeledInput != null) {
+    	if (randomUnlabeledInput != null) {
     		for (int i=0; i < randomUnlabeledInput.length; i++) {
     			randomUnlabeledInput[i].updateRandomNumber();
     		}
-    	}*/
+    	}
     	
 //    	counter++;
 //    	startTime = System.currentTimeMillis(); 

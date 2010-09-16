@@ -19,6 +19,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 
 
@@ -112,7 +113,7 @@ implements Previewable {
 				view.setPaint(poly.getFillColor());                       
 				view.fill(gp);  				
         	}        	        	
-            	
+        	//Application.printStacktrace(poly.toString());	
             if (geo.doHighlighting()) {
                 view.setPaint(poly.getSelColor());
                 view.setStroke(selStroke);            
@@ -124,10 +125,10 @@ implements Previewable {
             else if (!poly.wasInitLabelsCalled() && poly.lineThickness > 0) {
         		 view.setPaint(poly.getObjectColor());
                  view.setStroke(objStroke);            
-                 view.draw(gp);  
+                 view.draw(gp); 
+                 
         	}
-        	
-                                  
+        	                   
             if (labelVisible) {
 				view.setPaint(poly.getLabelColor());
 				view.setFont(view.fontPoint);

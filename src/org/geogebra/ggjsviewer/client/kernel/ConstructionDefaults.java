@@ -223,12 +223,12 @@ public class ConstructionDefaults {
 		defaultGeoElements.put(DEFAULT_CONIC, conic);	
 		
 		// conic sector
-		/*AGGeoConicPart conicSector = new GeoConicPart(cons, GeoConicPart.CONIC_PART_SECTOR);	
+		GeoConicPart conicSector = new GeoConicPart(cons, GeoConicPart.CONIC_PART_SECTOR);	
 //		conicSector.setLocalVariableLabel(app.getPlain("Sector"));
 		conicSector.setLocalVariableLabel("Sector");
 		conicSector.setObjColor(colPolygon);
 		conicSector.setAlphaValue(DEFAULT_POLYGON_ALPHA);
-		defaultGeoElements.put(DEFAULT_CONIC_SECTOR, conicSector);	*/
+		defaultGeoElements.put(DEFAULT_CONIC_SECTOR, conicSector);
 		
 		
 		// number
@@ -265,13 +265,13 @@ public class ConstructionDefaults {
 		locus.setObjColor(colLocus);		
 		locus.setLabelVisible(false);
 		defaultGeoElements.put(DEFAULT_LOCUS, locus);					
-		
+		*/
 		// text
 		GeoText text = new GeoText(cons);		
 //		text.setLocalVariableLabel(app.getPlain("Text"));
 		text.setLocalVariableLabel("Text");
 		defaultGeoElements.put(DEFAULT_TEXT, text);	
-		
+		/*AG
 		// image
 		GeoImage img = new GeoImage(cons);
 //		img.setLocalVariableLabel(app.getPlain("Image"));
@@ -348,7 +348,7 @@ public class ConstructionDefaults {
 			type = DEFAULT_CONIC;
 			break;
 
-		/*AGcase GeoElement.GEO_CLASS_CONICPART:
+		case GeoElement.GEO_CLASS_CONICPART:
 			GeoConicPart conicPart = (GeoConicPart) geo;
 			if (conicPart.getConicPartType() == GeoConicPart.CONIC_PART_SECTOR) {
 				type = DEFAULT_CONIC_SECTOR;
@@ -356,7 +356,6 @@ public class ConstructionDefaults {
 				type = DEFAULT_CONIC;
 			}
 			break;
-		*/
 		case GeoElement.GEO_CLASS_FUNCTION:
 		case GeoElement.GEO_CLASS_FUNCTIONCONDITIONAL:
 			type = DEFAULT_FUNCTION;
@@ -528,9 +527,9 @@ public class ConstructionDefaults {
 					
 			switch (geo.getGeoClassType()) {
 			
-				/*AGcase GeoElement.GEO_CLASS_ANGLE:					
+				case GeoElement.GEO_CLASS_ANGLE:					
 					((GeoAngle) geo).setArcSize(angleSize);
-					break;*/				
+					break;				
 			}
 		}		
 	}

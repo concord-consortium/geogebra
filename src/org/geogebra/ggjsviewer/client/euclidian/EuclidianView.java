@@ -1516,7 +1516,41 @@ final public void setHits(Point p){
 
 	@Override
 	public void remove(GeoElement geo) {
-		// TODO Auto-generated method stub
+		Drawable d = (Drawable) DrawableMap.get(geo);
+		int layer = geo.getLayer();
+
+		if (d != null) {
+			switch (geo.getGeoClassType()) {
+			//case GeoElement.GEO_CLASS_BOOLEAN:
+				//drawLayers[layer].remove(d);
+				// remove checkbox
+				// not needed now it's not drawn by the view
+				//((DrawBoolean) d).remove();
+				//break;
+			
+			case GeoElement.GEO_CLASS_BUTTON:
+				drawLayers[layer].remove(d);
+				// remove button
+				//AG((DrawButton) d).remove();
+				break;
+				
+			case GeoElement.GEO_CLASS_TEXTFIELD:
+				drawLayers[layer].remove(d);
+				// remove button
+				//AG((DrawTextField) d).remove();
+				break;
+			
+			default:
+				drawLayers[layer].remove(d);
+				break;
+
+			}
+
+			allDrawableList.remove(d);
+
+			DrawableMap.remove(geo);
+			repaintView();
+		}
 		
 	}
 

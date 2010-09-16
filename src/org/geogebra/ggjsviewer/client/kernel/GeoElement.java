@@ -31,6 +31,9 @@ import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
+import org.geogebra.ggjsviewer.client.main.Application;
+
+import com.google.gwt.core.client.GWT;
 
 
 
@@ -2177,6 +2180,7 @@ public abstract class GeoElement
 
 	final public void notifyRemove() {
 		kernel.notifyRemove(this);
+		//GWT.log(this.toString());
 		
 		//Application.debug("remove " + label);
 		//printUpdateSets();
