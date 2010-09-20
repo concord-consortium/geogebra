@@ -40,6 +40,7 @@ public class Application extends BaseApplication {
 	// determines which CAS is being used
 	final public static int CAS_MATHPIPER = ExpressionNode.STRING_TYPE_MATH_PIPER;
 	final public static int CAS_MAXIMA = ExpressionNode.STRING_TYPE_MAXIMA;
+	public static final String unicodeComma = ".";
 	
 	protected boolean showMenuBar = true;
 	
@@ -73,6 +74,7 @@ public class Application extends BaseApplication {
 	private void initXmlHandler() {
 		xmlhandler = kernel.newMyXMLHandler(kernel.getConstruction());
 		Base64Form.setApplication(this);
+		xmlhandler.setApplication(this);
 	}
 	
 	private void initEuclidianView() {
@@ -344,6 +346,11 @@ public class Application extends BaseApplication {
 			int fontStyle, int fontSize) {
 		// TODO Auto-generated method stub
 		return new Font("normal");
+	}
+	
+	public EuclidianView getEuclidianView() {
+		// TODO Auto-generated method stub
+		return euclidianview;
 	}
 
 

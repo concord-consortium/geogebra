@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
+import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.AbsoluteScreenLocateable;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
@@ -185,11 +186,171 @@ public class MyXMLHandler  {
 					startConstructionElement(children.item(i));
 				} else if (children.item(i).getNodeName().equals("kernel")) {
 					startKernelElement(children.item(i));
-				} //etc
+				} else if (children.item(i).getNodeName().equals("euclidianView")) {
+					startEuclidianViewElement(children.item(i));
+				}
 			}
 		}
 		// TODO Auto-generated method stub
 		
+	}
+	// ===============
+	// <euclidianview>
+	// ===============
+	private void startEuclidianViewElement(Node item) {
+
+		//look for children
+		NodeList children = item.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			String eName = children.item(i).getNodeName();
+			boolean ok = true;
+			EuclidianView ev = app.getEuclidianView();
+			switch (eName.charAt(0)) {
+			case 'a':
+				if (eName.equals("axesColor")) {
+					ok = handleAxesColor(ev, children.item(i));
+					break;
+				} else if (eName.equals("axis")) {
+					ok = handleAxis(ev, children.item(i));
+					break;
+				}
+			case 'c':
+				if (eName.equals("coordSystem")) {
+					ok = handleCoordSystem(ev, children.item(i));
+					break;
+				}
+			case 'l':
+				if (eName.equals("lineStyle")) {
+					ok = handleLineStyle(ev, children.item(i));
+					break;
+				}
+
+			case 's':
+				if (eName.equals("size")) {
+					ok = handleEvSize(ev, children.item(i));
+					break;
+				}
+
+			default:
+				System.err.println("unknown tag in <euclidianView>: " + eName);
+			}
+
+			if (!ok)
+				System.err.println("error in <euclidianView>: " + eName);
+		}
+	}
+	private boolean handleEvSize(EuclidianView ev, Node item) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	private boolean handleLineStyle(EuclidianView ev, Node item) {
+		try {
+			ev.setAxesLineStyle(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("axes"))));
+			ev.setGridLineStyle(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("grid"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleCoordSystem(EuclidianView ev, Node item) {
+		try {
+			double xZero = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("xZero")));
+			double yZero = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("yZero")));
+			double scale = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("scale")));
+
+			// new since version 2.5
+			double yscale = scale;
+			String strYscale = (String) getNodeAttr(item.getAttributes().getNamedItem("yscale"));
+			if (strYscale != null) {
+				yscale = Double.parseDouble(strYscale);
+			}
+			ev.setCoordSystem(xZero, yZero, scale, yscale, false);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleAxis(EuclidianView ev, Node item) {
+		// <axis id="0" label="x" unitLabel="x" showNumbers="true"
+		// tickDistance="2"/>
+		try {
+			int axis = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("id")));
+			String strShowAxis = (String) getNodeAttr(item.getAttributes().getNamedItem("show"));
+			String label = (String) getNodeAttr(item.getAttributes().getNamedItem("label"));
+			String unitLabel = (String) getNodeAttr(item.getAttributes().getNamedItem("unitLabel"));
+			boolean showNumbers = parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("showNumbers")));
+
+			// show this axis
+			if (strShowAxis != null) {
+				boolean showAxis = parseBoolean(strShowAxis);
+				ev.setShowAxis(axis, showAxis, true);
+			}
+
+			// set label
+			ev.setAxisLabel(axis, label);
+			/*
+			if (label != null && label.length() > 0) {
+				String[] labels = ev.getAxesLabels();
+				labels[axis] = label;
+				ev.setAxesLabels(labels);
+			}
+			*/
+
+			// set unitlabel
+			if (unitLabel != null && unitLabel.length() > 0) {
+				String[] unitLabels = ev.getAxesUnitLabels();
+				unitLabels[axis] = unitLabel;
+				ev.setAxesUnitLabels(unitLabels);
+			}
+
+			// set showNumbers
+			ev.setShowAxisNumbers(axis, showNumbers);
+			/*
+			boolean showNums[] = ev.getShowAxesNumbers();
+			showNums[axis] = showNumbers;
+			ev.setShowAxesNumbers(showNums);
+			*/
+
+			// check if tickDistance is given
+			String strTickDist = (String) getNodeAttr(item.getAttributes().getNamedItem("tickDistance"));
+			if (strTickDist != null) {
+				double tickDist = Double.parseDouble(strTickDist);
+				ev.setAxesNumberingDistance(tickDist, axis);
+			}
+
+			// tick style
+			String strTickStyle = (String) getNodeAttr(item.getAttributes().getNamedItem("tickStyle"));
+			if (strTickStyle != null) {
+				int tickStyle = Integer.parseInt(strTickStyle);
+				//ev.getAxesTickStyles()[axis] = tickStyle;
+				ev.setAxisTickStyle(axis, tickStyle);
+			} else {
+				// before v3.0 the default tickStyle was MAJOR_MINOR
+				//ev.getAxesTickStyles()[axis] = EuclidianView.AXES_TICK_STYLE_MAJOR_MINOR;
+				ev.setAxisTickStyle(axis, EuclidianView.AXES_TICK_STYLE_MAJOR_MINOR);
+			}
+			return true;
+		} catch (Exception e) {
+			//e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+
+	private boolean handleAxesColor(EuclidianView ev, Node item) {
+		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
+		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
+		attrs.put("b", getNodeAttr(item.getAttributes().getNamedItem("b")));
+		Color col = handleColorAttrs(attrs);
+		if (col == null)
+			return false;
+		ev.setAxesColor(col);
+		return true;
 	}
 
 	private void startKernelElement(Node item) {
@@ -1084,6 +1245,10 @@ public class MyXMLHandler  {
 		GeoPoint p = new GeoPoint(cons);
 		p.setCoords(x, y, z);
 		return p;
+	}
+	
+	public void setApplication(Application app) {
+		this.app = app;
 	}
 ///////////////////////////////////////////////////////EJ ends here	
 	//utils

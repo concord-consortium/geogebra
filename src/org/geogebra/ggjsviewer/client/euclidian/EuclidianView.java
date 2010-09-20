@@ -28,6 +28,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.BasicStroke;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Ellipse2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Font;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Line2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.PathIterator;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point;
@@ -220,9 +221,9 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 	// axes and grid stroke
 	protected BasicStroke axesStroke, tickStroke, gridStroke;
-	/*AG
+	
 	protected Line2D.Double tempLine = new Line2D.Double();
-
+	/*AG
 	protected static RenderingHints defRenderingHints = new RenderingHints(null);
 	{
 		defRenderingHints.put(RenderingHints.KEY_RENDERING,
@@ -380,6 +381,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public Font fontVector = new Font("normal");
 	public Font fontAngle = new Font("normal");
 	private Font cursorFont = new Font("normal");
+	private Font fontAxes = new Font("normal");
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -426,7 +428,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		
 		
 		setLineWidth(1);
-		//drawAxes();
+		drawAxes();
 		hits = new Hits();
 		
 		
@@ -439,14 +441,14 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		//AGsetPreferredSize(null);
 		
 		// init grid's line type
-		//AGsetGridLineStyle(LINE_TYPE_DASHED_SHORT);
-		//AGsetAxesLineStyle(AXES_LINE_TYPE_ARROW);
-		//AGsetAxesColor(Color.BLACK); // Michael Borcherds 2008-01-26 was darkgray
-		//AGsetGridColor(Color.LIGHTGREY);
+		setGridLineStyle(LINE_TYPE_DASHED_SHORT);
+		setAxesLineStyle(AXES_LINE_TYPE_ARROW);
+		setAxesColor(Color.BLACK); // Michael Borcherds 2008-01-26 was darkgray
+		setGridColor(Color.LIGHTGREY);
 		//AGsetBackground(Color.WHITE);
 
-		// showAxes = true;
-		// showGrid = false;
+		//showAxes = true;
+		//showGrid = false;
 		showMouseCoords = true;
 		pointCapturingMode = POINT_CAPTURING_AUTOMATIC;
 		pointStyle = POINT_STYLE_DOT;
@@ -479,6 +481,16 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		setStandardCoordSystem(repaint);
 	}
 	
+	private void setGridColor(Color gridColor) {
+		this.gridColor = gridColor;		
+	}
+
+	private void setAxesColor(Color axesColor) {
+		if (axesColor != null)
+			this.axesColor = axesColor;
+		
+	}
+
 	public double getXZero() {
 		return xZero;
 	}
@@ -588,10 +600,35 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		// if (drawMode == DRAW_MODE_BACKGROUND_IMAGE)
 		if (repaint) {
 			//AGupdateBackgroundImage();
-			//AGupdateAllDrawables(repaint);
+			updateAllDrawables(repaint);
 			//app.updateStatusLabelAxesRatio();
 		}
 	}
+	
+	final protected void updateAllDrawables(boolean repaint) {
+		allDrawableList.updateAll();
+		if (repaint)
+			repaintView();
+	}
+	
+	public int getAxesLineStyle() {
+		return axesLineType;
+	}
+
+	public void setAxesLineStyle(int axesLineStyle) {
+		this.axesLineType = axesLineStyle;
+	}
+	
+
+	public int getGridLineStyle() {
+		return gridLineStyle;
+	}
+
+	public void setGridLineStyle(int gridLineStyle) {
+		this.gridLineStyle = gridLineStyle;
+		gridStroke = getStroke(gridIsBold?2f:1f, gridLineStyle); // Michael Borcherds 2008-04-11 added gridisbold
+	}
+
 	
 	/**
 	 * convert real world coordinate x to screen coordinate x
@@ -811,10 +848,26 @@ final public void setHits(Point p){
 	
 	
 	protected static int SCREEN_BORDER = 10;
-	
+	// new global vars to control axes (should be set from options menu)
+	private double xCross = 0.0;
+	private boolean positiveY = false;
 	
 	final void drawAxes() {
-		//temp!
+		//-------------------------------------------------
+		// add these local vars:
+		
+		// local xZero determines the x value at which the y-axis cross the x-axis
+		// (should refactor to less confusing name)
+		double xZero =  this.xZero + xCross * xscale;
+		
+		// height of yAxis: either line with full screen height 
+		// or an upward ray starting from the x-axis
+		int yAxisHeight = positiveY ? (int) yZero : height;		
+		
+		//--------------------------------------------------
+		
+		
+		
 		
 		// for axes ticks
 		double yZeroTick = yZero;
@@ -841,23 +894,19 @@ final public void setHits(Point p){
 
 		//FontRenderContext frc = g2.getFontRenderContext();
 		//g2.setFont(fontAxes);
-		int fontsize = 10;//fontAxes.getSize();
+		int fontsize = Integer.parseInt(fontAxes.getFontSize());
 		int arrowSize = fontsize / 3;
-		//TEMP!!!!AG
-		axesColor = Color.BLACK;
-		setStrokeStyle(axesColor);
-		
+		setPaint(axesColor);
 
 		if (bold) {
-			/*axesStroke = boldAxesStroke;
-			tickStroke = boldAxesStroke;*/
-			
+			axesStroke = boldAxesStroke;
+			tickStroke = boldAxesStroke;
 			ySmall2++;
 			xSmall2--;
 			arrowSize += 1;
 		} else {
-		   /*	axesStroke = defAxesStroke;
-			tickStroke = defAxesStroke;*/
+			axesStroke = defAxesStroke;
+			tickStroke = defAxesStroke;
 		}
 
 		// turn antialiasing off
@@ -878,28 +927,30 @@ final public void setHits(Point p){
 
 			// label of x axis
 			if (axesLabels[0] != null) {
-				/*TextLayout layout = new TextLayout(axesLabels[0], fontLine, frc);
-				g2.drawString(axesLabels[0], (int) (width - 10 - layout
-						.getAdvance()), (int) (yZero - 4));*/
+				//AGTextLayout layout = new TextLayout(axesLabels[0], fontLine, frc);
+				
+				fillText(axesLabels[0], (int) (width - 10 - measureText(axesLabels[0], fontLine.getFullFontString())), (int) (yZero - 4),fontLine.getFullFontString());
 			}
 
 			// numbers
 			double rw = xmin - (xmin % axesNumberingDistances[0]);
-			double pix = xZero + rw * xscale;
+			
+			
+			// G.Sturr
+			//-------- need global xZero here -------
+			double pix = this.xZero + rw * xscale;    
+			// -------------------------------------
+			
+			
 			double axesStep = xscale * axesNumberingDistances[0]; // pixelstep
 			double smallTickPix;
 			double tickStep = axesStep / 2;
 			if (pix < SCREEN_BORDER) {
 				// big tick
 				if (drawMajorTicks[0]) {
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					/*tempLine.setLine(pix, yZeroTick, pix, yBig);
-					g2.draw(tempLine);*/
-					moveTo(pix, yZeroTick);
-					lineTo(pix, yBig);
-					stroke();
+					setStroke(tickStroke);					
+					tempLine.setLine(pix, yZeroTick, pix, yBig);
+					draw(tempLine);
 				}
 				pix += axesStep;
 				rw += axesNumberingDistances[0];
@@ -909,8 +960,9 @@ final public void setHits(Point p){
 			for (; pix < width; rw += axesNumberingDistances[0], pix += axesStep) {
 				if (pix <= maxX) {
 					if (showAxesNumbers[0]) {
-						/*String strNum = kernel.formatPiE(rw,
-								axesNumberFormat[0]);
+						//AGString strNum = kernel.formatPiE(rw,
+							//AG must be implemented	axesNumberFormat[0]);
+						String strNum = kernel.format(rw);
 						boolean zero = strNum.equals("0");
 
 						sb.setLength(0);
@@ -918,80 +970,55 @@ final public void setHits(Point p){
 						if (axesUnitLabels[0] != null && !piAxisUnit[0])
 							sb.append(axesUnitLabels[0]);
 
-						TextLayout layout = new TextLayout(sb.toString(),
-								fontAxes, frc);*/
-						/*int x, y = (int) (yZero + yoffset);
+						//AGTextLayout layout = new TextLayout(sb.toString(),
+							//AG	fontAxes, frc);
+						int x, y = (int) (yZero + yoffset);
 						if (zero && showAxes[1]) {
 							x = (int) (pix + 6);
 						} else {
-							x = (int) (pix + xoffset - layout.getAdvance() / 2);
+							x = (int) (pix + xoffset - measureText(sb.toString(), fontAxes.getFullFontString()) / 2);
 						}
 												
 						// make sure we don't print one string on top of the other
 						if (x > prevTextEnd + 5) {
-							prevTextEnd = (int) (x + layout.getAdvance()); 
-							g2.drawString(sb.toString(), x, y);
-						}*/
+							prevTextEnd = (int) (x + measureText(sb.toString(), fontAxes.getFullFontString())); 
+							fillText(sb.toString(), x, y,fontAxes.getFullFontString());
+						}
 					}
 
 					// big tick
 					if (drawMajorTicks[0]) {
-						setLineCap(GWTCanvas.BUTT);
-						setLineJoin(GWTCanvas.MITER);
-						//g2.setStroke(tickStroke);
-						//tempLine.setLine(pix, yZeroTick, pix, yBig);
-						//g2.draw(tempLine);
-						beginPath();
-						moveTo(pix, yZeroTick);
-						lineTo(pix, yBig);
-						stroke();
+						setStroke(tickStroke);
+						tempLine.setLine(pix, yZeroTick, pix, yBig);
+						draw(tempLine);
 					}
 				} else if (drawMajorTicks[0] && !drawArrows) {
 					// draw last tick if there is no arrow
-					//tempLine.setLine(pix, yZeroTick, pix, yBig);
-					//g2.draw(tempLine);
-					beginPath();
-					moveTo(pix, yZeroTick);
-					lineTo(pix, yBig);
-					stroke();
+					tempLine.setLine(pix, yZeroTick, pix, yBig);
+					draw(tempLine);
 				}
 
 				// small tick
 				smallTickPix = pix - tickStep;
 				if (drawMinorTicks[0]) {
-					//g2.setStroke(tickStroke);
-					//tempLine.setLine(smallTickPix, ySmall1, smallTickPix,
-					//		ySmall2);
-					//g2.draw(tempLine);
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					moveTo(smallTickPix, ySmall1);
-					lineTo(smallTickPix, ySmall2);
-					stroke();
+					setStroke(tickStroke);
+					tempLine.setLine(smallTickPix, ySmall1, smallTickPix,
+							ySmall2);
+					draw(tempLine);
 				}
 			}
 			// last small tick
 			smallTickPix = pix - tickStep;
 			if (drawMinorTicks[0] && (!drawArrows || smallTickPix <= maxX)) {
-				setLineCap(GWTCanvas.BUTT);
-				setLineJoin(GWTCanvas.MITER);
-				beginPath();
-				moveTo(smallTickPix,ySmall1);
-				lineTo(smallTickPix,ySmall2);
-				stroke();
-				//g2.setStroke(tickStroke);
-				//tempLine.setLine(smallTickPix, ySmall1, smallTickPix, ySmall2);
-				//g2.draw(tempLine);
+				setStroke(tickStroke);
+				tempLine.setLine(smallTickPix, ySmall1, smallTickPix, ySmall2);
+				draw(tempLine);
 			}
 
 			// x-Axis
-			beginPath();
-			moveTo(0, yZero);
-			lineTo(width,yZero);
-			stroke();
-			//tempLine.setLine(0, yZero, width, yZero);
-			//g2.draw(tempLine);
+			setStroke(axesStroke);
+			tempLine.setLine(0, yZero, width, yZero);
+			draw(tempLine);
 
 			if (drawArrows) {
 				// tur antialiasing on
@@ -999,26 +1026,24 @@ final public void setHits(Point p){
 //						antiAliasValue);
 
 				// draw arrow for x-axis
-				beginPath();
-				moveTo(width-1,yZero);
-				lineTo(width-1-arrowSize,yZero-arrowSize);
-				//tempLine.setLine(width - 1, yZero, width - 1 - arrowSize, yZero
-				//		- arrowSize);
-				//g2.draw(tempLine);
-				moveTo(width-1, yZero);
-				lineTo(width-1-arrowSize,yZero+arrowSize);
-				//tempLine.setLine(width - 1, yZero, width - 1 - arrowSize, yZero
-				//		+ arrowSize);
-				//g2.draw(tempLine);
+				tempLine.setLine(width - 1, yZero, width - 1 - arrowSize, yZero
+						- arrowSize);
+				draw(tempLine);
+				tempLine.setLine(width - 1, yZero, width - 1 - arrowSize, yZero
+						+ arrowSize);
+				draw(tempLine);
 
 				//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				//		RenderingHints.VALUE_ANTIALIAS_OFF);
-				stroke();
 			}
 		}
 
 		// Y-AXIS
-		if (showAxes[1] && xmin < 0 && xmax > 0) {
+		
+		// ----------- axis may not cross at zero anymore
+		//if (showAxes[1] && xmin < 0 && xmax > 0) {
+		if (showAxes[1] && xmin < xCross && xmax > xCross) {
+			
 			if (showGrid) {
 				xoffset = -2 - fontsize / 4;
 				yoffset = -2;
@@ -1028,11 +1053,11 @@ final public void setHits(Point p){
 			}
 
 			// label of y axis
-			/*if (axesLabels[1] != null) {
-				TextLayout layout = new TextLayout(axesLabels[1], fontLine, frc);
-				g2.drawString(axesLabels[1], (int) (xZero + 5),
-						(int) (5 + layout.getAscent()));
-			}*/
+			if (axesLabels[1] != null) {
+				//AGTextLayout layout = new TextLayout(axesLabels[1], fontLine, frc);
+				fillText(axesLabels[1], (int) (xZero + 5),
+						(int) (5 + measureText(axesLabels[1], fontLine.getFullFontString())),fontLine.getFullFontString());
+			}
 
 			// numbers
 			double rw = ymax - (ymax % axesNumberingDistances[1]);
@@ -1044,53 +1069,50 @@ final public void setHits(Point p){
 			double smallTickPix = pix - tickStep;
 			if (drawMinorTicks[1]
 					&& (!drawArrows || smallTickPix > SCREEN_BORDER)) {
-				//g2.setStroke(tickStroke);
-				setLineCap(GWTCanvas.BUTT);
-				setLineJoin(GWTCanvas.MITER);
-				beginPath();
-				moveTo(xSmall1,smallTickPix);
-				lineTo(xSmall2,smallTickPix);
-				stroke();
-				//tempLine.setLine(xSmall1, smallTickPix, xSmall2, smallTickPix);
-				//g2.draw(tempLine);
+				setStroke(tickStroke);
+				tempLine.setLine(xSmall1, smallTickPix, xSmall2, smallTickPix);
+				draw(tempLine);
 			}
 
 			// don't get too near to the top of the screen
 			if (pix < SCREEN_BORDER) {
 				if (drawMajorTicks[1] && !drawArrows) {
 					// draw tick if there is no arrow
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					moveTo(xBig,pix);
-					lineTo(xZeroTick,pix);
-					stroke();
-					//g2.setStroke(tickStroke);
-					//tempLine.setLine(xBig, pix, xZeroTick, pix);
-					//g2.draw(tempLine);
+					setStroke(tickStroke);
+					tempLine.setLine(xBig, pix, xZeroTick, pix);
+					draw(tempLine);
 				}
 				smallTickPix = pix + tickStep;
 				if (drawMinorTicks[1] && smallTickPix > SCREEN_BORDER) {
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					moveTo(xSmall1,smallTickPix);
-					lineTo(xSmall2, smallTickPix);
-					stroke();
-					//g2.setStroke(tickStroke);
-					//tempLine.setLine(xSmall1, smallTickPix, xSmall2,
-					//		smallTickPix);
-					//g2.draw(tempLine);
+					setStroke(tickStroke);
+					tempLine.setLine(xSmall1, smallTickPix, xSmall2,
+							smallTickPix);
+					draw(tempLine);
 				}
 				pix += axesStep;
 				rw -= axesNumberingDistances[1];
 			}
-			int maxY = height - SCREEN_BORDER;
-			for (; pix <= height; rw -= axesNumberingDistances[1], pix += axesStep) {
+			
+			// draw all of the remaining ticks and labels
+			
+			
+			// G.Sturr
+			// -------------------------------------------
+			// added some adjustments here to handle drawing 
+			// y-axis ticks and labels on a positive ray
+			// ------------------------------------------
+			
+			//int maxY = height - SCREEN_BORDER;
+			int maxY = positiveY ? (int) yZero : height - SCREEN_BORDER;
+			
+			//for (; pix <= height; rw -= axesNumberingDistances[1], pix += axesStep) {
+			
+			for (; pix <= yAxisHeight; rw -= axesNumberingDistances[1], pix += axesStep) {
 				if (pix <= maxY) {
 					if (showAxesNumbers[1]) {
-					/*	String strNum = kernel.formatPiE(rw,
-								axesNumberFormat[1]);
+						//AGString strNum = kernel.formatPiE(rw,
+							//AG find out something	axesNumberFormat[1]);
+						String strNum = kernel.format(rw);
 						boolean zero = strNum.equals("0");
 
 						sb.setLength(0);
@@ -1098,98 +1120,89 @@ final public void setHits(Point p){
 						if (axesUnitLabels[1] != null && !piAxisUnit[1])
 							sb.append(axesUnitLabels[1]);
 
-						TextLayout layout = new TextLayout(sb.toString(),
-								fontAxes, frc);
-						int x = (int) (xZero + xoffset - layout.getAdvance());
+						//AGTextLayout layout = new TextLayout(sb.toString(),
+						//AG		fontAxes, frc);
+						int x = (int) (xZero + xoffset - measureText(sb.toString(), fontAxes.getFullFontString()));
 						int y;
 						if (zero && showAxes[0]) {
 							y = (int) (yZero - 2);
 						} else {
 							y = (int) (pix + yoffset);
 						}
-						g2.drawString(sb.toString(), x, y);*/
+						fillText(sb.toString(), x, y,fontAxes.getFullFontString());
 					}
 				}
 
 				// big tick
 				if (drawMajorTicks[1]) {
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					moveTo(xBig,pix);
-					lineTo(xZeroTick,pix);
-					stroke();
-					//g2.setStroke(tickStroke);
-					//tempLine.setLine(xBig, pix, xZeroTick, pix);
-					//g2.draw(tempLine);
+					setStroke(tickStroke);
+					tempLine.setLine(xBig, pix, xZeroTick, pix);
+					draw(tempLine);
 				}
 
 				smallTickPix = pix + tickStep;
 				if (drawMinorTicks[1]) {
-					setLineCap(GWTCanvas.BUTT);
-					setLineJoin(GWTCanvas.MITER);
-					beginPath();
-					moveTo(xSmall1,smallTickPix);
-					lineTo(xSmall2,smallTickPix);
-					stroke();
-					//g2.setStroke(tickStroke);
-					//tempLine.setLine(xSmall1, smallTickPix, xSmall2,
-					//		smallTickPix);
-					//g2.draw(tempLine);
+					setStroke(tickStroke);
+					tempLine.setLine(xSmall1, smallTickPix, xSmall2,
+							smallTickPix);
+					draw(tempLine);
 				}
 			}
 
 			// y-Axis
-			beginPath();
-			moveTo(xZero,0);
-			lineTo(xZero,height);
-			stroke();
+			
+			//G.Sturr ---- use yAxisHeight instead of height so that 
+			// yAxis can be drawn as a ray
+			
 			//tempLine.setLine(xZero, 0, xZero, height);
-			//g2.draw(tempLine);
+			tempLine.setLine(xZero, 0, xZero, yAxisHeight);
+			
+			
+			draw(tempLine);
 
 			if (drawArrows && xmin < 0 && xmax > 0) {
 				// draw arrow for y-axis
-				beginPath();
-				moveTo(xZero,0);
-				lineTo(xZero - arrowSize,arrowSize);
-				moveTo(xZero,0);
-				lineTo(xZero+arrowSize,arrowSize);
-				stroke();
-				//tempLine.setLine(xZero, 0, xZero - arrowSize, arrowSize);
-				//g2.draw(tempLine);
-				//tempLine.setLine(xZero, 0, xZero + arrowSize, arrowSize);
-				//g2.draw(tempLine);
+				tempLine.setLine(xZero, 0, xZero - arrowSize, arrowSize);
+				draw(tempLine);
+				tempLine.setLine(xZero, 0, xZero + arrowSize, arrowSize);
+				draw(tempLine);
 			}								
 		}
 		
 	
 		// if one of the axes is not visible, show upper left and lower right corner coords
 		if (showAxesCornerCoords) {
-			/*if (xmin > 0 || xmax < 0 || ymin > 0 || ymax < 0) {
+			if (xmin > 0 || xmax < 0 || ymin > 0 || ymax < 0) {
 				// uper left corner								
 				sb.setLength(0);
 				sb.append('(');			
-				sb.append(kernel.formatPiE(xmin, axesNumberFormat[0]));
-				sb.append(", ");
-				sb.append(kernel.formatPiE(ymax, axesNumberFormat[1]));
+				//AGsb.append(kernel.formatPiE(xmin, axesNumberFormat[0]));
+				sb.append(xmin);
+				sb.append(Application.unicodeComma);
+				sb.append(" ");
+				//sb.append(kernel.formatPiE(ymax, axesNumberFormat[1]));
+				sb.append(kernel.format(ymax));
 				sb.append(')');
 				
-				int textHeight = 2 + fontAxes.getSize();
-				g2.setFont(fontAxes);			
-				g2.drawString(sb.toString(), 5, textHeight);
+				int textHeight = 2 + Integer.parseInt(fontAxes.getFontSize());
+				//AGg2.setFont(fontAxes);			
+				fillText(sb.toString(), 5, textHeight,fontAxes.getFullFontString());
 				
 				// lower right corner
 				sb.setLength(0);
 				sb.append('(');			
-				sb.append(kernel.formatPiE(xmax, axesNumberFormat[0]));
-				sb.append(", ");
-				sb.append(kernel.formatPiE(ymin, axesNumberFormat[1]));
+				//AGsb.append(kernel.formatPiE(xmax, axesNumberFormat[0]));
+				sb.append(kernel.format(xmax));
+				sb.append(Application.unicodeComma);
+				sb.append(" ");
+				sb.append(kernel.format(ymin));
 				sb.append(')');
 				
-				TextLayout layout = new TextLayout(sb.toString(), fontAxes, frc);	
-				layout.draw(g2, (int) (width - 5 - layout.getAdvance()), 
-										height - 5);					
-			}	*/
+				//TextLayout layout = new TextLayout(sb.toString(), fontAxes, frc);	
+				//AGlayout.draw(g2, (int) (width - 5 - layout.getAdvance()), 
+					//AG					height - 5);
+				fillText(sb.toString(), width - 5 - measureText(sb.toString(), fontAxes.getFullFontString()), height - 5, fontAxes.getFullFontString());
+			}	
 		}
 	}
 
@@ -2200,6 +2213,99 @@ final public void setHits(Point p){
 
 	public void setPaint(Color color) {
 		setFillStyle(color);
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setAxesColor(
+			org.geogebra.ggjsviewer.client.kernel.gawt.Color axesColor) {
+		if (axesColor != null)
+			this.axesColor = new Color(axesColor.getRed(),axesColor.getGreen(),axesColor.getBlue());
+	}
+
+	public void setShowAxis(int axis, boolean flag, boolean update) {
+		if (flag == showAxes[axis])
+			return;
+		
+		showAxes[axis] = flag;
+		
+		if (update)
+			updateBackgroundImage();
+			
+		
+	}
+	
+	/**
+	 * sets the axis label to axisLabel
+	 * @param axis
+	 * @param axisLabel
+	 */
+	public void setAxisLabel(int axis, String axisLabel){
+		if (axisLabel != null && axisLabel.length() == 0) 
+			axesLabels[axis] = null;
+		else
+			axesLabels[axis] = axisLabel;
+	}
+	
+
+	public String[] getAxesUnitLabels() {
+		return axesUnitLabels;
+	}
+	
+	public void setAxesUnitLabels(String[] axesUnitLabels) {
+		this.axesUnitLabels = axesUnitLabels;
+
+		// check if pi is an axis unit
+		for (int i = 0; i < 2; i++) {
+			piAxisUnit[i] = axesUnitLabels[i] != null
+					&& axesUnitLabels[i].equals(PI_STRING);
+		}
+		setAxesIntervals(xscale, 0);
+		setAxesIntervals(yscale, 1);
+	}
+
+	public int[] getAxesTickStyles() {
+		return axesTickStyles;
+	}
+	
+	public void setAxisTickStyle(int axis, int tickStyle){
+		axesTickStyles[axis]=tickStyle;
+	}
+
+	public void setAxesTickStyles(int[] axesTickStyles) {
+		this.axesTickStyles = axesTickStyles;
+	}
+
+	public void setShowAxesNumbers(boolean[] showAxesNumbers) {
+		this.showAxesNumbers = showAxesNumbers;
+	}
+	
+	public void setShowAxisNumbers(int axis, boolean showAxisNumbers){
+		showAxesNumbers[axis]=showAxisNumbers;
+	}
+	/**
+	 * 
+	 * @param x
+	 * @param axis:
+	 *            0 for xAxis, 1 for yAxis
+	 */
+	public void setAxesNumberingDistance(double dist, int axis) {
+		axesNumberingDistances[axis] = dist;
+		setAutomaticAxesNumberingDistance(false, axis);
+	}
+	
+	public void setAutomaticAxesNumberingDistance(boolean flag, int axis) {
+		automaticAxesNumberingDistances[axis] = flag;
+		if (axis == 0)
+			setAxesIntervals(xscale, 0);
+		else
+			setAxesIntervals(yscale, 1);
+	}
+
+
+
+
+	private void updateBackgroundImage() {
 		// TODO Auto-generated method stub
 		
 	}
