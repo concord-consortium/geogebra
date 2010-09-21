@@ -88,7 +88,8 @@ public class MyXMLHandler  {
 
 	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<GeoExpPair>();
 	private LinkedList<GeoExpPair> animationSpeedList = new LinkedList<GeoExpPair>();
-	//private int docPointStyle; 
+	private int docPointStyle; 
+	private double ggbFileFormat;
 	
 	private int mode;
 	private int constMode; // submode for <construction>
@@ -219,6 +220,11 @@ public class MyXMLHandler  {
 					ok = handleCoordSystem(ev, children.item(i));
 					break;
 				}
+			case 'e':
+				if (eName.equals("evSettings")) {
+					ok = handleEvSettings(ev, children.item(i));
+					break;
+				}
 			case 'l':
 				if (eName.equals("lineStyle")) {
 					ok = handleLineStyle(ev, children.item(i));
@@ -239,6 +245,81 @@ public class MyXMLHandler  {
 				System.err.println("error in <euclidianView>: " + eName);
 		}
 	}
+	private boolean handleEvSettings(EuclidianView ev, Node item) {
+		try {
+			// axes attribute was removed with V3.0, see handleAxis()
+			// this code is for downward compatibility
+			String strAxes = (String) getNodeAttr(item.getAttributes().getNamedItem("axes"));
+			if (strAxes != null) {
+				boolean showAxes = parseBoolean(strAxes);
+				//ev.showAxes(showAxes, showAxes);
+				ev.setShowAxes(showAxes, true);
+			}
+
+			ev.showGrid(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("grid"))));
+
+			try {
+				ev.setGridIsBold(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("gridIsBold")))); // Michael Borcherds
+				// 2008-04-11
+			} catch (Exception e) {
+			}
+
+			try {
+				ev.setGridType(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("gridType")))); // Michael Borcherds
+				// 2008-04-30
+			} catch (Exception e) {
+			}
+
+			String str = (String) getNodeAttr(item.getAttributes().getNamedItem("pointCapturing"));
+			if (str != null) {
+				// before GeoGebra 2.7 pointCapturing was either "true" or
+				// "false"
+				// now pointCapturing holds an int value
+				int pointCapturingMode;
+				if (str.equals("false"))
+					pointCapturingMode = 0;
+				else if (str.equals("true"))
+					pointCapturingMode = 1;
+				else
+					// int value
+					pointCapturingMode = Integer.parseInt(str);
+				ev.setPointCapturing(pointCapturingMode);
+			}
+			
+			// if there is a point style given save it
+			/*AG I'm suppose that new version will be availableif(ggbFileFormat < 3.3) {
+				String strPointStyle = (String) attrs.get("pointStyle");
+				if (strPointStyle != null) {
+					docPointStyle = Integer.parseInt(strPointStyle);
+				} else {
+					docPointStyle = EuclidianView.POINT_STYLE_DOT;
+				}
+				
+				// TODO save as default construction (F.S.)
+			} else {*/
+				docPointStyle = -1;
+			//AG}
+
+			// Michael Borcherds 2008-05-12
+			// size of checkbox
+			String strBooleanSize = (String) getNodeAttr(item.getAttributes().getNamedItem("checkboxSize"));
+			if (strBooleanSize != null)
+				ev.setBooleanSize(Integer.parseInt(strBooleanSize));
+
+			// v3.0: appearance of right angle
+			String strRightAngleStyle = (String) getNodeAttr(item.getAttributes().getNamedItem("rightAngleStyle"));
+			if (strRightAngleStyle == null)
+				// before v3.0 the default was a dot to show a right angle
+				ev.setRightAngleStyle(EuclidianView.RIGHT_ANGLE_STYLE_DOT);
+			else
+				ev.setRightAngleStyle(Integer.parseInt(strRightAngleStyle));
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private boolean handleEvSize(EuclidianView ev, Node item) {
 		// TODO Auto-generated method stub
 		return true;

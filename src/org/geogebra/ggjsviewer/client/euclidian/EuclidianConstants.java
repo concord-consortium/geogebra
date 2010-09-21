@@ -146,5 +146,11 @@ public interface EuclidianConstants {
 
 
 	public static final int MACRO_MODE_ID_OFFSET = 1001;
+	
+	//SHould be in EuclidianViewInterface
+	/** reference to x axis*/
+	public static final int AXIS_X = 0; 
+	/** reference to y axis*/	
+	public static final int AXIS_Y = 1; 
 
 }

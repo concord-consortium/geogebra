@@ -381,7 +381,11 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public Font fontVector = new Font("normal");
 	public Font fontAngle = new Font("normal");
 	private Font cursorFont = new Font("normal");
-	private Font fontAxes = new Font("normal");
+	private Font fontAxes = new Font("normal") {
+		{
+			setFontSize(-2);
+		}
+	};
 	
 	/*Handling the text support with native canvas functions
 	*/
@@ -434,6 +438,44 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		
 		
 		
+	}
+	
+	final protected void clearBackground(/*AGGraphics2D g*/) {
+		//g.setColor(bgColor);
+		//g.fillRect(0, 0, width, height);
+		clear();
+	}
+	
+	final protected void drawBackground(/*AGGraphics2D g,*/ boolean clear) {
+		if (clear) {
+			clearBackground(/*AGg*/);
+		}
+
+		//setAntialiasing(g);
+		if (showGrid) {
+			//AGdrawGrid(g);
+		}
+		if (showAxes[0] || showAxes[1])
+			drawAxes(/*AGg*/);
+
+		/*AGif (app.showResetIcon() && app.isApplet()) {
+			// need to use getApplet().width rather than width so that
+			// it works with applet rescaling
+			int w = app.onlyGraphicsViewShowing() ? app.getApplet().width : width + 2;
+			g.drawImage(getResetImage(), w - 18, 2, null);
+		}*/
+	}	
+	
+	private void drawBackgroundWithImages(/*AGGraphics2D g*/) {
+		drawBackgroundWithImages(/*AGg, */false);
+	}
+	
+	private void drawBackgroundWithImages(/*AGGraphics2D g,*/ boolean transparency) {
+		if(!transparency)
+			clearBackground(/*AGg*/);
+		
+		//AGbgImageList.drawAll(g); 
+		drawBackground(/*AGg,*/ false);
 	}
 	
 	protected void initView(boolean repaint) {
@@ -851,6 +893,7 @@ final public void setHits(Point p){
 	// new global vars to control axes (should be set from options menu)
 	private double xCross = 0.0;
 	private boolean positiveY = false;
+	private Object bgGraphics; //AG For images later
 	
 	final void drawAxes() {
 		//-------------------------------------------------
@@ -1580,7 +1623,7 @@ final public void setHits(Point p){
 
 	@Override
 	public void repaintView() {
-		clear();
+		//clear();
 		paint();
 		//GWT.log("megvagy");
 		
@@ -1588,6 +1631,24 @@ final public void setHits(Point p){
 
 	private void paint() {
 		//clear();
+		// BACKGROUND
+		// draw background image (with axes and/or grid)
+		//AGif (bgImage == null) {
+			//AGif (firstPaint) {
+				//AGupdateSize();
+				//AGg2.drawImage(bgImage, 0, 0, null);
+				//AGfirstPaint = false;				
+			//AG} else {
+				drawBackgroundWithImages(/*AGg2*/);
+		//AG	}
+		//AG} else {
+			// draw background image
+			//AGg2.drawImage(bgImage, 0, 0, null);
+		//AG}
+
+		
+		
+		
 		drawObjects();
 		
 		if (showMouseCoords /*AG test && (showAxes[0] || showAxes[1] || showGrid)*/)
@@ -2301,13 +2362,62 @@ final public void setHits(Point p){
 		else
 			setAxesIntervals(yscale, 1);
 	}
+	
+	public void setShowAxes(boolean flag, boolean update){
+		setShowAxis(AXIS_X, flag, false);
+		setShowAxis(AXIS_Y, flag, true);
+	}
+	
+	public void showGrid(boolean show) {
+		if (show == showGrid)
+			return;
+		showGrid = show;
+		updateBackgroundImage();
+	}
 
 
 
 
 	private void updateBackgroundImage() {
 		// TODO Auto-generated method stub
+		if (bgGraphics != null) {
+			drawBackgroundWithImages(/*AGbgGraphics*/);
+		}
 		
+	}
+	
+//	 Michael Borcherds 2008-04-11
+	public void setGridIsBold(boolean gridIsBold ) {
+		if (this.gridIsBold == gridIsBold) return;
+		
+		this.gridIsBold=gridIsBold;
+		setGridLineStyle(gridLineStyle);
+		
+		updateBackgroundImage();
+	}
+	
+	/**
+	 * Sets the global size for checkboxes.
+	 * Michael Borcherds 2008-05-12
+	 */
+	public void setBooleanSize(int size) {
+
+		// only 13 and 26 currently allowed
+		booleanSize = (size == 13) ? 13 : 26;
+		
+		updateAllDrawables(true);
+	}
+	
+	/**
+	 * Sets the global style for rightAngle drawing.
+	 */
+	public void setRightAngleStyle(int style) {
+		rightAngleStyle = style;
+		updateAllDrawables(true);
+	}
+
+	final public int getRightAngleStyle() {
+		return rightAngleStyle;
 	}
 	
 	
