@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.kernel.AlgoElement;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
 import org.geogebra.ggjsviewer.client.kernel.ConstructionDefaults;
 import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
+import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
@@ -1406,7 +1407,7 @@ final public void setHits(Point p){
 
 		switch (geo.getGeoClassType()) {
 		case GeoElement.GEO_CLASS_BOOLEAN:
-		//AG	d = new DrawBoolean(this, (GeoBoolean) geo);			
+			d = new DrawBoolean(this, (GeoBoolean) geo);			
 			break;
 		
 		case GeoElement.GEO_CLASS_BUTTON:
@@ -2418,6 +2419,19 @@ final public void setHits(Point p){
 
 	final public int getRightAngleStyle() {
 		return rightAngleStyle;
+	}
+	
+	final public int getBooleanSize() {
+		return booleanSize;
+	}
+
+	public void drawLine(int x1, int y1, int x2, int y2) {
+		beginPath();
+		moveTo(x1, y1);
+		lineTo(x2, y2);
+		stroke();
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

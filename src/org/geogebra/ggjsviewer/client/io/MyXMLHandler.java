@@ -22,6 +22,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec3D;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.LimitedPath;
 import org.geogebra.ggjsviewer.client.kernel.Locateable;
@@ -88,6 +89,7 @@ public class MyXMLHandler  {
 
 	private LinkedList<GeoExpPair> dynamicColorList = new LinkedList<GeoExpPair>();
 	private LinkedList<GeoExpPair> animationSpeedList = new LinkedList<GeoExpPair>();
+	private LinkedList<GeoExpPair> showObjectConditionList = new LinkedList<GeoExpPair>();
 	private int docPointStyle; 
 	private double ggbFileFormat;
 	
@@ -722,6 +724,15 @@ public class MyXMLHandler  {
 				if (eName.equals("coords")) {
 					ok = handleCoords(children.item(i),geo);
 					break;
+				} else if (eName.equals("coordStyle")) {
+					ok = handleCoordStyle(children.item(i),geo);
+					break;
+				} else if (eName.equals("caption")) {
+					ok = handleCaption(children.item(i),geo);
+					break;
+				} else if (eName.equals("condition")) {
+					ok = handleCondition(children.item(i),geo);
+					break;
 				}
 			case 'e':
 				if (eName.equals("eqnStyle")) {
@@ -732,7 +743,10 @@ public class MyXMLHandler  {
 					break;
 				}
 			case 'f':
-				if (eName.equals("font")) {
+				if (eName.equals("fixed")) {
+					ok = handleFixed(children.item(i),geo);
+					break;
+				} else if (eName.equals("font")) {
 					ok = handleTextFont(children.item(i),geo);
 					break;
 				}
@@ -744,6 +758,9 @@ public class MyXMLHandler  {
 			case 'l':
 				if (eName.equals("labelMode")){
 					ok = handleLabelMode(children.item(i),geo);
+					break;
+				} else if (eName.equals("labelOffset")) {
+					ok = handleLabelOffset(children.item(i),geo);
 					break;
 				} else if (eName.equals("lineStyle")) {
 					ok = handleLineStyle(children.item(i),geo);
@@ -802,6 +819,74 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleLabelOffset(Node item, GeoElement geoElement) {
+		try {
+			geoElement.labelOffsetX = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("x")));
+			geoElement.labelOffsetY = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("y")));
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleFixed(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setFixed(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleCondition(Node item, GeoElement geoElement) {
+		try {
+			// condition for visibility of object
+			String strShowObjectCond = (String) getNodeAttr(item.getAttributes().getNamedItem("showObject"));
+			if (strShowObjectCond != null) {
+				// store (geo, epxression) values
+				// they will be processed in processShowObjectConditionList()
+				// later
+				showObjectConditionList.add(new GeoExpPair(geoElement,
+						strShowObjectCond));
+			}
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleCaption(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setCaption((String) getNodeAttr(item.getAttributes().getNamedItem("val")));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleCoordStyle(Node item, GeoElement geoElement) {
+		if (!(geoElement.isGeoPoint() || geoElement.isGeoVector())) {
+			System.err.println("wrong element type for <coordStyle>: "
+					+ geoElement.getClass());
+			return false;
+		}
+		GeoVec3D v = (GeoVec3D) geoElement;
+		String style = (String) getNodeAttr(item.getAttributes().getNamedItem("style"));
+		if (style.equals("cartesian")) {
+			v.setCartesian();
+		} else if (style.equals("polar")) {
+			v.setPolar();
+		} else if (style.equals("complex")) {
+			v.setComplex();
+		} else {
+			System.err.println("unknown style in <coordStyle>: " + style);
+			return false;
+		}
+		return true;
+	}
+
 	private boolean handleAbsoluteScreenLocation(Node item, GeoElement geoElement) {
 		if (!(geoElement instanceof AbsoluteScreenLocateable)) {
 			Application

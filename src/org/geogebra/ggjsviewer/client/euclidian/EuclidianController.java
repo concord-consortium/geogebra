@@ -856,7 +856,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 
 		//  checkbox
 		else if (movedGeoElement.isGeoBoolean()) {
-		/*AG	movedGeoBoolean = (GeoBoolean) movedGeoElement;
+		movedGeoBoolean = (GeoBoolean) movedGeoElement;
 			// move checkbox
 			moveMode = MOVE_BOOLEAN;					
 			startLoc = mouseLoc;
@@ -864,7 +864,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			oldLoc.y = movedGeoBoolean.getAbsoluteScreenLocY();
 
 			view.setShowMouseCoords(false);
-			view.setDragCursor();*/			
+			view.setDragCursor();		
 		}
 
 		//  button
@@ -877,12 +877,12 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 			oldLoc.y = movedGeoButton.getAbsoluteScreenLocY();
 
 			view.setShowMouseCoords(false);
-			view.setDragCursor();			
+			view.setDragCursor();	*/		
 		}
 
 		// image
 		else if (movedGeoElement.isGeoImage()) {
-			moveMode = MOVE_IMAGE;
+		/*AG	moveMode = MOVE_IMAGE;
 			movedGeoImage = (GeoImage) movedGeoElement;
 			view.setShowMouseCoords(false);
 			view.setDragCursor();

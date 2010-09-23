@@ -20,6 +20,8 @@ package org.geogebra.ggjsviewer.client.euclidian;
 
 import java.util.ArrayList;
 
+import org.geogebra.ggjsviewer.client.euclidian.clipping.ClipLine;
+import org.geogebra.ggjsviewer.client.kernel.ConstructionDefaults;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -28,15 +30,14 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Line2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Point2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 
-import com.google.gwt.widgetideas.graphics.client.Color;
-
 
 /**
  *
  * @author  Markus Hohenwarter
  * @version 
  */
-public class DrawSegment extends Drawable implements Previewable {
+public class DrawSegment extends Drawable
+implements Previewable {
    
     private GeoLine s;
     private GeoPoint A, B;
@@ -94,7 +95,7 @@ public class DrawSegment extends Drawable implements Previewable {
 			// A or B off screen
 			// clip at screen, that's important for huge coordinates
 			Point2D.Double [] clippedPoints = 
-				Clipping.getClipped(coordsA[0], coordsA[1], coordsB[0], coordsB[1], -EuclidianView.CLIP_DISTANCE, view.width + EuclidianView.CLIP_DISTANCE, -EuclidianView.CLIP_DISTANCE, view.height + EuclidianView.CLIP_DISTANCE);
+				ClipLine.getClipped(coordsA[0], coordsA[1], coordsB[0], coordsB[1], -EuclidianView.CLIP_DISTANCE, view.width + EuclidianView.CLIP_DISTANCE, -EuclidianView.CLIP_DISTANCE, view.height + EuclidianView.CLIP_DISTANCE);
 			if (clippedPoints == null) {
 				isVisible = false;	
 			} else {
@@ -272,66 +273,56 @@ public class DrawSegment extends Drawable implements Previewable {
 		
         if (isVisible) {		        	
             if (geo.doHighlighting()) {
-            /*    g2.setPaint(geo.getSelColor());
-                g2.setStroke(selStroke);            
-                g2.draw(line);*/    
-        	view.setStroke(geo.getSelColor());
-    		view.beginPath();
-    		view.moveTo(line.x1, line.y1);
-    		view.lineTo(line.x2, line.y2);
-    		view.stroke();
+                view.setPaint(geo.getSelColor());
+                view.setStroke(geo.getSelColor());
+                view.setStroke(selStroke);
+                view.draw(line);       
             }
             
-            /*AGg2.setPaint(geo.getObjectColor());             
-            g2.setStroke(objStroke);            
-			g2.draw(line);
-			*/
-	        view.setStroke(geo.getObjectColor());
-			view.beginPath();
-			view.moveTo(line.x1, line.y1);
-			view.lineTo(line.x2, line.y2);
-			view.stroke();
+            view.setPaint(geo.getObjectColor());
+            view.setStroke(geo.getObjectColor());
+            view.setStroke(objStroke);            
+			view.draw(line);
+
 			//added by Lo�c BEGIN			
-			if (geo.decorationType != GeoElement.DECORATION_NONE) {
-				//AG I'm not sure yet that it is right here....
-				 view.setStroke(geo.getObjectColor());
+			if (geo.decorationType != GeoElement.DECORATION_NONE){
+				view.setStroke(decoStroke);
 				
 				switch(geo.decorationType){
-				//AG IT MUST BE RETHINKED
 				case GeoElement.DECORATION_SEGMENT_ONE_TICK:
-					//AGdraw(decoTicks[0]);
+					view.draw(decoTicks[0]);
 					break;
 					
 				case GeoElement.DECORATION_SEGMENT_TWO_TICKS:
-					//AGg2.draw(decoTicks[0]);
-					//AGg2.draw(decoTicks[1]);
+					view.draw(decoTicks[0]);
+					view.draw(decoTicks[1]);
 					break;
 					
 				case GeoElement.DECORATION_SEGMENT_THREE_TICKS:
-					//AGg2.draw(decoTicks[0]);
-					//AGg2.draw(decoTicks[1]);
-					//AGg2.draw(decoTicks[2]);
+					view.draw(decoTicks[0]);
+					view.draw(decoTicks[1]);
+					view.draw(decoTicks[2]);
 					break;
 // Michael Borcherds 20071006 start
 				case GeoElement.DECORATION_SEGMENT_ONE_ARROW:
-					//AGg2.draw(decoTicks[0]);
-					//AGg2.draw(decoTicks[1]);
+					view.draw(decoTicks[0]);
+					view.draw(decoTicks[1]);
 					break;
 					
 				case GeoElement.DECORATION_SEGMENT_TWO_ARROWS:
-					//AGg2.draw(decoTicks[0]);
-					//AGg2.draw(decoTicks[1]);
-					//AGg2.draw(decoTicks[2]);
-					//AGg2.draw(decoTicks[3]);
+					view.draw(decoTicks[0]);
+					view.draw(decoTicks[1]);
+					view.draw(decoTicks[2]);
+					view.draw(decoTicks[3]);
 					break;
 					
 				case GeoElement.DECORATION_SEGMENT_THREE_ARROWS:
-					//AGg2.draw(decoTicks[0]);
-					//AGg2.draw(decoTicks[1]);
-					//AGg2.draw(decoTicks[2]);
-					//AGg2.draw(decoTicks[3]);
-					//AGg2.draw(decoTicks[4]);
-					//AGg2.draw(decoTicks[5]);
+					view.draw(decoTicks[0]);
+					view.draw(decoTicks[1]);
+					view.draw(decoTicks[2]);
+					view.draw(decoTicks[3]);
+					view.draw(decoTicks[4]);
+					view.draw(decoTicks[5]);
 					break;
 // Michael Borcherds 20071006 end
 				}
@@ -339,26 +330,19 @@ public class DrawSegment extends Drawable implements Previewable {
 			//END
 
 			if (labelVisible) {
-				//DRAWLABEL MUST BE IMPLEMENTED
-				/*AGg2.setPaint(geo.getLabelColor());
-				g2.setFont(view.fontLine);
-				drawLabel(g2);*/
-				view.setFont(view.fontLine);
 				view.setPaint(geo.getLabelColor());
-				drawLabel();
+				view.setFont(view.fontLine);
+				drawLabel(/*AGg2*/);
             }
+			
         }
     }
     
 	final void drawTrace(/*AGGraphics2D g2*/) {
-		/*AGg2.setPaint(geo.getObjectColor());
-		g2.setStroke(objStroke);  
-		g2.draw(line);*/
+		view.setPaint(geo.getObjectColor());
 		view.setStroke(geo.getObjectColor());
-		view.beginPath();
-		view.moveTo(line.x1, line.y1);
-		view.lineTo(line.x2, line.y2);
-		view.stroke();
+		view.setStroke(objStroke);  
+		view.draw(line);
 	}
     
 	final public void updatePreview() {		
@@ -415,15 +399,10 @@ public class DrawSegment extends Drawable implements Previewable {
     
 	final public void drawPreview(/*AGGraphics2D g2*/) {
 		if (isVisible) {			            
-			/*AGg2.setPaint(ConstructionDefaults.colPreview);             
-			g2.setStroke(objStroke);            
-			g2.draw(line);*/
+			view.setPaint(ConstructionDefaults.colPreview);             
+			view.setStroke(objStroke);
 			view.setStroke(geo.getObjectColor());
-			view.beginPath();
-			view.moveTo(line.x1, line.y1);
-			view.lineTo(line.x2, line.y2);
-			view.stroke();
-			
+			view.draw(line);                        		
 		}
 	}
 	

@@ -128,13 +128,10 @@ public class DrawSlider extends Drawable {
     final public void draw(/*AGGraphics2D g2*/) {
         if (isVisible) {                        
         	// horizontal line
-            view.setPaint(geo.getObjectColor());             
+            view.setPaint(geo.getObjectColor());
+            view.setStroke(geo.getObjectColor());
             view.setStroke(objStroke); 
-            //AGview.draw(line);
-            view.beginPath();
-    		view.moveTo(line.x1, line.y1);
-    		view.lineTo(line.x2, line.y2);
-    		view.stroke();
+            view.draw(line);
                 
             // point 
             drawPoint.draw(/*AGg2*/);                  
