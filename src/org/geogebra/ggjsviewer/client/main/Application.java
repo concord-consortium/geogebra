@@ -10,6 +10,7 @@ import org.geogebra.ggjsviewer.client.gui.Base64Form;
 import org.geogebra.ggjsviewer.client.gui.GgjsViewerWrapper;
 import org.geogebra.ggjsviewer.client.io.MyXMLHandler;
 import org.geogebra.ggjsviewer.client.kernel.BaseApplication;
+import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -352,6 +353,24 @@ public class Application extends BaseApplication {
 		// TODO Auto-generated method stub
 		return euclidianview;
 	}
+	
+	final public void removeSelectedGeo(GeoElement geo, boolean repaint) {
+		if (geo == null)
+			return;
+
+		selectedGeos.remove(geo);
+		geo.setSelected(false);
+		if (repaint)
+			kernel.notifyRepaint();
+		updateSelection();
+	}
+
+	public void removeSelectedGeo(GeoBoolean geo) {
+		removeSelectedGeo(geo, true);
+		
+	}
+	
+	
 
 
 

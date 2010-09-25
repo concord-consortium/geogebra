@@ -1588,7 +1588,7 @@ public class Construction {
 		
 	}
 
-	public Object getApplication() {
+	public Application getApplication() {
 		// TODO Auto-generated method stub
 		return app;
 	}    

@@ -8,13 +8,16 @@ import java.util.Set;
 import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
 import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
+import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoFunction;
 import org.geogebra.ggjsviewer.client.kernel.GeoFunctionable;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
+import org.geogebra.ggjsviewer.client.kernel.GeoList;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
+import org.geogebra.ggjsviewer.client.kernel.GeoPointInterface;
 import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVec3D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
@@ -232,7 +235,7 @@ public class AlgebraProcessor {
 	 * Parses given String str and tries to evaluate it to a GeoBoolean object.
 	 * Returns null if something went wrong.
 	 */
-/*AG	public GeoBoolean evaluateToBoolean(String str) {
+	public GeoBoolean evaluateToBoolean(String str) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 
@@ -264,7 +267,7 @@ public class AlgebraProcessor {
 	 * Returns null if something went wrong.
 	 * Michael Borcherds 2008-04-02
 	 */
-/*AG	public GeoList evaluateToList(String str) {
+	public GeoList evaluateToList(String str) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 
@@ -366,7 +369,7 @@ public class AlgebraProcessor {
 	 * Parses given String str and tries to evaluate it to a GeoPoint.
 	 * Returns null if something went wrong.
 	 */
-/*AG	public GeoPointInterface evaluateToPoint(String str) {
+	public GeoPointInterface evaluateToPoint(String str) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 

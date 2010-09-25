@@ -14,6 +14,8 @@ package org.geogebra.ggjsviewer.client.kernel;
 
 import java.util.TreeSet;
 
+import org.geogebra.ggjsviewer.client.main.Application;
+
 public abstract class ConstructionElement 
 implements Comparable {
 	
@@ -28,7 +30,7 @@ implements Comparable {
     
 	protected transient Construction cons; // parent construction of this element
 	protected transient Kernel kernel;      // parent kernel of this element
-	protected transient BaseApplication bApp;  // parent application of this element
+	protected transient Application bApp;  // parent application of this element
 	
 	private int constIndex = -1; // index in construction list 
 	
@@ -43,7 +45,7 @@ implements Comparable {
 	void setConstruction(Construction c) {
 		cons = c;
 		kernel = c.getKernel();
-		bApp = c.getBaseApplication();
+		bApp = c.getApplication();
 	}
 	
 	public Construction getConstruction() {

@@ -49,10 +49,7 @@ public class BaseApplication {
 		return null;
 	}
 
-	public void removeSelectedGeo(GeoElement geoElement, boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	public boolean isReverseNameDescriptionLanguage() {
 		// TODO Auto-generated method stub

@@ -390,7 +390,7 @@ public abstract class GeoElement
 		//isConsProtBreakpoint = cons.showOnlyBreakpoints();
 		
 		// ensure all new objects are in the top layer
-		BaseApplication bApp = c.getBaseApplication();
+		Application bApp = c.getApplication();
 		/*AGif (bApp != null) {
 			EuclidianView ev = bApp.getEuclidianView();
 			if (ev != null)

@@ -30,7 +30,9 @@ import org.geogebra.ggjsviewer.client.kernel.PointProperties;
 import org.geogebra.ggjsviewer.client.kernel.TextProperties;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.Command;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
+import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ValidExpression;
+import org.geogebra.ggjsviewer.client.kernel.commands.AlgebraProcessor;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
 import org.geogebra.ggjsviewer.client.kernel.parser.Parser;
 import org.geogebra.ggjsviewer.client.main.Application;
@@ -187,6 +189,7 @@ public class MyXMLHandler  {
 			for (int i = 0; i < children.getLength(); i++) {
 				if (children.item(i).getNodeName().equalsIgnoreCase("construction")) {
 					startConstructionElement(children.item(i));
+					endConstructionElement(children.item(i));
 				} else if (children.item(i).getNodeName().equals("kernel")) {
 					startKernelElement(children.item(i));
 				} else if (children.item(i).getNodeName().equals("euclidianView")) {
@@ -197,6 +200,17 @@ public class MyXMLHandler  {
 		// TODO Auto-generated method stub
 		
 	}
+	private void endConstructionElement(Node item) {
+		
+		processStartPointList();
+		//AGprocessLinkedGeoList();
+		processShowObjectConditionList();
+		processDynamicColorList();
+		processAnimationSpeedList();
+		//GWT.log(item.getNodeName()+" cons");
+		
+	}
+
 	// ===============
 	// <euclidianview>
 	// ===============
@@ -1423,5 +1437,101 @@ public class MyXMLHandler  {
 		return "true".equals(str);
 	}
 	
+	private void processStartPointList() {
+		try {
+			Iterator it = startPointList.iterator();
+			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
+
+			while (it.hasNext()) {
+				LocateableExpPair pair = (LocateableExpPair) it.next();
+				GeoPointInterface P = pair.point != null ? pair.point : 
+								algProc.evaluateToPoint(pair.exp);
+				pair.locateable.setStartPoint(P, pair.number);
+				
+				//Application.debug("locateable : "+ ((GeoElement) pair.locateable).getLabel() + ", startPoint : "+((GeoElement) P).getLabel());
+			}
+		} catch (Exception e) {
+			startPointList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "processStartPointList: " + e.toString());
+		}
+		startPointList.clear();
+	}
+	
+	private void processShowObjectConditionList() {
+		try {
+			Iterator it = showObjectConditionList.iterator();
+			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
+
+			while (it.hasNext()) {
+				GeoExpPair pair = (GeoExpPair) it.next();
+				GeoBoolean condition = algProc.evaluateToBoolean(pair.exp);
+				pair.geo.setShowObjectCondition(condition);
+			}
+		} catch (Exception e) {
+			showObjectConditionList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "processShowObjectConditionList: "
+					+ e.toString());
+		}
+		showObjectConditionList.clear();
+	}
+	
+
+	private void processAnimationSpeedList() {
+		try {
+			Iterator it = animationSpeedList.iterator();
+			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
+
+			while (it.hasNext()) {
+				GeoExpPair pair = (GeoExpPair) it.next();
+				NumberValue num = algProc.evaluateToNumeric(pair.exp, false);
+				pair.geo.setAnimationSpeedObject(num);
+			}
+		} catch (Exception e) {
+			animationSpeedList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "processAnimationSpeedList: " + e.toString());
+		}
+		animationSpeedList.clear();
+	}
+	
+	/*AGprivate void processLinkedGeoList() {
+		try {
+			Iterator<GeoExpPair> it = linkedGeoList.iterator();
+
+			while (it.hasNext()) {
+				GeoExpPair pair = (GeoExpPair) it.next();
+				
+				((GeoTextField)pair.geo).setLinkedGeo(kernel.lookupLabel(pair.exp));
+			}
+		} catch (Exception e) {
+			linkedGeoList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "processlinkedGeoList: " + e.toString());
+		}
+		linkedGeoList.clear();
+	}*/
+	
+	// Michael Borcherds 2008-05-18
+	private void processDynamicColorList() {
+		try {
+			Iterator it = dynamicColorList.iterator();
+			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
+
+			while (it.hasNext()) {
+				GeoExpPair pair = (GeoExpPair) it.next();
+				pair.geo.setColorFunction(algProc.evaluateToList(pair.exp));
+			}
+		} catch (Exception e) {
+			dynamicColorList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "dynamicColorList: " + e.toString());
+		}
+		dynamicColorList.clear();
+	}
+
+
+
 	
 }

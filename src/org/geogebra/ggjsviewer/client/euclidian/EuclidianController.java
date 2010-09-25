@@ -221,6 +221,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	
 	protected Kernel kernel;
 	protected EuclidianView view;
+
+	private boolean CURSOR_MOVED = false;
 	
 	public static boolean navigator_iPad = false;
 	
@@ -615,6 +617,9 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		if (geo != null && !geo.isFixed()) {		
 			moveModeSelectionHandled = true;	
 			DRAGGING_OCCURED = true;
+			//AG for the handling of checkbox (temporary, until I find out something)
+			//if the mousemove event don't changes this, than we don't want to move the checkbox
+			CURSOR_MOVED = false;
 		} else {
 			// no geo clicked at
 			moveMode = MOVE_NONE;	
@@ -1385,6 +1390,7 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	}
 
 	protected void processMouseMoved(MouseMoveEvent event) {
+		CURSOR_MOVED = true;
 		//GWT.log(String.valueOf(DRAGGING_OCCURED));
 		//BECAUSE THERE IS NOT ONMOUSEDRAGGED IN GWT WE MUST BE
 		//AWARE OF DRAGGIN_OCCURED HERE
@@ -2676,21 +2682,21 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			rotGeoElement = null;	
 
 			// Michael Borcherds 2007-10-08 allow dragging with right mouse button
-			if (!TEMPORARY_MODE) {
+			if (/*AG I'm not sure what it does yet!TEMPORARY_MODE*/CURSOR_MOVED) {
 				// Michael Borcherds 2007-10-08
 				/*AGif (allowSelectionRectangle()) {
 					processSelectionRectangle(e);	
 
 					return;
 				}*/
-		} else {	
+			} else {	
 			// no hits: release mouse button creates a point
 			// for the transformation tools
 			// (note: this cannot be done in mousePressed because
 			// we want to be able to select multiple objects using the selection rectangle)
 			
-			//AGchangedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
-		}
+				changedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
+			}
 
 		// remember helper point, see createNewPoint()
 		//AGif (changedKernel)
@@ -2776,6 +2782,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		kernel.notifyRepaint();					
 	}
 		// TODO Auto-generated method stub
+		CURSOR_MOVED = false;
 		
 	}
 
@@ -2796,6 +2803,55 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			return true;
 		
 		else return false;
+	}
+	
+	protected boolean switchModeForMouseReleased(int mode, Hits hits, boolean changedKernel){
+		switch (mode) {
+		case EuclidianView.MODE_TRANSLATE_BY_VECTOR:
+		case EuclidianView.MODE_DILATE_FROM_POINT:	
+		case EuclidianView.MODE_MIRROR_AT_POINT:
+		case EuclidianView.MODE_MIRROR_AT_LINE:
+		case EuclidianView.MODE_MIRROR_AT_CIRCLE: // Michael Borcherds 2008-03-23
+		case EuclidianView.MODE_ROTATE_BY_ANGLE:
+			view.setHits(mouseLoc);
+			hits = view.getHits();hits.removePolygons();
+			//hits = view.getHits(mouseLoc);
+			if (hits.isEmpty()) { 
+				POINT_CREATED = createNewPoint(hits, false, false, true);					
+			}
+			changedKernel = POINT_CREATED;
+			break;
+
+		case EuclidianView.MODE_BUTTON_ACTION:
+		case EuclidianView.MODE_TEXTFIELD_ACTION:
+			// make sure script not triggered
+			break;
+
+		default:
+
+			// change checkbox (boolean) state on mouse up only if there's been no drag
+			view.setHits(mouseLoc);
+			hits = view.getHits().getTopHits();
+			//hits = view.getTopHits(mouseLoc);
+			if (!hits.isEmpty()) {
+				GeoElement hit = (GeoElement)hits.get(0);
+				if (hit != null && hit.isGeoBoolean()) {
+					GeoBoolean bool = (GeoBoolean)(hits.get(0));
+					if (!bool.isCheckboxFixed()) { // otherwise changed on mouse down
+						bool.setValue(!bool.getBoolean());
+						app.removeSelectedGeo(bool); // make sure doesn't get selected
+						bool.updateCascade();
+					}
+				} else if (hit != null) {
+					GeoElement geo1 = chooseGeo(hits, true);
+					//ggb3D : geo1 may be null if it's axes or xOy plane
+					/*AGif (geo1!=null)
+						geo1.runScripts(null);*/						
+				}
+			}
+		}
+
+		return changedKernel;
 	}
 	
 	/*public void setMode(int newMode) {
@@ -3237,9 +3293,10 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 	
 			// handle moving
 			boolean changedKernel = POINT_CREATED;		
-			if (DRAGGING_OCCURED) {			
+			if (DRAGGING_OCCURED && CURSOR_MOVED) {			
 	
 				DRAGGING_OCCURED = false;
+				CURSOR_MOVED = false;
 				//			// copy value into input bar
 				//			if (mode == EuclidianView.MODE_MOVE && movedGeoElement != null) {
 				//				app.geoElementSelected(movedGeoElement,false);
@@ -3264,7 +3321,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 				// (note: this cannot be done in mousePressed because
 				// we want to be able to select multiple objects using the selection rectangle)
 				
-				//AGchangedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
+				changedKernel = switchModeForMouseReleased(mode, hits, changedKernel);
 			}
 	
 			// remember helper point, see createNewPoint()
@@ -3353,7 +3410,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 	}
 		// TODO Auto-generated method stub
 		
-		
+	CURSOR_MOVED = false;	
 	}
 	
 	
