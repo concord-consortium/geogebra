@@ -163,20 +163,17 @@ implements Previewable {
                 g2.setStroke(selStroke);            
                 g2.draw(line);*/
             	view.setPaint(geo.getSelColor());
-            	view.beginPath();
-        		view.moveTo(line.x1, line.y1);
-        		view.lineTo(line.x2, line.y2);
-        		view.stroke();
+            	view.setStroke(geo.getSelColor());
+            	view.setStroke(selStroke);
+            	view.draw(line);
             }
             
             /*AGg2.setPaint(geo.getObjectColor());             
             g2.setStroke(objStroke);            
 			g2.draw(line);*/
             view.setStroke(geo.getObjectColor());
-    		view.beginPath();
-    		view.moveTo(line.x1, line.y1);
-    		view.lineTo(line.x2, line.y2);
-    		view.stroke();
+            view.setStroke(objStroke);
+            view.draw(line);
                         
             if (labelVisible) {
 				/*AGg2.setPaint(geo.getLabelColor());

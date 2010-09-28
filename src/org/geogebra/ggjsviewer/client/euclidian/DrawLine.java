@@ -319,10 +319,7 @@ public final class DrawLine extends Drawable implements Previewable {
                 g2.draw(line);*/
             	view.setPaint(geo.getSelColor());
         		view.setStroke(geo.getSelColor());
-        		view.beginPath();
-        		view.moveTo(line.x1, line.y1);
-        		view.lineTo(line.x2, line.y2);
-        		view.stroke();
+        		view.draw(line);
             }
             
             // draw line              
@@ -330,10 +327,8 @@ public final class DrawLine extends Drawable implements Previewable {
             g2.setStroke(objStroke);            
 			g2.draw(line);*/    
             view.setStroke(geo.getObjectColor());
-    		view.beginPath();
-    		view.moveTo(line.x1, line.y1);
-    		view.lineTo(line.x2, line.y2);
-    		view.stroke();
+    		view.setPaint(geo.getObjectColor());
+    		view.draw(line);
 
             // label
             if (labelVisible) {
@@ -349,10 +344,8 @@ public final class DrawLine extends Drawable implements Previewable {
 		g2.setStroke(objStroke);  
 		g2.draw(line);*/
 		view.setStroke(geo.getObjectColor());
-		view.beginPath();
-		view.moveTo(line.x1, line.y1);
-		view.lineTo(line.x2, line.y2);
-		view.stroke();
+		view.setPaint(geo.getObjectColor());
+		view.draw(line);
 	}
     
 	final public void updatePreview() {		
@@ -413,10 +406,8 @@ public final class DrawLine extends Drawable implements Previewable {
 			g2.setStroke(objStroke);            
 			g2.draw(line);*/
 			view.setStroke(geo.getObjectColor());
-			view.beginPath();
-			view.moveTo(line.x1, line.y1);
-			view.lineTo(line.x2, line.y2);
-			view.stroke();
+			view.setPaint(geo.getObjectColor());
+			view.draw(line);
 			
 		}
 	}

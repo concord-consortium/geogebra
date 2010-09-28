@@ -941,6 +941,7 @@ final public void setHits(Point p){
 		int fontsize = Integer.parseInt(fontAxes.getFontSize());
 		int arrowSize = fontsize / 3;
 		setPaint(axesColor);
+		setStroke(axesColor);
 
 		if (bold) {
 			axesStroke = boldAxesStroke;

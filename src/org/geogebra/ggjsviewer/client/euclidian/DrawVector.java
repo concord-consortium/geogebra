@@ -212,13 +212,9 @@ public class DrawVector extends Drawable implements Previewable {
                 g2.setStroke(selStroke);            
                 if (lineVisible) g2.draw(line);*/
                 view.setPaint(v.getSelColor());
-                view.setStroke(v.getSelColor());            
-                if (lineVisible) {
-            		view.beginPath();
-            		view.moveTo(line.x1, line.y1);
-            		view.lineTo(line.x2, line.y2);
-            		view.stroke();	
-                }
+                view.setStroke(v.getSelColor());  
+                view.setStroke(selStroke);
+                if (lineVisible) view.draw(line);
             }
             
             /*EJg2.setPaint(v.getObjectColor());
@@ -227,12 +223,9 @@ public class DrawVector extends Drawable implements Previewable {
 			if (arrowheadVisible) g2.fill(gp);*/
                              
 			view.setStroke(v.getObjectColor());
-			if (lineVisible){
-	    		view.beginPath();
-	    		view.moveTo(line.x1, line.y1);
-	    		view.lineTo(line.x2, line.y2);
-	    		view.stroke();
-			}
+			view.setStroke(objStroke);
+			view.setPaint(v.getObjectColor());
+			if (lineVisible) view.draw(line);
 			if (arrowheadVisible) view.fill(gp);
 			
             if (labelVisible) {
@@ -254,13 +247,10 @@ public class DrawVector extends Drawable implements Previewable {
 		if (lineVisible) g2.draw(line);  
 		if (arrowheadVisible) g2.fill(gp);*/
 		
-		view.setStroke(v.getObjectColor());  
-		if (lineVisible){
-			view.beginPath();
-			view.moveTo(line.x1, line.y1);
-			view.lineTo(line.x2, line.y2);
-			view.stroke();
-		}
+		view.setStroke(v.getObjectColor());
+		view.setStroke(objStroke);
+		view.setPaint(geo.getObjectColor());
+		if (lineVisible) view.draw(line);
 		if (arrowheadVisible) view.fill(gp);
 	}
     

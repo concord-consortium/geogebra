@@ -753,7 +753,7 @@ public abstract class Drawable {
 		
 	}
 	public void drawWithValueStrokePure(GeneralPathClipped shape) {
-		view.drawHyperbola(shape);
+		view.draw(shape);
 		
 	}
 	

@@ -722,6 +722,8 @@ final public class DrawConic extends Drawable implements Previewable {
 				if (conic.alphaValue > 0.0f) {
 					/*g2.setColor(conic.getFillColor());
 					g2.fill(shape);*/
+					view.setPaint(conic.getFillColor());
+					view.fill(shape);
 					//AGif (arcFiller != null) 
 						//AGDrawable.fillWithValueStrokePure(arcFiller/*AG, g2*/);
 				}			                                               
@@ -729,28 +731,15 @@ final public class DrawConic extends Drawable implements Previewable {
                     /*AGg2.setStroke(selStroke);
                     g2.setColor(conic.getSelColor());
                     g2.draw(shape);*/	
+                	view.setStroke(selStroke);
+                	view.setPaint(conic.getSelColor());
                 	view.setStroke(conic.getSelColor());
-                	if (shape instanceof Ellipse2D.Double)
-                		view.drawEllipse((Ellipse2D.Double) shape);
-                	else if (shape instanceof Arc2D.Double)
-                		view.drawEllipse((Arc2D.Double) shape);
-                	else if (shape instanceof Path2D.Double) 
-                		view.drawEllipse((Path2D.Double) shape);
-                	else if (shape instanceof QuadCurve2D.Double) 
-                		view.drawParabola((QuadCurve2D.Double) shape);
+                	view.draw(shape);
                 }                  
                 view.setStroke(objStroke);
+                view.setStroke(conic.getObjectColor());
                 view.setPaint(conic.getObjectColor());
-                //AG OR view.setStroke(conic.getObjectColor());
-                if (shape instanceof Ellipse2D.Double)
-            		view.drawEllipse((Ellipse2D.Double) shape);
-            	else if (shape instanceof Arc2D.Double)
-            		view.drawEllipse((Arc2D.Double) shape);  
-            	else if (shape instanceof Path2D.Double) 
-            		view.drawEllipse((Path2D.Double) shape);
-            	else if (shape instanceof QuadCurve2D.Double) 
-            		view.drawParabola((QuadCurve2D.Double) shape);
-                
+                view.draw(shape);
                 if (labelVisible) {
 					view.setFont(view.fontConic); 
 					view.setStroke(conic.getLabelColor());                   
@@ -829,18 +818,20 @@ final public class DrawConic extends Drawable implements Previewable {
 			case GeoConic.CONIC_ELLIPSE:                                
 			case GeoConic.CONIC_PARABOLA: 			                                                  
 				view.setStroke(objStroke);
-				view.setPaint(conic.getObjectColor());				
-				if (shape instanceof Ellipse2D.Double)
-            		view.drawEllipse((Ellipse2D.Double) shape);
-            	else if (shape instanceof Arc2D.Double)
-            		view.drawEllipse((Arc2D.Double) shape);				            
+				view.setPaint(conic.getObjectColor());	
+				view.setStroke(conic.getObjectColor());
+				view.draw(shape);    
 				break;            
             
 		   case GeoConic.CONIC_HYPERBOLA:     
 				 /*AGg2.setStroke(objStroke);
 				 g2.setColor(conic.getObjectColor());				 
 				 g2.draw(hypLeft);                                                
-				 g2.draw(hypRight);*/ 				  
+				 g2.draw(hypRight);*/ 
+			   	 view.setStroke(objStroke);
+			   	 view.setStroke(conic.getObjectColor());
+			   	 view.draw(hypLeft);
+			   	 view.draw(hypRight);
 				break;      
 		}
 	}
