@@ -96,7 +96,6 @@ public class Construction {
 	// when many cells in the spreadsheet are redefined at once
 	private boolean collectRedefineCalls = false;
 	private HashMap redefineMap;
-	private Application app;
 	// showOnlyBreakpoints in construction protocol
 	private boolean showOnlyBreakpoints;
 
@@ -192,10 +191,10 @@ public class Construction {
 		geoTable.remove(xAxisLocalName);
 		geoTable.remove(yAxisLocalName);
 
-		//Application app = kernel.getBaseApplication();
-		BaseApplication bApp = kernel.getBaseApplication();
-		xAxisLocalName = bApp.getPlain("xAxis");
-		yAxisLocalName = bApp.getPlain("yAxis");
+		//AGApplication app = kernel.getApplication();
+		Application app = kernel.getApplication();
+		xAxisLocalName = app.getPlain("xAxis");
+		yAxisLocalName = app.getPlain("yAxis");
 		geoTable.put(xAxisLocalName, xAxis);
 		geoTable.put(yAxisLocalName, yAxis);	
 	}
@@ -204,9 +203,7 @@ public class Construction {
 		return kernel;
 	}
 
-	/*AGpublic Application getApplication() {
-		return kernel.getApplication();
-	}*/
+	
 
 	public EquationSolver getEquationSolver() {
 		return kernel.getEquationSolver();
@@ -576,7 +573,7 @@ public class Construction {
 		}
 		
 		if (didUpdate) {
-			BaseApplication bApp = kernel.getBaseApplication();
+			Application app = kernel.getApplication();
 			/*AGif (bApp.hasGuiManager())
 				bApp.getGuiManager().updateConstructionProtocol();*/
 		}
@@ -1590,7 +1587,7 @@ public class Construction {
 
 	public Application getApplication() {
 		// TODO Auto-generated method stub
-		return app;
+		return kernel.getApplication();
 	}    
     
    

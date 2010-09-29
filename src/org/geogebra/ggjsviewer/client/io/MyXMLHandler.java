@@ -776,6 +776,9 @@ public class MyXMLHandler  {
 				} else if (eName.equals("labelOffset")) {
 					ok = handleLabelOffset(children.item(i),geo);
 					break;
+				} else if (eName.equals("layer")) {
+					ok = handleLayer(children.item(i),geo);
+					break;
 				} else if (eName.equals("lineStyle")) {
 					ok = handleLineStyle(children.item(i),geo);
 					break;
@@ -833,6 +836,17 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleLayer(Node item, GeoElement geoElement) {
+
+		try {
+			geoElement.setLayer(Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			GWT.log(e.getMessage());
+			return false;
+		}
+	}
+
 	private boolean handleLabelOffset(Node item, GeoElement geoElement) {
 		try {
 			geoElement.labelOffsetX = Integer.parseInt((String) getNodeAttr(item.getAttributes().getNamedItem("x")));

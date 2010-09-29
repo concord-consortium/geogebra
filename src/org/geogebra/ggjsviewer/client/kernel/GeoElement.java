@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.geogebra.ggjsviewer.client.Matrix.GgbVector;
+import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionNode;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.ExpressionValue;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic.NumberValue;
@@ -391,11 +392,11 @@ public abstract class GeoElement
 		
 		// ensure all new objects are in the top layer
 		Application bApp = c.getApplication();
-		/*AGif (bApp != null) {
+		if (bApp != null) {
 			EuclidianView ev = bApp.getEuclidianView();
 			if (ev != null)
 				layer = ev.getMaxLayerUsed();
-		}*/
+		}
 	}
 
 	/* *******************************************************/	
@@ -729,7 +730,7 @@ public abstract class GeoElement
 	}
 
 	// Michael Borcherds 2008-03-01
-	/*public void setLayer(int layer){
+	public void setLayer(int layer){
 		if (layer == this.layer
 				// layer valid only for Drawable objects	
 				// DON'T check this: eg angles on file load are not yet isDrawable()
@@ -737,11 +738,11 @@ public abstract class GeoElement
 			) return;
 		if (layer > EuclidianView.MAX_LAYERS) layer = EuclidianView.MAX_LAYERS;
 		else if (layer < 0) layer = 0;
-		EuclidianView ev =app.getEuclidianView();
+		EuclidianView ev =bApp.getEuclidianView();
 		if (ev != null) 
 			ev.changeLayer(this,this.layer,layer);
 		this.layer=layer;
-	}*/
+	}
 	
 	// Michael Borcherds 2008-02-23
 	public int getLayer(){
@@ -902,8 +903,8 @@ public abstract class GeoElement
 
 		// if layer is not zero (eg a new object has layer set to ev.getMaxLayerUsed())
 		// we don't want to set it
-		//AGif (layer == 0)
-			//AGsetLayer(geo.getLayer());
+		if (layer == 0)
+			setLayer(geo.getLayer());
 	
 	}
 	
@@ -916,7 +917,7 @@ public abstract class GeoElement
 		setVisualStyle(geo);
 
 		// set layer
-		//AGsetLayer(geo.getLayer());
+		setLayer(geo.getLayer());
 
 		// copy color function
 		setColorFunction(geo.getColorFunction());

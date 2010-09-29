@@ -1737,6 +1737,29 @@ final public void setHits(Point p){
 			return true;
 		}
 	}
+	
+	// Michael Borcherds 2008-02-29
+	public void changeLayer(GeoElement geo, int oldlayer, int newlayer)
+	{
+		updateMaxLayerUsed(newlayer);
+		//Application.debug(drawLayers[oldlayer].size());
+		drawLayers[oldlayer].remove((Drawable) DrawableMap.get(geo));
+		//Application.debug(drawLayers[oldlayer].size());
+		drawLayers[newlayer].add((Drawable) DrawableMap.get(geo));
+		
+	}
+	
+	public void updateMaxLayerUsed(int layer)
+	{
+		if (layer > MAX_LAYERS) layer=MAX_LAYERS;
+		if (layer > MAX_LAYER_USED) MAX_LAYER_USED=layer;
+	}
+
+	public int getMaxLayerUsed()
+	{
+		return MAX_LAYER_USED;
+	}
+	
 
 	final protected void drawMouseCoords() {
 		Point pos = euclidianController.mouseLoc;
@@ -2434,6 +2457,8 @@ final public void setHits(Point p){
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 	
 	
 

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.geogebra.ggjsviewer.client.kernel.gawt.Color;
+import org.geogebra.ggjsviewer.client.main.Application;
 
 ;
 
@@ -140,7 +141,7 @@ public class ConstructionDefaults {
 	protected void createDefaultGeoElements() {
 		defaultGeoElements = new HashMap();		
 		
-		BaseApplication bApp = cons.getBaseApplication();		
+		Application bApp = cons.getApplication();		
 //		String strFree = " (" + app.getPlain("free") + ")";
 //		String strDependent = " (" + app.getPlain("dependent") + ")";
 		//String strFree = " (free)";
