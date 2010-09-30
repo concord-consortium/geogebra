@@ -15,14 +15,14 @@ public class Color {
 		setRed(0);
 		setGreen(0);
 		setBlue(0);
-		setAlpha(1);
+		setAlpha(255);
 	}
 
 	public Color(int r, int g, int b) {
 		setRed(r);
 		setGreen(g);
 		setBlue(b);
-		setAlpha(1);
+		setAlpha(255);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -55,7 +55,7 @@ public class Color {
 		setRed((int) (r*255));
 		setGreen((int) (g*255));
 		setBlue((int) (b*255));
-		setAlpha(alpha);
+		setAlpha(alpha*255);
 		
 		// TODO Auto-generated constructor stub
 	}

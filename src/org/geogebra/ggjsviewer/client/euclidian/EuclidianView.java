@@ -1916,14 +1916,14 @@ final public void setHits(Point p){
 
 	public void setPaint(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()));	
+		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/255));	
 		//AGGWT.log(String.valueOf(color.getAlpha()));
 		//Alfa value will needed to implement properly
 	}
 
 	public void setStroke(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
-		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()));
+		this.setStrokeStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/255));
 	}
 	
 	public void setStroke(BasicStroke stroke) {

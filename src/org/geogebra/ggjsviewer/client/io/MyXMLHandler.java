@@ -1175,6 +1175,7 @@ public class MyXMLHandler  {
 		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
 		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
 		attrs.put("b", getNodeAttr(item.getAttributes().getNamedItem("b")));
+		attrs.put("alpha", getNodeAttr(item.getAttributes().getNamedItem("alpha")));
 		attrs.put("dynamicr", getNodeAttr(item.getAttributes().getNamedItem("dynamicr")));
 		attrs.put("dynamicg", getNodeAttr(item.getAttributes().getNamedItem("dynamicg")));
 		attrs.put("dynamicb", getNodeAttr(item.getAttributes().getNamedItem("dynamicb")));

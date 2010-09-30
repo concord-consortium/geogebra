@@ -607,6 +607,7 @@ public abstract class GeoElement
 		fillColor = color;
 		setAlphaValue(alphaValue);
 
+
 		//selColor = getInverseColor(objColor);
 		selColor =
 			new Color(color.getRed(), color.getGreen(), color.getBlue(), 100);
@@ -808,7 +809,7 @@ public abstract class GeoElement
 
 		float[] rgb = new float[3];
 		fillColor.getRGBColorComponents(rgb); //TODO IMPLEMENT IT!
-		fillColor = new Color(rgb[0], rgb[1], rgb[2], alpha); //TODO IMPLEMENT IT!
+		fillColor = new Color(rgb[0], rgb[1], rgb[2], alpha);
 	}
 
 	public float getAlphaValue() {

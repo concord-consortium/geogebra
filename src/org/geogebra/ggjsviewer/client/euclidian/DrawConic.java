@@ -700,6 +700,7 @@ final public class DrawConic extends Drawable implements Previewable {
         if (!isVisible) return;                
         //g2.setColor(conic.getObjectColor());        		
         view.setStroke(conic.getObjectColor());
+        view.setPaint(conic.getObjectColor());
         switch (type) {
             case GeoConic.CONIC_SINGLE_POINT:                         
                 drawPoint.draw(/*g2*/);
