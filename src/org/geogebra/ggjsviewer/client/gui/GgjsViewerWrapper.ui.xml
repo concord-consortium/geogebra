@@ -55,7 +55,7 @@
 	</ui:style>
 	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
 		<g:HorizontalPanel styleName="{style.base64wrapper}">
-			<g:Label styleName="{style.base64Label}">View ggb files from the clipboard </g:Label>
+			<g:Label styleName="{style.base64Label}">View ggb files from the clipboard, or drop ggb files in the worksheet</g:Label>
 			<g:Button ui:field="button" styleName="{style.base64button}">Open TextBox</g:Button>
 		</g:HorizontalPanel>
 		<ggjs:EuclidianView styleName="{style.euclidianview}" ui:field="euclidianview">

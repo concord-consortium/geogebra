@@ -158,6 +158,14 @@ public class MyXMLHandler  {
 			kernel.updateConstruction();
 			kernel.setNotifyViewsActive(oldVal);	
 		// TODO Auto-generated method stub
+		} else if (text.indexOf("<geogebra") > -1){
+			boolean oldVal = kernel.isNotifyViewsActive();
+			//clear the kernel
+			kernel.clearConstruction();
+			kernel.updateConstruction();
+			processXml(text);
+			kernel.updateConstruction();
+			kernel.setNotifyViewsActive(oldVal);	
 		} else {
 			Window.alert("Malformed Base64 string");
 		}
@@ -456,7 +464,7 @@ public class MyXMLHandler  {
 		
 	}
 
-	private void processXml(String xmlString) {
+	public void processXml(String xmlString) {
 		try {
 			Document xmlDoc = XMLParser.parse(xmlString);
 			//We should encounter a geogebra element first
