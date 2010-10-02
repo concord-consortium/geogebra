@@ -1413,7 +1413,7 @@ public class Application extends BaseApplication {
 				var fileToHandle = dt.files[0];
 				//console.log(fileToHandle.name);
 				var reader = new FileReader();
-				reader.addEventListener("loadend",function(e) {
+				reader.onloadend = function(e) {
 					if (reader.readyState === reader.DONE) {
 						var fileStr = reader.result;
 						//console.log(fileStr);
@@ -1427,7 +1427,7 @@ public class Application extends BaseApplication {
 						//console.log(fileStr);
 						x.@org.geogebra.ggjsviewer.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);
 					}
-				},false);
+				};
 				//reader.readAsText(fileToHandle);
 				reader.readAsBinaryString(fileToHandle);
 				//reader.readAsDataURL(fileToHandle);
