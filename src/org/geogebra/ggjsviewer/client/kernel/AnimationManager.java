@@ -7,7 +7,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.Timer;
 
 
 
-public class AnimationManager {
+public class AnimationManager implements HasTimerAction {
 		
 	public final static int STANDARD_ANIMATION_TIME = 10; // secs
 	public final static int MAX_ANIMATION_FRAME_RATE = 30; // frames per second

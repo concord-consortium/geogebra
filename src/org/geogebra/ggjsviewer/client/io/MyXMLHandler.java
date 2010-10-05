@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import org.geogebra.ggjsviewer.client.euclidian.EuclidianView;
 import org.geogebra.ggjsviewer.client.kernel.AbsoluteScreenLocateable;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
+import org.geogebra.ggjsviewer.client.kernel.GeoAngle;
 import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoButton;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
@@ -741,6 +742,14 @@ public class MyXMLHandler  {
 				} else if (eName.equals("absoluteScreenLocation")) {
 					ok = handleAbsoluteScreenLocation(children.item(i),geo);
 					break;
+				} else if (eName.equals("allowReflexAngle")) {
+					ok = handleAllowReflexAngle(children.item(i),geo);
+					break;
+				}
+			case 'b':
+				if (eName.equals("breakpoint")) {
+					ok = handleBreakpoint(children.item(i),geo);
+					break;
 				}
 			case 'c':
 				if (eName.equals("coords")) {
@@ -844,6 +853,32 @@ public class MyXMLHandler  {
 		return geo;
 	}
 	
+	private boolean handleAllowReflexAngle(Node item, GeoElement geoElement) {
+		if (!(geoElement.isGeoAngle())) {
+			System.err.println("wrong element type for <allowReflexAngle>: "
+					+ geoElement.getClass());
+			return false;
+		}
+
+		try {
+			GeoAngle angle = (GeoAngle) geoElement;
+			angle.setAllowReflexAngle(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+
+			return false;
+		}
+	}
+
+	private boolean handleBreakpoint(Node item, GeoElement geoElement) {
+		try {
+			geoElement.setConsProtocolBreakpoint(parseBoolean((String) getNodeAttr(item.getAttributes().getNamedItem("val"))));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	private boolean handleLayer(Node item, GeoElement geoElement) {
 
 		try {

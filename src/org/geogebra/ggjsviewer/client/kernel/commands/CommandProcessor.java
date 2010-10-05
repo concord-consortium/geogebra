@@ -25,6 +25,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec3D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.Mirrorable;
@@ -845,15 +846,18 @@ class CmdDistance extends CommandProcessor {
 	}
 }
 
-/*
+/**
  * Angle[ number ] Angle[ <GeoPolygon> ] Angle[ <GeoConic> ] Angle[ <GeoVector> ]
  * Angle[ <GeoPoint> ] Angle[ <GeoVector>, <GeoVector> ] Angle[ <GeoLine>,
  * <GeoLine> ] Angle[ <GeoPoint>, <GeoPoint>, <GeoPoint> ] Angle[ <GeoPoint>,
  * <GeoPoint>, <Number> ]
  */
-/*AG
 class CmdAngle extends CommandProcessor {
 
+	/**
+	* Create new command processor
+	* @param kernel kernel
+	*/
 	public CmdAngle(Kernel kernel) {
 		super(kernel);
 	}
@@ -864,7 +868,7 @@ class CmdAngle extends CommandProcessor {
 		GeoElement[] arg;
 
 		switch (n) {
-		/*
+		/**
 		 * // Anlge[ constant number ] // get number value ExpressionNode en =
 		 * null; ExpressionValue eval; double value = 0.0; // check if we got
 		 * number: // ExpressionNode && NumberValue || Assignment // build
@@ -878,7 +882,6 @@ class CmdAngle extends CommandProcessor {
 		 * kernel.DependentNumer() en = new ExpressionNode(kernel, (NumberValue)
 		 * geo, ExpressionNode.NO_OPERATION, null); ok[0] = true; } }
 		 */
-/*AG
 		case 1 :
 			arg = resArgs(c);
 

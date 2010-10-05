@@ -2788,7 +2788,46 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 
 	@Override
 	public void onMouseWheel(MouseWheelEvent event) {
-		// TODO Auto-generated method stub
+		event.preventDefault();
+		//AGif (textfieldHasFocus) return;
+
+		// don't allow mouse wheel zooming for applets if mode is not zoom mode
+		/*AGboolean allowMouseWheel = 
+			!app.isApplet() ||
+			mode == EuclidianView.MODE_ZOOM_IN ||
+			mode == EuclidianView.MODE_ZOOM_OUT ||
+			(app.isShiftDragZoomEnabled() && 
+					(e.isControlDown() || e.isMetaDown() || e.isShiftDown()));			
+		if (!allowMouseWheel)
+			return;*/
+
+		setMouseLocation(event);
+
+		//double px = view.width / 2d;
+		//double py = view.height / 2d;
+		double px = mouseLoc.x;
+		double py = mouseLoc.y;
+		double dx = view.getXZero() - px;
+		double dy = view.getYZero() - py;
+
+		double xFactor = 1;
+		if (event.isAltKeyDown())
+			xFactor = 1.5;
+
+
+		double factor = (event.getDeltaY() > 0) ?
+				EuclidianView.MOUSE_WHEEL_ZOOM_FACTOR * xFactor:
+					1d / (EuclidianView.MOUSE_WHEEL_ZOOM_FACTOR * xFactor);
+
+
+		// make zooming a little bit smoother by having some steps
+
+		view.setAnimatedCoordSystem(
+				px + dx * factor,
+				py + dy * factor,
+				view.getXscale() * factor, 4, false);
+		//view.yscale * factor);
+		app.setUnsaved();
 		
 	}
 	
@@ -3423,5 +3462,6 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		processMouseMoved(event);
 	}
 
+	
 
 }

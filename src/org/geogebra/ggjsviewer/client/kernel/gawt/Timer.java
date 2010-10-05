@@ -1,14 +1,15 @@
 package org.geogebra.ggjsviewer.client.kernel.gawt;
 
 import org.geogebra.ggjsviewer.client.kernel.AnimationManager;
+import org.geogebra.ggjsviewer.client.kernel.HasTimerAction;
 
 public class Timer extends com.google.gwt.user.client.Timer {
-	private AnimationManager am;
+	private HasTimerAction am;
 	private int timerDelay; 
 	private boolean isrunning;
 	
 	
-	public Timer(int delay, AnimationManager animationManager) {
+	public Timer(int delay, HasTimerAction animationManager) {
 		am = animationManager;
 		timerDelay = delay;
 		//scheduleRepeating(delay);

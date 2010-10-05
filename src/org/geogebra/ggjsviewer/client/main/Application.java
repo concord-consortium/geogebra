@@ -1421,7 +1421,7 @@ public class Application extends BaseApplication {
         				var len = fileStr.length;
         				for (i=0;i<len;i++)
             			bA[i]=JXG.Util.asciiCharCodeAt(fileStr,i);
-            			//console.log(bA.length);
+            			console.log(bA.join(""));
         				// Unzip
         				fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
 						//console.log(fileStr);

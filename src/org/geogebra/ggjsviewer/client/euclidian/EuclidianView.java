@@ -22,6 +22,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
 import org.geogebra.ggjsviewer.client.kernel.GeoPolygon;
 import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
+import org.geogebra.ggjsviewer.client.kernel.HasTimerAction;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
 import org.geogebra.ggjsviewer.client.kernel.View;
 import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
@@ -37,6 +38,7 @@ import org.geogebra.ggjsviewer.client.kernel.gawt.QuadCurve2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Rectangle;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Path2D;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Shape;
+import org.geogebra.ggjsviewer.client.kernel.gawt.Timer;
 //import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D.Double;
 import org.geogebra.ggjsviewer.client.main.Application;
 
@@ -2457,6 +2459,186 @@ final public void setHits(Point p){
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * Sets coord system of this view. Just like setCoordSystem but with
+	 * previous animation.
+	 * 
+	 * @param ox:
+	 *            x coord of new origin
+	 * @param oy:
+	 *            y coord of new origin
+	 * @param newscale
+	 */
+	final public void setAnimatedCoordSystem(double ox, double oy, double newScale,
+			int steps, boolean storeUndo) {
+		if (!kernel.isEqual(xscale, newScale)) {
+			// different scales: zoom back to standard view
+			double factor = newScale / xscale;
+			zoom((ox - xZero * factor) / (1.0 - factor), (oy - yZero * factor)
+					/ (1.0 - factor), factor, steps, storeUndo);
+		} else {
+			// same scales: translate view to standard origin
+			// do this with the following action listener
+			if (mover == null)
+				mover = new MyMover();
+			mover.init(ox, oy, storeUndo);
+			mover.startAnimation();
+		}
+	}
+	
+	// used for animated moving of euclidian view to standard origin
+	protected class MyMover implements HasTimerAction /*AGActionListener*/ {
+		protected double dx, dy, add;
+
+		protected int counter;
+
+		protected double ox, oy; // new origin
+
+		protected Timer timer;
+
+		protected long startTime;
+
+		protected boolean storeUndo;
+
+		public MyMover() {
+			timer = new Timer(MyZoomer.DELAY, this);
+		}
+
+		public void init(double ox, double oy, boolean storeUndo) {
+			this.ox = ox;
+			this.oy = oy;
+			this.storeUndo = storeUndo;
+		}
+
+		public synchronized void startAnimation() {
+			dx = xZero - ox;
+			dy = yZero - oy;
+			if (kernel.isZero(dx) && kernel.isZero(dy))
+				return;
+
+			// setDrawMode(DRAW_MODE_DIRECT_DRAW);
+			add = 1.0 / MyZoomer.MAX_STEPS;
+			counter = 0;
+
+			startTime = System.currentTimeMillis();
+			timer.start();
+		}
+
+		protected synchronized void stopAnimation() {
+			timer.stop();
+			// setDrawMode(DRAW_MODE_BACKGROUND_IMAGE);
+			setCoordSystem(ox, oy, xscale, yscale);
+			if (storeUndo)
+				app.storeUndoInfo();
+		}
+
+		public synchronized void actionPerformed(/*AGActionEvent e*/) {
+			counter++;
+			long time = System.currentTimeMillis() - startTime;
+			if (counter == MyZoomer.MAX_STEPS || time > MyZoomer.MAX_TIME) { // end
+				// of
+				// animation
+				stopAnimation();
+			} else {
+				double factor = 1.0 - counter * add;
+				setCoordSystem(ox + dx * factor, oy + dy * factor, xscale,
+						yscale);
+			}
+		}
+	}
+
+	
+	protected MyMover mover;
+	
+	/**
+	 * Zooms around fixed point (px, py)
+	 */
+	public final void zoom(double px, double py, double zoomFactor, int steps,
+			boolean storeUndo) {
+		if (zoomer == null)
+			zoomer = new MyZoomer();
+		zoomer.init(px, py, zoomFactor, steps, storeUndo);
+		zoomer.startAnimation();
+		
+		
+	}
+	
+	protected class MyZoomer implements HasTimerAction /*AGimplements ActionListener*/ {
+		static final int MAX_STEPS = 15; // frames
+
+		static final int DELAY = 10;
+
+		static final int MAX_TIME = 400; // millis
+
+		protected Timer timer; // for animation
+
+		protected double px, py; // zoom point
+
+		protected double factor;
+
+		protected int counter, steps;
+
+		protected double oldScale, newScale, add, dx, dy;
+
+		protected long startTime;
+
+		protected boolean storeUndo;
+
+		public MyZoomer() {
+			timer = new Timer(DELAY, this);
+		}
+
+		public void init(double px, double py, double zoomFactor, int steps,
+				boolean storeUndo) {
+			this.px = px;
+			this.py = py;
+			// this.zoomFactor = zoomFactor;
+			this.storeUndo = storeUndo;
+
+			oldScale = xscale;
+			newScale = xscale * zoomFactor;
+			this.steps = Math.min(MAX_STEPS, steps);
+		}
+
+		public synchronized void startAnimation() {
+			if (timer == null)
+				return;
+			// setDrawMode(DRAW_MODE_DIRECT_DRAW);
+			add = (newScale - oldScale) / steps;
+			dx = xZero - px;
+			dy = yZero - py;
+			counter = 0;
+
+			startTime = System.currentTimeMillis();
+			timer.start();
+		}
+
+		protected synchronized void stopAnimation() {
+			timer.stop();
+			// setDrawMode(DRAW_MODE_BACKGROUND_IMAGE);
+			factor = newScale / oldScale;
+			setCoordSystem(px + dx * factor, py + dy * factor, newScale,
+					newScale * scaleRatio);
+
+			if (storeUndo)
+				app.storeUndoInfo();
+		}
+
+		public synchronized void actionPerformed(/*AGActionEvent e*/) {
+			counter++;
+			long time = System.currentTimeMillis() - startTime;
+			if (counter == steps || time > MAX_TIME) { // end of animation
+				stopAnimation();
+			} else {
+				factor = 1.0 + (counter * add) / oldScale;
+				setCoordSystem(px + dx * factor, py + dy * factor, oldScale
+						* factor, oldScale * factor * scaleRatio);
+			}
+		}
+	}	
+	
+	protected MyZoomer zoomer;
 	
 	
 	

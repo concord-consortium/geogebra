@@ -1542,12 +1542,12 @@ public class Kernel {
 	}
 
 	/** Converts number to angle */
-	/*AGfinal public GeoAngle Angle(String label, GeoNumeric num) {
+	final public GeoAngle Angle(String label, GeoNumeric num) {
 		AlgoAngleNumeric algo = new AlgoAngleNumeric(cons, label, num);
 		GeoAngle angle = algo.getAngle();
 		return angle;
 	}
-	*/
+
 	/** Function in x,  e.g. f(x) = 4 x� + 3 x�
 	 */
 
@@ -4577,11 +4577,11 @@ public class Kernel {
 	/** 
 	 * angle of c (angle between first eigenvector and (1,0))
 	 */
-	/*AGfinal public GeoAngle Angle(String label, GeoConic c) {
+	final public GeoAngle Angle(String label, GeoConic c) {
 		AlgoAngleConic algo = new AlgoAngleConic(cons, label, c);
 		GeoAngle angle = algo.getAngle();
 		return angle;
-	}*/
+	}
 
 	/********************************************************************
 	 * TRANSFORMATIONS

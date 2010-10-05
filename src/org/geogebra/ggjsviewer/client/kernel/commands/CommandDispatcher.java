@@ -136,7 +136,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
     	cmdTable.put("Ray", new CmdRay(kernel));	   
     	cmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
-    	//AGcmdTable.put("Angle", new CmdAngle(kernel));	   
+    	cmdTable.put("Angle", new CmdAngle(kernel));	   
     	//AGcmdTable.put("Corner", new CmdCorner(kernel));	   
     	cmdTable.put("Midpoint", new CmdMidpoint(kernel));	 
     	cmdTable.put("Polygon", new CmdPolygon(kernel));
