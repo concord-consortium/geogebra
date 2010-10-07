@@ -1007,6 +1007,7 @@ public class Application extends BaseApplication {
 							alert(outputArr.join(''));
 						unzipped[files] = new Array(2);
 						unzipped[files][0] = outputArr.join('');
+						//console.log(outputArr.join(''));
 		    			unzipped[files][1] = nameBuf.join('');
 		    			files++;
 						//return outputArr.join('');
@@ -1297,6 +1298,7 @@ public class Application extends BaseApplication {
 		        return decodeAsArray(destrip(input),false);
 		    }
 		};
+	
 		
 		
 		JXG.Util.asciiCharCodeAt = function(str,i){
@@ -1364,7 +1366,7 @@ public class Application extends BaseApplication {
 			return c;
 		};
 		
-		
+	
 		JXG.Util.utf8Decode = function(utftext) {
 		  var string = [];
 		  var i = 0;
@@ -1389,6 +1391,24 @@ public class Application extends BaseApplication {
 		  };
 		  return string.join('');
 		};
+		
+		JXG.GeogebraReader = new function() {
+			this.utf8replace = function(exp) {
+		  exp = (exp.match(/\u03C0/)) ? exp.replace(/\u03C0/g, 'PI') : exp;
+		  exp = (exp.match(/\u00B2/)) ? exp.replace(/\u00B2/g, '^2') : exp;
+		  exp = (exp.match(/\u00B3/)) ? exp.replace(/\u00B3/g, '^3') : exp;
+		  exp = (exp.match(/\u225F/)) ? exp.replace(/\u225F/g, '==') : exp;
+		  exp = (exp.match(/\u2260/)) ? exp.replace(/\u2260/g, '!=') : exp;
+		  exp = (exp.match(/\u2264/)) ? exp.replace(/\u2264/g, '<=') : exp;
+		  exp = (exp.match(/\u2265/)) ? exp.replace(/\u2265/g, '>=') : exp;
+		  exp = (exp.match(/\u2227/)) ? exp.replace(/\u2227/g, '&&') : exp;
+		  exp = (exp.match(/\u2228/)) ? exp.replace(/\u2228/g, '//') : exp;
+		  return exp;
+		};
+		}	
+		
+		
+		
 		//====JSXGRAPH UTIL CLASS END======================================//
 		
 		
@@ -1416,14 +1436,17 @@ public class Application extends BaseApplication {
 				reader.onloadend = function(e) {
 					if (reader.readyState === reader.DONE) {
 						var fileStr = reader.result;
-						//console.log(fileStr);
+						console.log(fileStr);
 						var bA = [];
         				var len = fileStr.length;
-        				for (i=0;i<len;i++)
-            			bA[i]=JXG.Util.asciiCharCodeAt(fileStr,i);
-            			console.log(bA.join(""));
+        				for (i=0;i<len;i++) 
+            				bA[i]=JXG.Util.asciiCharCodeAt(fileStr,i);
+            			//console.log(bA.join(';'));
+        				
         				// Unzip
         				fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
+        				fileStr = JXG.Util.utf8Decode(fileStr);
+    					fileStr = JXG.GeogebraReader.utf8replace(fileStr);
 						//console.log(fileStr);
 						x.@org.geogebra.ggjsviewer.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);
 					}
