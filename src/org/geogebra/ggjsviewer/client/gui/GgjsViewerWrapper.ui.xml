@@ -9,12 +9,12 @@
 			-webkit-user-select: none ;
 		}
 		.euclidianwrapper {
-			margin:50px auto;
-			width:768px;
+			margin:20px auto;
+			width:800px;
 			
 		}
 		.base64wrapper {
-			width:768px;
+			width:800px;
 			margin-bottom:20px;
 		}
 		.base64Label {
@@ -25,7 +25,7 @@
 			min-width:150px;	
 		}
 		.csbWrapper {
-			width:768px;
+			width:800px;
 			margin-bottom:10px;
 		}
 		.commandLabel {
@@ -34,10 +34,10 @@
 		}
 		
 		.commandSuggestBox {
-			width:618px;
+			width:640px;
 		}
 		.elWrapper {
-			width:768px;
+			width:800px;
 			margin-bottom:20px;
 		}
 		.elLabel {
@@ -45,7 +45,7 @@
 			min-width:70px;
 		}
 		.el {
-			min-width:618px;
+			min-width:640px;
 			text-align:right;
 			padding-right:30px;
 		}

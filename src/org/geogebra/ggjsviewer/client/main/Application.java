@@ -1436,7 +1436,7 @@ public class Application extends BaseApplication {
 				reader.onloadend = function(e) {
 					if (reader.readyState === reader.DONE) {
 						var fileStr = reader.result;
-						console.log(fileStr);
+						//console.log(fileStr);
 						var bA = [];
         				var len = fileStr.length;
         				for (i=0;i<len;i++) 
@@ -1447,7 +1447,7 @@ public class Application extends BaseApplication {
         				fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
         				fileStr = JXG.Util.utf8Decode(fileStr);
     					fileStr = JXG.GeogebraReader.utf8replace(fileStr);
-						//console.log(fileStr);
+						console.log(fileStr);
 						x.@org.geogebra.ggjsviewer.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);
 					}
 				};

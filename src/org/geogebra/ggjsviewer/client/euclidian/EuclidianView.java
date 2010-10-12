@@ -16,6 +16,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoConicPart;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoText;
+import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.GeoVector;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
 import org.geogebra.ggjsviewer.client.kernel.GeoPoint;
@@ -84,8 +85,8 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected static final int MIN_WIDTH = 50;
 	protected static final int MIN_HEIGHT = 50;
 	
-	public static final int DEFAULT_HEIGHT = 350;
-	public static final int DEFAULT_WIDTH = 766;
+	public static final int DEFAULT_HEIGHT = 600;
+	public static final int DEFAULT_WIDTH = 800;
 	
 	protected static final String PI_STRING = "\u03c0";
 	
@@ -200,6 +201,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 //	 Michael Borcherds 2008-04-28 
 	public static final int GRID_CARTESIAN = 0;
 	public static final int GRID_ISOMETRIC = 1;
+	public static final int GRID_POLAR = 2;
 	private int gridType = GRID_CARTESIAN;
 	
 
@@ -226,6 +228,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	protected BasicStroke axesStroke, tickStroke, gridStroke;
 	
 	protected Line2D.Double tempLine = new Line2D.Double();
+	protected Ellipse2D.Double circle = new Ellipse2D.Double(); //polar grid circles
 	/*AG
 	protected static RenderingHints defRenderingHints = new RenderingHints(null);
 	{
@@ -350,7 +353,10 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public DrawableList drawLayers[]; 
 
 	// on add: change resetLists()
-	
+	// axis control vars 
+	private double[] axisCross = {0,0};
+	private boolean[] positiveAxes = {false, false};
+	private boolean[] drawBorderAxes = {false,false};
 	protected DrawableList bgImageList = new DrawableList();
 
 	Previewable previewDrawable;
@@ -444,9 +450,9 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	}
 	
 	final protected void clearBackground(/*AGGraphics2D g*/) {
-		//g.setColor(bgColor);
-		//g.fillRect(0, 0, width, height);
-		clear();
+		setColor(bgColor);
+		fillRect(0, 0, width, height);
+		//clear();
 	}
 	
 	final protected void drawBackground(/*AGGraphics2D g,*/ boolean clear) {
@@ -456,7 +462,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 
 		//setAntialiasing(g);
 		if (showGrid) {
-			//AGdrawGrid(g);
+			drawGrid(/*AGg*/);
 		}
 		if (showAxes[0] || showAxes[1])
 			drawAxes(/*AGg*/);
@@ -490,7 +496,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		setAxesLineStyle(AXES_LINE_TYPE_ARROW);
 		setAxesColor(Color.BLACK); // Michael Borcherds 2008-01-26 was darkgray
 		setGridColor(Color.LIGHTGREY);
-		//AGsetBackground(Color.WHITE);
+		setBackground(Color.WHITE);
 
 		//showAxes = true;
 		//showGrid = false;
@@ -526,8 +532,22 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		setStandardCoordSystem(repaint);
 	}
 	
-	private void setGridColor(Color gridColor) {
-		this.gridColor = gridColor;		
+	private void setBackground(Color color) {
+		if (color != null)
+			this.bgColor = color;
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setGridColor(Color color) {
+		if (color != null)
+			this.gridColor = color;
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setGridColor(org.geogebra.ggjsviewer.client.kernel.gawt.Color  gridColor) {
+		this.gridColor =new Color(gridColor.getRed(),gridColor.getGreen(),gridColor.getBlue());		
 	}
 
 	private void setAxesColor(Color axesColor) {
@@ -650,6 +670,169 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		}
 	}
 	
+	final void drawGrid(/*AGGraphics2D g2*/) {
+		setColor(gridColor);
+		setStroke(gridStroke);
+
+		// vars for handling positive-only axes
+		double xCrossPix =  this.xZero + axisCross[1] * xscale;
+		double yCrossPix =  this.yZero - axisCross[0] * yscale;
+		int yAxisEnd = positiveAxes[1] ? (int) yCrossPix : height;		
+		int xAxisStart = positiveAxes[0] ? (int) xCrossPix : 0;
+		
+		// set the clipping region to the region defined by the axes
+		//AGShape oldClip = g2.getClip(); no such a simple clipping for <canvas> we must implement it if necessary
+		//AG it won't do anything for nowif(gridType != GRID_POLAR) // don't do this for polar grids
+			//AGg2.setClip(xAxisStart, 0, width, yAxisEnd);
+		
+		
+		switch (gridType) {
+		
+		case GRID_CARTESIAN:
+
+			// vertical grid lines
+			double tickStep = xscale * gridDistances[0];
+			double start = xZero % tickStep;
+			double pix = start;	
+
+			for (int i=0; pix <= width; i++) {	
+				//int val = (int) Math.round(i);
+				//g2.drawLine(val, 0, val, height);
+				tempLine.setLine(pix, 0, pix, height);
+				draw(tempLine);
+
+				pix = start + i * tickStep;
+			}
+
+			// horizontal grid lines
+			tickStep = yscale * gridDistances[1];
+			start = yZero % tickStep;
+			pix = start;
+
+			for (int j=0; pix <= height; j++) {
+				//int val = (int) Math.round(j);
+				//g2.drawLine(0, val, width, val);
+				tempLine.setLine(0, pix, width, pix);
+				draw(tempLine);
+				
+				pix = start + j * tickStep;			
+			}	
+
+		break;
+		
+		
+		case GRID_ISOMETRIC:
+					
+			double tickStepX = xscale * gridDistances[0] * Math.sqrt(3.0);
+			double startX = xZero % (tickStepX);
+			double startX2 = xZero % (tickStepX/2);
+			double tickStepY = yscale * gridDistances[0];
+			double startY = yZero % tickStepY;
+			
+			// vertical
+			pix = startX2;
+			for (int j=0; pix <= width; j++) {
+				tempLine.setLine(pix, 0, pix, height);
+				draw(tempLine);
+				pix = startX2 + j * tickStepX/2.0;			
+			}		
+
+			// extra lines needed because it's diagonal
+			int extra = (int)(height*xscale/yscale * Math.sqrt(3.0) / tickStepX)+3;
+			
+			// positive gradient
+			pix = startX + -(extra+1) * tickStepX;			
+			for (int j=-extra; pix <= width; j+=1) {
+				tempLine.setLine(pix, startY-tickStepY, pix + (height+tickStepY) * Math.sqrt(3)*xscale/yscale, startY-tickStepY + height+tickStepY);
+				draw(tempLine);
+				pix = startX + j * tickStepX;			
+			}						
+			
+			// negative gradient
+			pix = startX;
+			for (int j=0; pix <= width + (height*xscale/yscale+tickStepY) * Math.sqrt(3.0); j+=1) 
+			//for (int j=0; j<=kk; j+=1)
+			{
+				tempLine.setLine(pix, startY-tickStepY, pix - (height+tickStepY) * Math.sqrt(3)*xscale/yscale, startY-tickStepY + height+tickStepY);
+				draw(tempLine);
+				pix = startX + j * tickStepX;			
+			}						
+			
+			break;
+			
+			
+		case GRID_POLAR:   //G.Sturr 2010-8-13
+			
+			// find minimum grid radius  
+			double min;
+			if(xZero > 0 && xZero < width &&  yZero > 0 && yZero < height){
+				// origin onscreen: min = 0
+				min = 0;
+			}else{
+				// origin offscreen: min = distance to closest screen border
+				double minW = Math.min(Math.abs(xZero), Math.abs(xZero - width));
+				double minH = Math.min(Math.abs(yZero), Math.abs(yZero - height));
+				min = Math.min(minW, minH);
+			}
+					
+			// find maximum grid radius
+			// max =  max distance of origin to screen corners 	
+			double d1 = GeoVec2D.length(xZero, yZero);  // upper left
+			double d2 = GeoVec2D.length(xZero, yZero-height); // lower left
+			double d3 = GeoVec2D.length(xZero-width, yZero); // upper right
+			double d4 = GeoVec2D.length(xZero-width, yZero-height); // lower right		
+			double max = Math.max(Math.max(d1, d2), Math.max(d3, d4));
+			
+			
+			// draw the grid circles
+			// note: x tick intervals are used for the radius intervals, 
+			//       it is assumed that the x/y scaling ratio is 1:1
+			double tickStepR = xscale * gridDistances[0];
+			double r = min - min  % tickStepR;
+			while (r <= max) {			
+				circle.setFrame(xZero-r, yZero-r, 2*r, 2*r);	
+				draw(circle);
+				r = r + tickStepR;	
+			
+			}
+			
+			// draw the radial grid lines
+			double angleStep = gridDistances[2];
+			double y1, y2, m;
+			
+			// horizontal axis
+			tempLine.setLine(0, yZero, width, yZero);
+			draw(tempLine);
+				
+			// radial lines
+			for(double a = angleStep ; a < Math.PI ; a = a + angleStep){
+				
+				if(Math.abs(a - Math.PI/2) < 0.0001){
+					//vertical axis
+					tempLine.setLine(xZero, 0, xZero, height);
+				}else{
+					m = Math.tan(a);
+					y1 = m*(xZero) + yZero;	 
+					y2 = m*(xZero - width) + yZero;
+					tempLine.setLine(0, y1, width, y2);
+				}
+				draw(tempLine);
+			}
+			
+			break;		
+		}
+		
+		// reset the clipping region
+		//AGg2.setClip(oldClip);
+	}
+	
+	private void setColor(Color color) {
+		if (color != null) {
+			setStroke(color);
+			setPaint(color);
+		}
+	}
+
 	final protected void updateAllDrawables(boolean repaint) {
 		allDrawableList.updateAll();
 		if (repaint)
@@ -2639,6 +2822,26 @@ final public void setHits(Point p){
 	}	
 	
 	protected MyZoomer zoomer;
+
+	public void setBackground(
+			org.geogebra.ggjsviewer.client.kernel.gawt.Color bgColor) {
+		if (bgColor != null)
+			this.bgColor = new Color(bgColor.getRed(),bgColor.getGreen(),bgColor.getBlue());
+		
+	}
+	
+	public void setGridDistances(double[] dist) {
+		gridDistances = dist;
+		setAutomaticGridDistance(false);
+	}
+	
+	public void setAutomaticGridDistance(boolean flag) {
+		automaticGridDistance = flag;
+		setAxesIntervals(xscale, 0);
+		setAxesIntervals(yscale, 1);
+		if(flag)
+			gridDistances[2] = Math.PI/6;
+	}
 	
 	
 	

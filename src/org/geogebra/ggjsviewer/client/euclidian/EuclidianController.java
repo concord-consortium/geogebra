@@ -46,6 +46,8 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 
 
@@ -262,8 +264,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 	}
 	protected void setMouseLocation(MouseEvent e) {
 		//NOT FULLY VALID IF SCROLLBAR EXISTS AG
-		int screen_x = e.getClientX() - view.getAbsoluteLeft();
-		int screen_y = e.getClientY() - view.getAbsoluteTop();
+		int screen_x = e.getClientX() - view.getAbsoluteLeft() + Window.getScrollLeft();
+		int screen_y = e.getClientY() - view.getAbsoluteTop() + Window.getScrollTop();
 		//GWT.log(String.valueOf(screen_x)+" : "+String.valueOf(screen_y));
 		mouseLoc = new Point(screen_x,screen_y);
 
@@ -391,8 +393,8 @@ public class EuclidianController implements MouseDownHandler, MouseMoveHandler, 
 		view.setFillStyle(new Color(0,0,200));
 		view.stroke();
 		view.fill();*/
-		double screen_x = event.getClientX() - view.getAbsoluteLeft();
-		double screen_y = event.getClientY() - view.getAbsoluteTop();
+		double screen_x = event.getClientX() - view.getAbsoluteLeft() + Window.getScrollLeft();
+		double screen_y = event.getClientY() - view.getAbsoluteTop() + Window.getScrollTop();;
 		//GWT.log("screen_x: "+String.valueOf(screen_x));
 		//GWT.log("sceenn_y: "+String.valueOf(screen_y));
 		// TODO Auto-generated method stub
@@ -2668,9 +2670,10 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 
 		// handle moving
 		boolean changedKernel = POINT_CREATED;		
-		if (DRAGGING_OCCURED) {			
+		if (DRAGGING_OCCURED && CURSOR_MOVED) {			
 
 			DRAGGING_OCCURED = false;
+			CURSOR_MOVED = false;
 			//			// copy value into input bar
 			//			if (mode == EuclidianView.MODE_MOVE && movedGeoElement != null) {
 			//				app.geoElementSelected(movedGeoElement,false);
@@ -3051,8 +3054,8 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 		event.setClientX(client_x);
 		event.setClientY(client_y);
 		
-		double screen_x = event.getClientX() - view.getAbsoluteLeft();
-		double screen_y = event.getClientY() - view.getAbsoluteTop();
+		double screen_x = event.getClientX() - view.getAbsoluteLeft() + Window.getScrollLeft();
+		double screen_y = event.getClientY() - view.getAbsoluteTop() + Window.getScrollTop();
 		//GWT.log("screen_x: "+String.valueOf(screen_x));
 		//GWT.log("sceenn_y: "+String.valueOf(screen_y));
 		// TODO Auto-generated method stub
@@ -3347,7 +3350,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 				rotGeoElement = null;	
 	
 				// Michael Borcherds 2007-10-08 allow dragging with right mouse button
-				if (!TEMPORARY_MODE) {
+				if (/*AG!TEMPORARY_MODE*/CURSOR_MOVED) {
 					// Michael Borcherds 2007-10-08
 					/*AGif (allowSelectionRectangle()) {
 						processSelectionRectangle(e);	
@@ -3446,6 +3449,7 @@ protected boolean switchModeForProcessMode(Hits hits, MouseEvent e){
 			//view.setShowAxesRatio(false);
 			kernel.notifyRepaint();		
 			}
+		CURSOR_MOVED = false;
 	}
 		// TODO Auto-generated method stub
 		

@@ -4,6 +4,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoElement;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoVec2D;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.ParametricCurve;
 import org.geogebra.ggjsviewer.client.kernel.arithmetic3D.Vector3DValue;
 import org.geogebra.ggjsviewer.client.main.Application;
 import org.geogebra.ggjsviewer.client.main.MyError;
@@ -1537,7 +1538,7 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
 	            throw new MyError(app, str3);
             }
                             
-       /*AG
+       
         case FUNCTION:      
             // function(number)
             if (rt.isNumberValue() && lt instanceof Functional) {    
@@ -1605,8 +1606,7 @@ public class ExpressionNodeEvaluator implements ExpressionNodeConstants {
             else { 
                  String [] str = { "IllegalArgument", rt.toString() };
                 throw new MyError(app, str);
-            }                 
-        */        
+            }                        
         default:
             throw new MyError(app, "ExpressionNode: Unhandled operation");
         

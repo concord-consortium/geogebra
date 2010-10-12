@@ -16,9 +16,12 @@ import java.util.ArrayList;
 
 import org.geogebra.ggjsviewer.client.kernel.CircularDefinitionException;
 import org.geogebra.ggjsviewer.client.kernel.Construction;
+import org.geogebra.ggjsviewer.client.kernel.GeoBoolean;
 import org.geogebra.ggjsviewer.client.kernel.GeoConic;
 import org.geogebra.ggjsviewer.client.kernel.GeoDeriveable;
 import org.geogebra.ggjsviewer.client.kernel.GeoElement;
+import org.geogebra.ggjsviewer.client.kernel.GeoFunction;
+import org.geogebra.ggjsviewer.client.kernel.GeoFunctionable;
 import org.geogebra.ggjsviewer.client.kernel.GeoLine;
 import org.geogebra.ggjsviewer.client.kernel.GeoList;
 import org.geogebra.ggjsviewer.client.kernel.GeoNumeric;
@@ -3749,14 +3752,16 @@ class CmdCentroid extends CommandProcessor {
 
 
 
-
-/*
+/**
  * If[ <GeoBoolean>, <GeoElement> ]
  * If[ <GeoBoolean>, <GeoElement>, <GeoElement> ]
  */
-/*AG
 class CmdIf extends CommandProcessor {
 
+	/**
+	* Create new command processor
+	* @param kernel kernel
+	*/
 	public CmdIf(Kernel kernel) {
 		super(kernel);
 	}

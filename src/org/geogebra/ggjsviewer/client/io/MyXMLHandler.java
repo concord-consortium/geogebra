@@ -240,6 +240,11 @@ public class MyXMLHandler  {
 					ok = handleAxis(ev, children.item(i));
 					break;
 				}
+			case 'b':
+				if (eName.equals("bgColor")) {
+					ok = handleBgColor(ev, children.item(i));
+					break;
+				}
 			case 'c':
 				if (eName.equals("coordSystem")) {
 					ok = handleCoordSystem(ev, children.item(i));
@@ -248,6 +253,14 @@ public class MyXMLHandler  {
 			case 'e':
 				if (eName.equals("evSettings")) {
 					ok = handleEvSettings(ev, children.item(i));
+					break;
+				}
+			case 'g':
+				if (eName.equals("grid")) {
+					ok = handleGrid(ev, children.item(i));
+					break;
+				} else if (eName.equals("gridColor")) {
+					ok = handleGridColor(ev, children.item(i));
 					break;
 				}
 			case 'l':
@@ -270,6 +283,48 @@ public class MyXMLHandler  {
 				System.err.println("error in <euclidianView>: " + eName);
 		}
 	}
+	private boolean handleGridColor(EuclidianView ev, Node item) {
+		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
+		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
+		attrs.put("b", getNodeAttr(item.getAttributes().getNamedItem("b")));
+		Color col = handleColorAttrs(attrs);
+		if (col == null)
+			return false;
+		ev.setGridColor(col);
+		return true;
+	}
+
+	private boolean handleGrid(EuclidianView ev, Node item) {
+		// <grid distX="2.0" distY="4.0"/>
+		try {
+			double[] dists = new double[2];
+			dists[0] = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("distX")));
+			dists[1] = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("distY")));
+			
+			//G.Sturr
+			//TODO: this is a temporary fix until Polar grid xml is done
+			dists[2] = Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("distY")));
+			ev.setGridDistances(dists);
+
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private boolean handleBgColor(EuclidianView ev, Node item) {
+		LinkedHashMap<String, String> attrs = new LinkedHashMap<String, String>();
+		attrs.put("r", getNodeAttr(item.getAttributes().getNamedItem("r")));
+		attrs.put("g", getNodeAttr(item.getAttributes().getNamedItem("g")));
+		attrs.put("b", getNodeAttr(item.getAttributes().getNamedItem("b")));
+		Color col = handleColorAttrs(attrs);
+		if (col == null)
+			return false;
+		ev.setBackground(col);
+		return true;
+	}
+
 	private boolean handleEvSettings(EuclidianView ev, Node item) {
 		try {
 			// axes attribute was removed with V3.0, see handleAxis()
@@ -467,6 +522,7 @@ public class MyXMLHandler  {
 
 	public void processXml(String xmlString) {
 		try {
+			//GWT.log(xmlString);
 			Document xmlDoc = XMLParser.parse(xmlString);
 			//We should encounter a geogebra element first
 			Node geogebraElement = xmlDoc.getFirstChild();

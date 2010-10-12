@@ -1618,7 +1618,7 @@ public class Kernel {
 	/** 
 	 * If-then-else construct.
 	 */
-	/*AGfinal public GeoElement If(String label, 
+	final public GeoElement If(String label, 
 			GeoBoolean condition,
 			GeoElement geoIf, GeoElement geoElse) {
 		
@@ -1627,15 +1627,15 @@ public class Kernel {
 			geoIf.isNumberValue() && geoElse.isNumberValue() ||
 			geoIf.getTypeString().equals(geoElse.getTypeString())) 
 		{*/
-	//AG		AlgoIf algo = new AlgoIf(cons, label, condition, geoIf, geoElse);
-	//AG		return algo.getGeoElement();			
+			AlgoIf algo = new AlgoIf(cons, label, condition, geoIf, geoElse);
+			return algo.getGeoElement();			
 	/*	}
 		else {
 			// incompatible types
 			Application.debug("if incompatible: " + geoIf + ", " + geoElse);
 			return null;
 		}	*/			
-	//AG}
+	}
 	
 	/** 
 	 * If-then-else construct for functions. 
@@ -1647,7 +1647,8 @@ public class Kernel {
 		
 		AlgoIfFunction algo = new AlgoIfFunction(cons, label, boolFun, ifFun, elseFun);
 		return algo.getGeoFunction();
-	}
+	}	
+	
 	
 	/** 
 	 * If-then-else construct for functions. 
@@ -4983,12 +4984,13 @@ public class Kernel {
 	
 	/** function limited to interval [a, b]
 	 */
-	/*AGfinal public GeoFunction Function(String label, GeoFunction f, 
+	final public GeoFunction Function(String label, GeoFunction f, 
 										NumberValue a, NumberValue b) {
 		AlgoFunctionInterval algo = new AlgoFunctionInterval(cons, label, f, a, b);		
 		GeoFunction g = algo.getFunction();
 		return g;
-	}*/
+	}
+	
 	
 	/**
 	 * first derivative of deriveable f

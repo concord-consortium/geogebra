@@ -3,12 +3,12 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.base64form {
-			width:768px;
-			height:350px;	
+			width:800px;
+			height:600px;	
 		}
 		.base64area {
-			width:760px;
-			height:300px;
+			width:792px;
+			height:530px;
 		}
 	</ui:style>
 	<g:DialogBox styleName="{style.base64form}">

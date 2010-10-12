@@ -374,11 +374,11 @@ implements NumberValue {
 	
   
   
-	/*AGfinal public MyDouble apply(Functional f) {
+	final public MyDouble apply(Functional f) {
 		val = f.evaluate(val);
 		isAngle = false; // want function to return numbers eg f(x) = sin(x), f(45�)
 		return this;
-	}*/
+	}
     
     /*
      * interface NumberValue

@@ -166,7 +166,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("FirstAxisLength", new CmdFirstAxisLength(kernel));	   
     	cmdTable.put("Parabola", new CmdParabola(kernel));	   
     	cmdTable.put("Rotate", new CmdRotate(kernel));	   
-    	//AGcmdTable.put("Function", new CmdFunction(kernel));	   
+    	cmdTable.put("Function", new CmdFunction(kernel));	   
     	//AGcmdTable.put("Extremum", new CmdExtremum(kernel));	   
     	//AGcmdTable.put("CircumcircleArc", new CmdCircumcircleArc(kernel));	   
     	//AGcmdTable.put("Translate", new CmdTranslate(kernel));	   
@@ -191,7 +191,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Axes", new CmdAxes(kernel));	   
     	cmdTable.put("Point", new CmdPoint(kernel));	   
     	//AGcmdTable.put("UpperSum", new CmdUpperSum(kernel));    	  
-    	//AGcmdTable.put("If", new CmdIf(kernel));
+    	cmdTable.put("If", new CmdIf(kernel));
     	//AGcmdTable.put("Sequence", new CmdSequence(kernel));    	
     	//AGcmdTable.put("CurveCartesian", new CmdCurveCartesian(kernel));
     	
