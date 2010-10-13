@@ -748,8 +748,9 @@ public abstract class Drawable {
 	//private StringBuilder command = new StringBuilder();
 	private double[] coords = new double[2];
 
-	public void fillWithValueStrokePure(GeneralPathClipped shape) {
+	public static void fillWithValueStrokePure(Shape shape, EuclidianView view) {
 		// TODO Auto-generated method stub
+		view.fill(shape);
 		
 	}
 	public void drawWithValueStrokePure(GeneralPathClipped shape) {
@@ -856,5 +857,29 @@ public abstract class Drawable {
     		}
     	}   	
 	}*/
+	
+	protected void fill(/*AGGraphics2D g2, */Shape shape, boolean usePureStroke) {
+		if (geo.getFillType()==GeoElement.FILL_HATCH) {
+			
+			// use decoStroke as it is always full (not dashed/dotted etc)
+			//AGHatchingHandler.setHatching(g2, decoStroke, geo.getObjectColor(), geo.getBackgroundColor(), geo.alphaValue, geo.getHatchingDistance(), geo.getHatchingAngle());
+			if (usePureStroke)
+				Drawable.fillWithValueStrokePure(shape, view);
+			else
+				view.fill(shape);
+
+		}
+		else if (geo.getFillType()==GeoElement.FILL_IMAGE)
+		{
+			//HatchingHandler.setTexture(g2, geo, geo.alphaValue);
+			view.fill(shape);
+		}        	
+		else if (geo.alphaValue > 0.0f)
+		{
+			view.setPaint(geo.getFillColor());                       
+			view.fill(shape);  
+
+		}       
+	}
 
 }

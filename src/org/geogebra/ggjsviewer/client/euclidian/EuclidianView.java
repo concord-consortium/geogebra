@@ -25,6 +25,7 @@ import org.geogebra.ggjsviewer.client.kernel.GeoRay;
 import org.geogebra.ggjsviewer.client.kernel.GeoSegment;
 import org.geogebra.ggjsviewer.client.kernel.HasTimerAction;
 import org.geogebra.ggjsviewer.client.kernel.Kernel;
+import org.geogebra.ggjsviewer.client.kernel.ParametricCurve;
 import org.geogebra.ggjsviewer.client.kernel.View;
 import org.geogebra.ggjsviewer.client.kernel.gawt.AffineTransform;
 import org.geogebra.ggjsviewer.client.kernel.gawt.Arc2D;
@@ -1686,12 +1687,12 @@ final public void setHits(Point p){
 		case GeoElement.GEO_CLASS_CONIC:
 			d = new DrawConic(this, (GeoConic) geo);
 			break;
-		/*
+		
 		case GeoElement.GEO_CLASS_FUNCTION:
 		case GeoElement.GEO_CLASS_FUNCTIONCONDITIONAL:
 			d = new DrawParametricCurve(this, (ParametricCurve) geo);
 			break;
-		*/
+		
 		case GeoElement.GEO_CLASS_TEXT:
 			GeoText text = (GeoText) geo;
 			d = new DrawText(this, text);				
@@ -2102,6 +2103,7 @@ final public void setHits(Point p){
 	public void setPaint(
 			org.geogebra.ggjsviewer.client.kernel.gawt.Color color) {
 		this.setFillStyle(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/255));	
+		this.setStroke(new Color(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()/255));
 		//AGGWT.log(String.valueOf(color.getAlpha()));
 		//Alfa value will needed to implement properly
 	}
@@ -2841,6 +2843,16 @@ final public void setHits(Point p){
 		setAxesIntervals(yscale, 1);
 		if(flag)
 			gridDistances[2] = Math.PI/6;
+	}
+	
+	final public void updateBackground() {
+		// make sure axis number formats are up to date
+		setAxesIntervals(xscale, 0);
+		setAxesIntervals(yscale, 1);
+		
+		updateBackgroundImage();
+		updateAllDrawables(true);
+		// repaint();
 	}
 	
 	

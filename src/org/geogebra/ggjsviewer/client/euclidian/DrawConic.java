@@ -752,8 +752,8 @@ final public class DrawConic extends Drawable implements Previewable {
 			case GeoConic.CONIC_HYPERBOLA:               		          
 				if (conic.alphaValue > 0.0f) {
 					view.setPaint(conic.getFillColor());
-					if (hypLeftOnScreen) fillWithValueStrokePure(hypLeft);                                                
-					if (hypRightOnScreen) fillWithValueStrokePure(hypRight); 
+					if (hypLeftOnScreen) fillWithValueStrokePure(hypLeft,view);                                                
+					if (hypRightOnScreen) fillWithValueStrokePure(hypRight,view); 
 				}	
 				if (geo.doHighlighting()) {
 					 //view.setStroke(selStroke);

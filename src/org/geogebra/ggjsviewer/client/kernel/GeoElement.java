@@ -371,6 +371,12 @@ public abstract class GeoElement
 	public static final int DECORATION_ANGLE_ARROW_CLOCKWISE = 7; //	 Michael Borcherds 2007-10-22
 //	 Michael Borcherds END 2007-11-19
 	
+	public static final int FILL_STANDARD = 0;
+	public static final int FILL_HATCH = 1;
+	public static final int FILL_IMAGE = 2;
+	private int fillType = FILL_STANDARD;
+	public  int numberOfFillTypes = 3;
+	
 	// public int geoID;    
 	//  static private int geoCounter = 0;
 	private AlgoElement algoParent = null; // Parent Algorithm
@@ -4268,6 +4274,17 @@ public abstract class GeoElement
 	 public String getLabelForAssignment() {
 		 return getLabel();
 	 }
+
+	public boolean isHatchingEnabled() {
+		return fillType == FILL_HATCH;
+	}
+	
+	public int getFillType(){
+		return fillType;
+	}
+	public void setFillType(int fillType){
+		this.fillType = fillType;
+	}
 	 
 
 
