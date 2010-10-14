@@ -429,7 +429,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		  for (int k=0; k <= MAX_LAYERS ; k++) {
 		     drawLayers[k] = new DrawableList();
 		  }
-	
+
 		initView(false);
 		
 		//addMouseDownHandler(euclidianController);
@@ -488,7 +488,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		drawBackground(/*AGg,*/ false);
 	}
 	
-	protected void initView(boolean repaint) {
+	public void initView(boolean repaint) {
 		// preferred size
 		//AGsetPreferredSize(null);
 		
@@ -530,7 +530,8 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		// distances between grid lines
 		automaticGridDistance = true;
 		
-		setStandardCoordSystem(repaint);
+		//AG moved to Application.java
+		//because of late binding of kernel setStandardCoordSystem(repaint);
 	}
 	
 	private void setBackground(Color color) {
@@ -625,7 +626,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		this.selectionRectangle = selectionRectangle;		
 	}
 	
-	private void setStandardCoordSystem(boolean repaint) {
+	public void setStandardCoordSystem(boolean repaint) {
 		setCoordSystem(XZERO_STANDARD, YZERO_STANDARD, SCALE_STANDARD,
 				SCALE_STANDARD, repaint);
 	}
@@ -957,7 +958,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		calcPrintingScale();
 		
 		// tell kernel
-		//kernel.setEuclidianViewBounds(xmin, xmax, ymin, ymax, xscale, yscale);
+		kernel.setEuclidianViewBounds(xmin, xmax, ymin, ymax, xscale, yscale);
 	}
 	
 	protected void setAxesIntervals(double scale, int axis) {
@@ -2141,8 +2142,6 @@ final public void setHits(Point p){
 
 	public void setKernel(Kernel k) {
 		kernel = k;
-		// TODO Auto-generated method stub
-		
 	}
 
 	public Font getFont() {

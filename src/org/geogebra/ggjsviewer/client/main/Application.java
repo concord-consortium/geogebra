@@ -89,6 +89,8 @@ public class Application extends BaseApplication {
 		kernel.attach(euclidianview);
 		euclidianview.setKernel(kernel);
 		euclidianview.setApplication(this);
+		//AG from EuclidianView's initView
+		euclidianview.setStandardCoordSystem(false);
 		JsonHandler.setApplication(this);
 		euclidiancontroller.setEuclidianView(euclidianview);	
 		euclidianview.setEuclidianController(euclidiancontroller);
