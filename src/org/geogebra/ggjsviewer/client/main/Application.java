@@ -1396,15 +1396,15 @@ public class Application extends BaseApplication {
 		
 		JXG.GeogebraReader = new function() {
 			this.utf8replace = function(exp) {
-		  exp = (exp.match(/\u03C0/)) ? exp.replace(/\u03C0/g, 'PI') : exp;
-		  exp = (exp.match(/\u00B2/)) ? exp.replace(/\u00B2/g, '^2') : exp;
-		  exp = (exp.match(/\u00B3/)) ? exp.replace(/\u00B3/g, '^3') : exp;
-		  exp = (exp.match(/\u225F/)) ? exp.replace(/\u225F/g, '==') : exp;
-		  exp = (exp.match(/\u2260/)) ? exp.replace(/\u2260/g, '!=') : exp;
-		  exp = (exp.match(/\u2264/)) ? exp.replace(/\u2264/g, '<=') : exp;
-		  exp = (exp.match(/\u2265/)) ? exp.replace(/\u2265/g, '>=') : exp;
-		  exp = (exp.match(/\u2227/)) ? exp.replace(/\u2227/g, '&&') : exp;
-		  exp = (exp.match(/\u2228/)) ? exp.replace(/\u2228/g, '//') : exp;
+		  //exp = (exp.match(/\u03C0/)) ? exp.replace(/\u03C0/g, 'PI') : exp;
+		  //exp = (exp.match(/\u00B2/)) ? exp.replace(/\u00B2/g, '^2') : exp;
+		  //exp = (exp.match(/\u00B3/)) ? exp.replace(/\u00B3/g, '^3') : exp;
+		  //exp = (exp.match(/\u225F/)) ? exp.replace(/\u225F/g, '==') : exp;
+		  //exp = (exp.match(/\u2260/)) ? exp.replace(/\u2260/g, '!=') : exp;
+		  //exp = (exp.match(/\u2264/)) ? exp.replace(/\u2264/g, '<=') : exp;
+		  //exp = (exp.match(/\u2265/)) ? exp.replace(/\u2265/g, '>=') : exp;
+		  //exp = (exp.match(/\u2227/)) ? exp.replace(/\u2227/g, '&&') : exp;
+		  //exp = (exp.match(/\u2228/)) ? exp.replace(/\u2228/g, '//') : exp;
 		  return exp;
 		};
 		}	
@@ -1449,7 +1449,7 @@ public class Application extends BaseApplication {
         				fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
         				fileStr = JXG.Util.utf8Decode(fileStr);
     					fileStr = JXG.GeogebraReader.utf8replace(fileStr);
-						console.log(fileStr);
+						//console.log(fileStr);
 						x.@org.geogebra.ggjsviewer.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);
 					}
 				};
