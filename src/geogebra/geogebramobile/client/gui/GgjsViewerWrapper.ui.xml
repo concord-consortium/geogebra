@@ -1,0 +1,77 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:ggjs="urn:import:geogebra.geogebramobile.client.euclidian">
+	<ui:style>
+		.euclidianview {
+			border:1px solid black;	
+			-webkit-touch-callout: none ;
+			-webkit-user-select: none ;
+		}
+		.euclidianwrapper {
+			margin:20px auto;
+			width:800px;
+			
+		}
+		.base64wrapper {
+			width:800px;
+			margin-bottom:20px;
+		}
+		.base64Label {
+			text-align:right;
+			padding:5px 20px 5px 20px;
+		}
+		.base64button {
+			min-width:150px;	
+		}
+		.csbWrapper {
+			width:800px;
+			margin-bottom:10px;
+		}
+		.commandLabel {
+			padding:5px 20px 5px 20px;
+			min-width:70px;
+		}
+		
+		.commandSuggestBox {
+			width:640px;
+		}
+		.elWrapper {
+			width:800px;
+			margin-bottom:20px;
+		}
+		.elLabel {
+			padding:5px 20px 5px 20px;
+			min-width:70px;
+		}
+		.el {
+			min-width:640px;
+			text-align:right;
+			padding-right:30px;
+		}
+		.exmButton {
+			min-width: 150px;	
+		}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.euclidianwrapper}" >
+		<g:HorizontalPanel styleName="{style.base64wrapper}">
+			<g:Label styleName="{style.base64Label}">View ggb files from the clipboard, or drop ggb files in the worksheet</g:Label>
+			<g:Button ui:field="button" styleName="{style.base64button}">Open TextBox</g:Button>
+		</g:HorizontalPanel>
+		<ggjs:EuclidianView styleName="{style.euclidianview}" ui:field="euclidianview">
+		</ggjs:EuclidianView>
+		<g:HorizontalPanel styleName="{style.csbWrapper}">
+			<g:Label styleName="{style.commandLabel}">Command: </g:Label>
+			<g:TextBox ui:field="commandSuggestBox" styleName="{style.commandSuggestBox}"></g:TextBox>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.elWrapper}">
+			<g:Label styleName="{style.elLabel}">Examples: </g:Label>
+			<!--<g:ListBox ui:field="examplesList" styleName="{style.el}"></g:ListBox> -->
+			<g:Button styleName="{style.exmButton}" ui:field="exm1">Euler Line version 2</g:Button>
+			<g:Button styleName="{style.exmButton}"  ui:field="exm2">Circles</g:Button>
+			<g:Button styleName="{style.exmButton}"  ui:field="exm3">Circle aroud a triangle</g:Button>
+			<!--<g:Button styleName="{style.exmButton}"  ui:field="exm4">Euler line</g:Button>-->		
+		</g:HorizontalPanel>
+	</g:VerticalPanel>
+	
+</ui:UiBinder> 

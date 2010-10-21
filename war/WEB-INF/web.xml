@@ -8,7 +8,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>xmlHandlingServlet</servlet-name>
-    <servlet-class>org.geogebra.ggjsviewer.server.XmlHandlingServiceImpl</servlet-class>
+    <servlet-class>geogebra.geogebramobile.server.XmlHandlingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
