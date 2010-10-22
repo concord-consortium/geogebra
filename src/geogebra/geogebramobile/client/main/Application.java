@@ -81,11 +81,13 @@ public class Application extends BaseApplication {
 	}
 	
 	private void initEuclidianView() {
-		GgjsViewerWrapper wrapper = new GgjsViewerWrapper();
-		RootPanel.get().add(wrapper);
+		//AGGgjsViewerWrapper wrapper = new GgjsViewerWrapper();
+		euclidianview = new EuclidianView(640,300);
+		RootPanel.get("ggjsviewer_div").add(euclidianview);
+		//AGRootPanel.get().add(wrapper);
 		euclidiancontroller = new EuclidianController(kernel);
 		euclidiancontroller.setApplication(this);
-		euclidianview = wrapper.getEuclidianView();
+		//AGeuclidianview = wrapper.getEuclidianView();
 		kernel.notifyAddAll(euclidianview);
 		kernel.attach(euclidianview);
 		euclidianview.setKernel(kernel);

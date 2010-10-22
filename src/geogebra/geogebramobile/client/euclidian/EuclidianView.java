@@ -450,6 +450,39 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 		
 	}
 	
+	public EuclidianView(EuclidianController ec,boolean[] showAxis, boolean showGrid) {
+		
+	}
+	
+	public EuclidianView(int ewidth, int eheight ) {
+		super(ewidth,eheight);
+		getElement().setAttribute("id", "eview");
+		width = getCoordWidth();
+		height = getCoordHeight();
+		  drawLayers = new DrawableList[MAX_LAYERS+1];
+		  for (int k=0; k <= MAX_LAYERS ; k++) {
+		     drawLayers[k] = new DrawableList();
+		  }
+
+		initView(false);
+		
+		//addMouseDownHandler(euclidianController);
+		
+		/*euclidianController.setEuclidianView(this);
+		kernel = new Kernel(new BaseApplication());
+		///kernel.attach(this);
+		attachView();
+		euclidianController.setKernel(kernel);*/
+		
+		
+		setLineWidth(1);
+		drawAxes();
+		hits = new Hits();
+		
+		
+		// TODO Auto-generated constructor stub
+	}
+	
 	final protected void clearBackground(/*AGGraphics2D g*/) {
 		setColor(bgColor);
 		fillRect(0, 0, width, height);
@@ -1008,10 +1041,8 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	}
 	
 	
-	public EuclidianView(EuclidianController ec,boolean[] showAxis, boolean showGrid) {
-		
-	}
 	
+
 	public Kernel getKernel() {
 		return kernel;
 	}
