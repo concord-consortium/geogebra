@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -52,8 +54,18 @@ public class Application extends BaseApplication {
 	
 	public Application() {
 		super();
+		int w = EuclidianView.DEFAULT_WIDTH;
+		int h = EuclidianView.DEFAULT_HEIGHT;
+		try {
+			Element container = RootPanel.get("geogebramobile_div").getElement();
+			Style style = container.getStyle();
+			w = Integer.parseInt(style.getWidth().substring(0,style.getWidth().length()-2));
+			h = Integer.parseInt(style.getHeight().substring(0, style.getHeight().length()-2));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		initKernel();	
-		initEuclidianView();
+		initEuclidianView(w,h);
 		initXmlHandler();
 		registerFileDropHandlers(xmlhandler);
 		xmlhandler.parseXml("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""+
@@ -80,10 +92,10 @@ public class Application extends BaseApplication {
 		xmlhandler.setApplication(this);
 	}
 	
-	private void initEuclidianView() {
+	private void initEuclidianView(int w, int h) {
 		//AGGgjsViewerWrapper wrapper = new GgjsViewerWrapper();
-		euclidianview = new EuclidianView(640,300);
-		RootPanel.get("ggjsviewer_div").add(euclidianview);
+		euclidianview = new EuclidianView(w,h);
+		RootPanel.get("geogebramobile_div").add(euclidianview);
 		//AGRootPanel.get().add(wrapper);
 		euclidiancontroller = new EuclidianController(kernel);
 		euclidiancontroller.setApplication(this);
