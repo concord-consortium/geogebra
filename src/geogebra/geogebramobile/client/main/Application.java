@@ -87,7 +87,7 @@ public class Application extends BaseApplication {
 					break;
 				}
 			}
-			GWT.log(decodedBase64String);
+			//GWT.log(decodedBase64String);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -95,7 +95,15 @@ public class Application extends BaseApplication {
 		initEuclidianView(w,h);
 		initXmlHandler();
 		registerFileDropHandlers(xmlhandler);
-		xmlhandler.parseXml(defaultJsString);
+		if (decodedBase64String != null && !decodedBase64String.equals("")) {
+			String Base64DecodedFile = Base64.decode(decodedBase64String);
+			JSXReadBase64AsFile(Base64DecodedFile);
+		} else {
+			xmlhandler.parseXml(defaultJsString);	
+		}
+		
+		
+
 	}
 	
 	private void initKernel() {
@@ -367,7 +375,7 @@ public class Application extends BaseApplication {
 		JXG.Util.Unzip = function (barray){
 		    var outputArr = [],
 		        output = "",
-		        debug = false,
+		        debug = true,
 		        gpflags,
 		        files = 0,
 		        unzipped = [],
@@ -545,7 +553,7 @@ public class Application extends BaseApplication {
 		        var curplace = Places[treepos];
 		        var tmp;
 		        if (debug)
-		    		document.write("<br>len:"+len+" treepos:"+treepos);
+		    		console.log("<br>len:"+len+" treepos:"+treepos);
 		        if(len==17) { //war 17
 		            return -1;
 		        }
@@ -554,16 +562,16 @@ public class Application extends BaseApplication {
 		    	
 		        tmp = IsPat();
 		        if (debug)
-		        	document.write("<br>IsPat "+tmp);
+		        	console.log("<br>IsPat "+tmp);
 		        if(tmp >= 0) {
 		            curplace.b0 = tmp;    
 		            if (debug)
-		            	document.write("<br>b0 "+curplace.b0);
+		            	console.log("<br>b0 "+curplace.b0);
 		        } else {
 		       
 		        curplace.b0 = 0x8000;
 		        if (debug)
-		        	document.write("<br>b0 "+curplace.b0);
+		        	console.log("<br>b0 "+curplace.b0);
 		        if(Rec())
 		            return -1;
 		        }
@@ -571,13 +579,13 @@ public class Application extends BaseApplication {
 		        if(tmp >= 0) {
 		            curplace.b1 = tmp;   
 		            if (debug)
-		            	document.write("<br>b1 "+curplace.b1);
+		            	console.log("<br>b1 "+curplace.b1);
 		            curplace.jump = null;    
 		        } else {
 		           
 		            curplace.b1 = 0x8000;
 		            if (debug)
-		            	document.write("<br>b1 "+curplace.b1);
+		            	console.log("<br>b1 "+curplace.b1);
 		            curplace.jump = Places[treepos];
 		            curplace.jumppos = treepos;
 		            if(Rec())
@@ -591,7 +599,7 @@ public class Application extends BaseApplication {
 		        var i;
 		       
 		        if (debug)
-		        	document.write("currentTree "+currentTree+" numval "+numval+" lengths "+lengths+" show "+show);
+		        	console.log("currentTree "+currentTree+" numval "+numval+" lengths "+lengths+" show "+show);
 		        Places = currentTree;
 		        treepos=0;
 		        flens = lengths;
@@ -602,11 +610,11 @@ public class Application extends BaseApplication {
 		        if(Rec()) {
 		           
 		            if (debug)
-		            	alert("invalid huffman tree\n");
+		            	console.log("invalid huffman tree\n");
 		            return -1;
 		        }
 		        if (debug){
-		        	document.write('<br>Tree: '+Places.length);
+		        	console.log('<br>Tree: '+Places.length);
 		        	for (var a=0;a<32;a++){
 		            	document.write("Places["+a+"].b0="+Places[a].b0+"<br>");
 		            	document.write("Places["+a+"].b1="+Places[a].b1+"<br>");
@@ -627,11 +635,11 @@ public class Application extends BaseApplication {
 		        while(1) {
 		            b=readBit();
 		            if (debug)
-		            	document.write("b="+b);
+		            	console.log("b="+b);
 		            if(b) {
 		                if(!(X.b1 & 0x8000)){
 		                	if (debug)
-		                    	document.write("ret1");
+		                    	console.log("ret1");
 		                    return X.b1;    
 		                }
 		                X = X.jump;
@@ -646,7 +654,7 @@ public class Application extends BaseApplication {
 		            } else {
 		                if(!(X.b0 & 0x8000)){
 		                	if (debug)
-		                    	document.write("ret2");
+		                    	console.log("ret2");
 		                    return X.b0;    
 		                }
 		                //X++; //??????????????????
@@ -655,7 +663,7 @@ public class Application extends BaseApplication {
 		            }
 		        }
 		        if (debug)
-		        	document.write("ret3");
+		        	console.log("ret3");
 		        return -1;
 		    };
 		    
@@ -669,23 +677,23 @@ public class Application extends BaseApplication {
 		        switch(type) {
 		            case 0:
 		            	if (debug)
-		                	alert("Stored\n");
+		                	console.log("Stored\n");
 		                break;
 		            case 1:
 		            	if (debug)
-		                	alert("Fixed Huffman codes\n");
+		                	console.log("Fixed Huffman codes\n");
 		                break;
 		            case 2:
 		            	if (debug)
-		                	alert("Dynamic Huffman codes\n");
+		                	console.log("Dynamic Huffman codes\n");
 		                break;
 		            case 3:
 		            	if (debug)
-		                	alert("Reserved block type!!\n");
+		                	console.log("Reserved block type!!\n");
 		                break;
 		            default:
 		            	if (debug)
-		                	alert("Unexpected value %d!\n", type);
+		                	console.log("Unexpected value %d!\n", type);
 		                break;
 		        }
 		
@@ -791,9 +799,9 @@ public class Application extends BaseApplication {
 		                return 1;
 		            }
 		            if (debug){
-		            	document.write("<br>distanceTree");
+		            	console.log("<br>distanceTree");
 		            	for(var a=0;a<distanceTree.length;a++){
-		                	document.write("<br>"+distanceTree[a].b0+" "+distanceTree[a].b1+" "+distanceTree[a].jump+" "+distanceTree[a].jumppos);
+		                	console.log("<br>"+distanceTree[a].b0+" "+distanceTree[a].b1+" "+distanceTree[a].jump+" "+distanceTree[a].jumppos);
 		                	
 		            	}
 		            }
@@ -804,12 +812,12 @@ public class Application extends BaseApplication {
 		            i = 0;
 		            var z=-1;
 		            if (debug)
-		            	document.write("<br>n="+n+" bits: "+bits+"<br>");
+		            	console.log("<br>n="+n+" bits: "+bits+"<br>");
 		            while(i < n) {
 		                z++;
 		                j = DecodeValue(distanceTree);
 		                if (debug)
-		                	document.write("<br>"+z+" i:"+i+" decode: "+j+"    bits "+bits+"<br>");
+		                	console.log("<br>"+z+" i:"+i+" decode: "+j+"    bits "+bits+"<br>");
 		                if(j<16) {    // length of code in bits (0..15)
 		                       ll[i++] = j;
 		                } else if(j==16) {    // repeat last length 3 to 6 times 
@@ -859,7 +867,7 @@ public class Application extends BaseApplication {
 		                return 1;
 		            }
 		            if (debug)
-		           		document.write("<br>literalTree");
+		           		console.log("<br>literalTree");
 		            while(1) {
 		                j = DecodeValue(literalTree);
 		                if(j >= 256) {        // In C64: if carry set
@@ -902,7 +910,9 @@ public class Application extends BaseApplication {
 			//alert(unzipped[0][1]);
 			for (i=0;i<unzipped.length;i++){
 				if(unzipped[i][1]==name) {
+					console.log(unzipped[i][0]);
 					return unzipped[i][0];
+					
 				}
 			}
 			
@@ -912,7 +922,7 @@ public class Application extends BaseApplication {
 		JXG.Util.Unzip.prototype.unzip = function() {
 			//convertToByteArray(input);
 			if (debug)
-				alert(bA);
+				console.log(bA);
 			
 			//alert(bA);
 			nextFile();
@@ -921,20 +931,20 @@ public class Application extends BaseApplication {
 		    
 		 function nextFile(){
 		 	if (debug)
-		 		alert("NEXTFILE");
+		 		console.log("NEXTFILE");
 		 	outputArr = [];
 		 	var tmp = [];
 		 	modeZIP = false;
 			tmp[0] = readByte();
 			tmp[1] = readByte();
 			if (debug)
-				alert("type: "+tmp[0]+" "+tmp[1]);
+				console.log("type: "+tmp[0]+" "+tmp[1]);
 			if (tmp[0] == parseInt("78",16) && tmp[1] == parseInt("da",16)){ //GZIP
 				if (debug)
-					alert("GEONExT-GZIP");
+					console.log("GEONExT-GZIP");
 				DeflateLoop();
 				if (debug)
-					alert(outputArr.join(''));
+					console.log(outputArr.join(''));
 				unzipped[files] = new Array(2);
 		    	unzipped[files][0] = outputArr.join('');
 		    	unzipped[files][1] = "geonext.gxt";
@@ -942,11 +952,11 @@ public class Application extends BaseApplication {
 			}
 			if (tmp[0] == parseInt("1f",16) && tmp[1] == parseInt("8b",16)){ //GZIP
 				if (debug)
-					alert("GZIP");
+					console.log("GZIP");
 				//DeflateLoop();
 				skipdir();
 				if (debug)
-					alert(outputArr.join(''));
+					console.log(outputArr.join(''));
 				unzipped[files] = new Array(2);
 		    	unzipped[files][0] = outputArr.join('');
 		    	unzipped[files][1] = "file";
@@ -961,17 +971,17 @@ public class Application extends BaseApplication {
 					tmp[0] = readByte();
 					tmp[1] = readByte();
 					if (debug)
-						alert("ZIP-Version: "+tmp[1]+" "+tmp[0]/10+"."+tmp[0]%10);
+						console.log("ZIP-Version: "+tmp[1]+" "+tmp[0]/10+"."+tmp[0]%10);
 					
 					gpflags = readByte();
 					gpflags |= (readByte()<<8);
 					if (debug)
-						alert("gpflags: "+gpflags);
+						console.log("gpflags: "+gpflags);
 					
 					var method = readByte();
 					method |= (readByte()<<8);
 					if (debug)
-						alert("method: "+method);
+						console.log("method: "+method);
 					
 					readByte();
 					readByte();
@@ -994,7 +1004,7 @@ public class Application extends BaseApplication {
 					size |= (readByte()<<24);
 					
 					if (debug)
-						alert("local CRC: "+crc+"\nlocal Size: "+size+"\nlocal CompSize: "+compSize);
+						console.log("local CRC: "+crc+"\nlocal Size: "+size+"\nlocal CompSize: "+compSize);
 					
 					var filelen = readByte();
 					filelen |= (readByte()<<8);
@@ -1003,7 +1013,7 @@ public class Application extends BaseApplication {
 					extralen |= (readByte()<<8);
 					
 					if (debug)
-						alert("filelen "+filelen);
+						console.log("filelen "+filelen);
 					i = 0;
 					nameBuf = [];
 					while (filelen--){ 
@@ -1014,7 +1024,7 @@ public class Application extends BaseApplication {
 							nameBuf[i++] = String.fromCharCode(c);
 					}
 					if (debug)
-						alert("nameBuf: "+nameBuf);
+						console.log("nameBuf: "+nameBuf);
 					
 					//nameBuf[i] = "\0";
 					if (!fileout)
@@ -1032,12 +1042,12 @@ public class Application extends BaseApplication {
 					if (size = 0 && fileOut.charAt(fileout.length-1)=="/"){
 						//skipdir
 						if (debug)
-							alert("skipdir");
+							console.log("skipdir");
 					}
 					if (method == 8){
 						DeflateLoop();
 						if (debug)
-							alert(outputArr.join(''));
+							console.log(outputArr.join(''));
 						unzipped[files] = new Array(2);
 						unzipped[files][0] = outputArr.join('');
 						//console.log(outputArr.join(''));
@@ -1085,7 +1095,7 @@ public class Application extends BaseApplication {
 				size |= (readByte()<<24);
 				
 				if (debug)
-					alert("CRC:");
+					console.log("CRC:");
 			}
 		
 			if (modeZIP)
@@ -1094,14 +1104,14 @@ public class Application extends BaseApplication {
 			tmp[0] = readByte();
 			if (tmp[0] != 8) {
 				if (debug)
-					alert("Unknown compression method!");
+					console.log("Unknown compression method!");
 		        return 0;	
 			}
 			
 			gpflags = readByte();
 			if (debug){
 				if ((gpflags & ~(parseInt("1f",16))))
-					alert("Unknown flags set!");
+					console.log("Unknown flags set!");
 			}
 			
 			readByte();
@@ -1117,7 +1127,7 @@ public class Application extends BaseApplication {
 				tmp[2] = readByte();
 				len = tmp[0] + 256*tmp[1];
 				if (debug)
-					alert("Extra field size: "+len);
+					console.log("Extra field size: "+len);
 				for (i=0;i<len;i++)
 					readByte();
 			}
@@ -1133,7 +1143,7 @@ public class Application extends BaseApplication {
 				}
 				//nameBuf[i] = "\0";
 				if (debug)
-					alert("original file name: "+nameBuf);
+					console.log("original file name: "+nameBuf);
 			}
 				
 			if ((gpflags & 16)){
@@ -1469,7 +1479,6 @@ public class Application extends BaseApplication {
 				reader.onloadend = function(e) {
 					if (reader.readyState === reader.DONE) {
 						var fileStr = reader.result;
-						//console.log(fileStr);
 						var bA = [];
         				var len = fileStr.length;
         				for (i=0;i<len;i++) 
@@ -1480,7 +1489,6 @@ public class Application extends BaseApplication {
         				fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
         				fileStr = JXG.Util.utf8Decode(fileStr);
     					fileStr = JXG.GeogebraReader.utf8replace(fileStr);
-						//console.log(fileStr);
 						x.@geogebra.geogebramobile.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);
 					}
 				};
@@ -1500,6 +1508,24 @@ public class Application extends BaseApplication {
 			e.stopPropagation();
 		},false);
 		
+	}-*/;
+	
+	public native void JSXReadBase64AsFile(String file) /*-{
+				var fileStr = file;
+				console.log("1:"+fileStr);
+				var bA = [];
+        		var len = fileStr.length;
+        		for (i=0;i<len;i++) 
+            		bA[i]=JXG.Util.asciiCharCodeAt(fileStr,i);
+        				
+        				// Unzip
+        		fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
+        		//console.log("2: "+fileStr);
+        		//fileStr = JXG.Util.Base64.decode(fileStr,true);
+        		//console.log("3: "+fileStr);
+    			//fileStr = JXG.GeogebraReader.utf8replace(fileStr);
+				//console.log("4: "+fileStr);
+				//x.@geogebra.geogebramobile.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);		
 	}-*/;
 
 	public String getRefreshViewImage() {
