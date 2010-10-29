@@ -96,8 +96,8 @@ public class Application extends BaseApplication {
 		initXmlHandler();
 		registerFileDropHandlers(xmlhandler);
 		if (decodedBase64String != null && !decodedBase64String.equals("")) {
-			String Base64DecodedFile = Base64.decode(decodedBase64String);
-			JSXReadBase64AsFile(Base64DecodedFile);
+			String Base64DecodedFile = decodedBase64String;
+			JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
 		} else {
 			xmlhandler.parseXml(defaultJsString);	
 		}
@@ -375,7 +375,7 @@ public class Application extends BaseApplication {
 		JXG.Util.Unzip = function (barray){
 		    var outputArr = [],
 		        output = "",
-		        debug = true,
+		        debug = false,
 		        gpflags,
 		        files = 0,
 		        unzipped = [],
@@ -910,7 +910,7 @@ public class Application extends BaseApplication {
 			//alert(unzipped[0][1]);
 			for (i=0;i<unzipped.length;i++){
 				if(unzipped[i][1]==name) {
-					console.log(unzipped[i][0]);
+					//console.log(unzipped[i][0]);
 					return unzipped[i][0];
 					
 				}
@@ -1479,6 +1479,7 @@ public class Application extends BaseApplication {
 				reader.onloadend = function(e) {
 					if (reader.readyState === reader.DONE) {
 						var fileStr = reader.result;
+						//console.log("1ggb:"+fileStr);
 						var bA = [];
         				var len = fileStr.length;
         				for (i=0;i<len;i++) 
@@ -1510,9 +1511,11 @@ public class Application extends BaseApplication {
 		
 	}-*/;
 	
-	public native void JSXReadBase64AsFile(String file) /*-{
-				var fileStr = file;
-				console.log("1:"+fileStr);
+	public native void JSXReadBase64AsFile(String file, MyXMLHandler x) /*-{
+				//AGvar fileStr = "UEsDBBQACAAIAI2UXT0AAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1s3VVLb9swDD6vv0LQvYkfSdECdou2uxTotkO2HnaTbcbWKkueJKdJf/0oyXYeGzbscVoujkia+vjxI53dbFtBNqANVzKn8SyiBGSpKi7rnPZ2fX5Jb67PshpUDYVmZK10y2xO01lCnb3n12dvMtOoF8KED3ni8JJTq3ugxHQaWGUaABvMayYM2lm/5YIzvftQfIHSmr0j5HiQXW/HJGVbPXIzHuf+vk5w+5ZveAWaCFXm9GKJyPHfE2jLSyZyuoiCJclpcuJEU+q8jdL8VUnrwvfJ12ghxPBXQEISZ8vmvs4M+lLwijPpivE4MIiQF17ZBiEkCaYEXjeIdXEZh2ylUrpa7YyFlmw/g1YIJ146nnfhlIaTQVx44TLyrsOTTwObFViLXTGEbcGM3NSaVxN57vBg7pTYmzrFpb1nne2172g6mFZ25/LjVdrhvZW1gMEWI+MNlM+F2q4CB2lI/XHX+Vc8nqK+V0Jpoh27SwwYnkV4+hgHdIqKfEzkI4YcLunkj68SH+GfRXj6KMFlgDYUHo9Vx9F4DTfEGRyLKMSRG8EKwMZS0ktuH8cDCuB5X6mLf9+3BQ7AoQSmlPE/SpnNT7STPYOWIIJCJDa2V70hG6fE0DqPo4KSt3gMjoEQ5pr1CQEEawW1hhF3GJ9Al/dGhyo8MWfzEYTDYBBraXENYD3W1eLG1OKIuH8Vs87iZkBACzgg1qvBi2ni5ZZOy0D5wT7hbU8wun+oDK8hJrqGoWXUvmA7HPPDcny+d6o6LpJJJMtXgNPWuQSuHR1AaKQd9Es6TOin4YBpT5Ah25ye42q7jA5/KMgdzuJsQclr2JH+lTBIbgN4EOnQ58DPL5i6+y+YimaXnppklia/x02p2pbJikjW4k2POOKeEO72PmGRkxJhseMpkNDb0cFCqiHBdzS7bTGxyOjxArENTqoEY9wsTVXO/7YV0Z83Yk9mOouOVbccqF0cm4MIvUivLk435E8KhK8yxJiwqXiL39CS29POzA9Xgf/0DZ/+629QSwcIP7TrUfwCAAAsCAAAUEsBAhQAFAAIAAgAjZRdPT+061H8AgAALAgAAAwAAAAAAAAAAAAAAAAAAAAAAGdlb2dlYnJhLnhtbFBLBQYAAAAAAQABADoAAAA2AwAAAAA=";
+				fileStr = file;
+				fileStr = JXG.Util.Base64.decode(fileStr,false);
+				//console.log("1base:"+fileStr);
 				var bA = [];
         		var len = fileStr.length;
         		for (i=0;i<len;i++) 
@@ -1521,11 +1524,11 @@ public class Application extends BaseApplication {
         				// Unzip
         		fileStr = (new JXG.Util.Unzip(bA)).unzipFile("geogebra.xml");
         		//console.log("2: "+fileStr);
-        		//fileStr = JXG.Util.Base64.decode(fileStr,true);
+        		
         		//console.log("3: "+fileStr);
-    			//fileStr = JXG.GeogebraReader.utf8replace(fileStr);
+    			fileStr = JXG.GeogebraReader.utf8replace(fileStr);
 				//console.log("4: "+fileStr);
-				//x.@geogebra.geogebramobile.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);		
+				x.@geogebra.geogebramobile.client.io.MyXMLHandler::parseXml(Ljava/lang/String;)(fileStr);		
 	}-*/;
 
 	public String getRefreshViewImage() {
