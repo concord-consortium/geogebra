@@ -30,6 +30,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.impl.DocumentRootImpl;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -58,28 +60,20 @@ public class Application extends BaseApplication {
 	
 	public Application() {
 		super();
-		int w = EuclidianView.DEFAULT_WIDTH;
-		int h = EuclidianView.DEFAULT_HEIGHT;
+		//Variables for parsing
+		Integer w = null;
+		Integer h = null;
+		Element noscript = null;
+		HTML applet = null;
 		String decodedBase64String = "";
-		String defaultJsString = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""+
-				"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"+
-		"<html \"xmlns=\"http://www.w3.org/1999/xhtml\">"+
-		"<head>"+
-		"<title>"+
-		"</title>"+
-		"<body>"+
-		"<script type=\"text/javascript\">"+
-		"loadBase64Unzipped('PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGdlb2dlYnJhIGZvcm1hdD0iMy4zIiB4c2k6bm9OYW1lc3BhY2VTY2hlbWFMb2NhdGlvbj0iaHR0cDovL3d3dy5nZW9nZWJyYS5vcmcvZ2diLnhzZCIgeG1sbnM9IiIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgPgo8Z3VpPgoJPHdpbmRvdyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgLz4JPHBlcnNwZWN0aXZlcz4KPHBlcnNwZWN0aXZlIGlkPSJ0bXAiPgoJPHBhbmVzPgoJCTxwYW5lIGxvY2F0aW9uPSIiIGRpdmlkZXI9IjAuMjUiIG9yaWVudGF0aW9uPSIxIiAvPgoJPC9wYW5lcz4KCTx2aWV3cz4KCQk8dmlldyBpZD0iMSIgdmlzaWJsZT0idHJ1ZSIgaW5mcmFtZT0iZmFsc2UiIGxvY2F0aW9uPSIxIiBzaXplPSI1ODgiIHdpbmRvdz0iMTAwLDEwMCw2MDAsNDAwIiAvPgoJCTx2aWV3IGlkPSIyIiB2aXNpYmxlPSJ0cnVlIiBpbmZyYW1lPSJmYWxzZSIgbG9jYXRpb249IjMiIHNpemU9IjIwMCIgd2luZG93PSIxMDAsMTAwLDI1MCw0MDAiIC8+CgkJPHZpZXcgaWQ9IjQiIHZpc2libGU9ImZhbHNlIiBpbmZyYW1lPSJmYWxzZSIgbG9jYXRpb249IiIgc2l6ZT0iMzAwIiB3aW5kb3c9IjEwMCwxMDAsNjAwLDQwMCIgLz4KCQk8dmlldyBpZD0iOCIgdmlzaWJsZT0iZmFsc2UiIGluZnJhbWU9ImZhbHNlIiBsb2NhdGlvbj0iIiBzaXplPSIzMDAiIHdpbmRvdz0iMTAwLDEwMCw2MDAsNDAwIiAvPgoJPC92aWV3cz4KCTx0b29sYmFyPjAgMzkgNTkgfHwgMSA1MDEgNSAxOSB8IDIgMTUgNDUgMTggLCA3IDM3IHwgNCAzIDggOSAsIDEzIDQ0ICwgNTggLCA0NyB8fCAxNiA1MSB8IDEwIDM0IDUzIDExICwgMjQgIDIwIDIyICwgMjEgMjMgfCA1NSA1NiA1NyAsIDEyIHx8IDM2IDQ2ICwgMzggNDkgNTAgfCAzMCAyOSA1NCAzMiAzMSAzMyB8IDI1IDUyIDYwIDYxICwgNjIgLCA2MyAsIDE3IDI2ICwgMTQgfHwgNDAgNDEgNDIgLCAyNyAyOCAzNSAsIDY8L3Rvb2xiYXI+Cgk8c2hvdyBheGVzPSJ0cnVlIiBncmlkPSJmYWxzZSIgLz4KCTxpbnB1dCBzaG93PSJ0cnVlIiBjbWQ9InRydWUiIHRvcD0iZmFsc2UiIC8+CjwvcGVyc3BlY3RpdmU+Cgk8L3BlcnNwZWN0aXZlcz4KPC9ndWk+CjxldWNsaWRpYW5WaWV3PgoJPHNpemUgIHdpZHRoPSI1ODgiIGhlaWdodD0iNDQxIi8+Cgk8Y29vcmRTeXN0ZW0geFplcm89IjIxNS4wIiB5WmVybz0iMzE1LjAiIHNjYWxlPSI1MC4wIiB5c2NhbGU9IjUwLjAiLz4KCTxldlNldHRpbmdzIGF4ZXM9InRydWUiIGdyaWQ9ImZhbHNlIiBncmlkSXNCb2xkPSJmYWxzZSIgcG9pbnRDYXB0dXJpbmc9IjMiIHJpZ2h0QW5nbGVTdHlsZT0iMSIgY2hlY2tib3hTaXplPSIxMyIgZ3JpZFR5cGU9IjAiLz4KCTxiZ0NvbG9yIHI9IjI1NSIgZz0iMjU1IiBiPSIyNTUiLz4KCTxheGVzQ29sb3Igcj0iMCIgZz0iMCIgYj0iMCIvPgoJPGdyaWRDb2xvciByPSIxOTIiIGc9IjE5MiIgYj0iMTkyIi8+Cgk8bGluZVN0eWxlIGF4ZXM9IjEiIGdyaWQ9IjEwIi8+Cgk8YXhpcyBpZD0iMCIgc2hvdz0idHJ1ZSIgbGFiZWw9IiIgdW5pdExhYmVsPSIiIHRpY2tTdHlsZT0iMSIgc2hvd051bWJlcnM9InRydWUiLz4KCTxheGlzIGlkPSIxIiBzaG93PSJ0cnVlIiBsYWJlbD0iIiB1bml0TGFiZWw9IiIgdGlja1N0eWxlPSIxIiBzaG93TnVtYmVycz0idHJ1ZSIvPgo8L2V1Y2xpZGlhblZpZXc+CjxrZXJuZWw+Cgk8Y29udGludW91cyB2YWw9ImZhbHNlIi8+Cgk8ZGVjaW1hbHMgdmFsPSIyIi8+Cgk8YW5nbGVVbml0IHZhbD0iZGVncmVlIi8+Cgk8YWxnZWJyYVN0eWxlIHZhbD0iMCIvPgoJPGNvb3JkU3R5bGUgdmFsPSIwIi8+Cjwva2VybmVsPgo8Y29uc3RydWN0aW9uIHRpdGxlPSIiIGF1dGhvcj0iIiBkYXRlPSIiPgo8ZWxlbWVudCB0eXBlPSJwb2ludCIgbGFiZWw9IkEiPgoJPHNob3cgb2JqZWN0PSJ0cnVlIiBsYWJlbD0idHJ1ZSIvPgoJPG9iakNvbG9yIHI9IjAiIGc9IjAiIGI9IjI1NSIgYWxwaGE9IjAuMCIvPgoJPGxheWVyIHZhbD0iMCIvPgoJPGxhYmVsTW9kZSB2YWw9IjAiLz4KCTxhbmltYXRpb24gc3RlcD0iMC4xIiBzcGVlZD0iMSIgdHlwZT0iMCIgcGxheWluZz0iZmFsc2UiLz4KCTxjb29yZHMgeD0iMy4wIiB5PSIzLjAiIHo9IjEuMCIvPgoJPHBvaW50U2l6ZSB2YWw9IjMiLz4KCTxwb2ludFN0eWxlIHZhbD0iMCIvPgo8L2VsZW1lbnQ+CjxlbGVtZW50IHR5cGU9InBvaW50IiBsYWJlbD0iQiI+Cgk8c2hvdyBvYmplY3Q9InRydWUiIGxhYmVsPSJ0cnVlIi8+Cgk8b2JqQ29sb3Igcj0iMCIgZz0iMCIgYj0iMjU1IiBhbHBoYT0iMC4wIi8+Cgk8bGF5ZXIgdmFsPSIwIi8+Cgk8bGFiZWxNb2RlIHZhbD0iMCIvPgoJPGFuaW1hdGlvbiBzdGVwPSIwLjEiIHNwZWVkPSIxIiB0eXBlPSIwIiBwbGF5aW5nPSJmYWxzZSIvPgoJPGNvb3JkcyB4PSItMC4xOCIgeT0iNC40IiB6PSIxLjAiLz4KCTxwb2ludFNpemUgdmFsPSIzIi8+Cgk8cG9pbnRTdHlsZSB2YWw9IjAiLz4KPC9lbGVtZW50Pgo8ZWxlbWVudCB0eXBlPSJwb2ludCIgbGFiZWw9IkMiPgoJPHNob3cgb2JqZWN0PSJ0cnVlIiBsYWJlbD0idHJ1ZSIvPgoJPG9iakNvbG9yIHI9IjAiIGc9IjAiIGI9IjI1NSIgYWxwaGE9IjAuMCIvPgoJPGxheWVyIHZhbD0iMCIvPgoJPGxhYmVsTW9kZSB2YWw9IjAiLz4KCTxhbmltYXRpb24gc3RlcD0iMC4xIiBzcGVlZD0iMSIgdHlwZT0iMCIgcGxheWluZz0iZmFsc2UiLz4KCTxjb29yZHMgeD0iLTEuMDIiIHk9Ii0wLjQ0IiB6PSIxLjAiLz4KCTxwb2ludFNpemUgdmFsPSIzIi8+Cgk8cG9pbnRTdHlsZSB2YWw9IjAiLz4KPC9lbGVtZW50Pgo8Y29tbWFuZCBuYW1lPSJQb2x5Z29uIj4KCTxpbnB1dCBhMD0iQSIgYTE9IkIiIGEyPSJDIi8+Cgk8b3V0cHV0IGEwPSJwb2x5MSIgYTE9ImMiIGEyPSJhIiBhMz0iYiIvPgo8L2NvbW1hbmQ+CjxlbGVtZW50IHR5cGU9InBvbHlnb24iIGxhYmVsPSJwb2x5MSI+Cgk8c2hvdyBvYmplY3Q9InRydWUiIGxhYmVsPSJmYWxzZSIvPgoJPG9iakNvbG9yIHI9IjE1MyIgZz0iNTEiIGI9IjAiIGFscGhhPSIwLjEiLz4KCTxsYXllciB2YWw9IjAiLz4KCTxsYWJlbE1vZGUgdmFsPSIwIi8+CjwvZWxlbWVudD4KPGVsZW1lbnQgdHlwZT0ic2VnbWVudCIgbGFiZWw9ImMiPgoJPHNob3cgb2JqZWN0PSJ0cnVlIiBsYWJlbD0idHJ1ZSIvPgoJPG9iakNvbG9yIHI9IjE1MyIgZz0iNTEiIGI9IjAiIGFscGhhPSIwLjAiLz4KCTxsYXllciB2YWw9IjAiLz4KCTxsYWJlbE1vZGUgdmFsPSIwIi8+Cgk8Y29vcmRzIHg9Ii0xLjQwMDAwMDAwMDAwMDAwMDQiIHk9Ii0zLjE4IiB6PSIxMy43NDAwMDAwMDAwMDAwMDIiLz4KCTxsaW5lU3R5bGUgdGhpY2tuZXNzPSIyIiB0eXBlPSIwIi8+Cgk8ZXFuU3R5bGUgc3R5bGU9ImltcGxpY2l0Ii8+Cgk8b3V0bHlpbmdJbnRlcnNlY3Rpb25zIHZhbD0iZmFsc2UiLz4KCTxrZWVwVHlwZU9uVHJhbnNmb3JtIHZhbD0idHJ1ZSIvPgo8L2VsZW1lbnQ+CjxlbGVtZW50IHR5cGU9InNlZ21lbnQiIGxhYmVsPSJhIj4KCTxzaG93IG9iamVjdD0idHJ1ZSIgbGFiZWw9InRydWUiLz4KCTxvYmpDb2xvciByPSIxNTMiIGc9IjUxIiBiPSIwIiBhbHBoYT0iMC4wIi8+Cgk8bGF5ZXIgdmFsPSIwIi8+Cgk8bGFiZWxNb2RlIHZhbD0iMCIvPgoJPGNvb3JkcyB4PSI0Ljg0MDAwMDAwMDAwMDAwMSIgeT0iLTAuODQwMDAwMDAwMDAwMDAwMSIgej0iNC41NjcyMDAwMDAwMDAwMDEiLz4KCTxsaW5lU3R5bGUgdGhpY2tuZXNzPSIyIiB0eXBlPSIwIi8+Cgk8ZXFuU3R5bGUgc3R5bGU9ImltcGxpY2l0Ii8+Cgk8b3V0bHlpbmdJbnRlcnNlY3Rpb25zIHZhbD0iZmFsc2UiLz4KCTxrZWVwVHlwZU9uVHJhbnNmb3JtIHZhbD0idHJ1ZSIvPgo8L2VsZW1lbnQ+CjxlbGVtZW50IHR5cGU9InNlZ21lbnQiIGxhYmVsPSJiIj4KCTxzaG93IG9iamVjdD0idHJ1ZSIgbGFiZWw9InRydWUiLz4KCTxvYmpDb2xvciByPSIxNTMiIGc9IjUxIiBiPSIwIiBhbHBoYT0iMC4wIi8+Cgk8bGF5ZXIgdmFsPSIwIi8+Cgk8bGFiZWxNb2RlIHZhbD0iMCIvPgoJPGNvb3JkcyB4PSItMy40NCIgeT0iNC4wMiIgej0iLTEuNzQiLz4KCTxsaW5lU3R5bGUgdGhpY2tuZXNzPSIyIiB0eXBlPSIwIi8+Cgk8ZXFuU3R5bGUgc3R5bGU9ImltcGxpY2l0Ii8+Cgk8b3V0bHlpbmdJbnRlcnNlY3Rpb25zIHZhbD0iZmFsc2UiLz4KCTxrZWVwVHlwZU9uVHJhbnNmb3JtIHZhbD0idHJ1ZSIvPgo8L2VsZW1lbnQ+Cjxjb21tYW5kIG5hbWU9IkxpbmVCaXNlY3RvciI+Cgk8aW5wdXQgYTA9IkIiIGExPSJBIi8+Cgk8b3V0cHV0IGEwPSJkIi8+CjwvY29tbWFuZD4KPGVsZW1lbnQgdHlwZT0ibGluZSIgbGFiZWw9ImQiPgoJPHNob3cgb2JqZWN0PSJ0cnVlIiBsYWJlbD0idHJ1ZSIvPgoJPG9iakNvbG9yIHI9IjAiIGc9IjAiIGI9IjAiIGFscGhhPSIwLjAiLz4KCTxsYXllciB2YWw9IjAiLz4KCTxsYWJlbE1vZGUgdmFsPSIwIi8+Cgk8Y29vcmRzIHg9Ii0zLjE4IiB5PSIxLjQwMDAwMDAwMDAwMDAwMDQiIHo9Ii0wLjY5NjIwMDAwMDAwMDAwMTkiLz4KCTxsaW5lU3R5bGUgdGhpY2tuZXNzPSIyIiB0eXBlPSIwIi8+Cgk8ZXFuU3R5bGUgc3R5bGU9ImltcGxpY2l0Ii8+CjwvZWxlbWVudD4KPGNvbW1hbmQgbmFtZT0iTGluZUJpc2VjdG9yIj4KCTxpbnB1dCBhMD0iQSIgYTE9IkMiLz4KCTxvdXRwdXQgYTA9ImUiLz4KPC9jb21tYW5kPgo8ZWxlbWVudCB0eXBlPSJsaW5lIiBsYWJlbD0iZSI+Cgk8c2hvdyBvYmplY3Q9InRydWUiIGxhYmVsPSJ0cnVlIi8+Cgk8b2JqQ29sb3Igcj0iMCIgZz0iMCIgYj0iMCIgYWxwaGE9IjAuMCIvPgoJPGxheWVyIHZhbD0iMCIvPgoJPGxhYmVsTW9kZSB2YWw9IjAiLz4KCTxjb29yZHMgeD0iNC4wMiIgeT0iMy40NCIgej0iLTguMzgzIi8+Cgk8bGluZVN0eWxlIHRoaWNrbmVzcz0iMiIgdHlwZT0iMCIvPgoJPGVxblN0eWxlIHN0eWxlPSJpbXBsaWNpdCIvPgo8L2VsZW1lbnQ+Cjxjb21tYW5kIG5hbWU9IkxpbmVCaXNlY3RvciI+Cgk8aW5wdXQgYTA9IkIiIGExPSJDIi8+Cgk8b3V0cHV0IGEwPSJmIi8+CjwvY29tbWFuZD4KPGVsZW1lbnQgdHlwZT0ibGluZSIgbGFiZWw9ImYiPgoJPHNob3cgb2JqZWN0PSJ0cnVlIiBsYWJlbD0idHJ1ZSIvPgoJPG9iakNvbG9yIHI9IjAiIGc9IjAiIGI9IjAiIGFscGhhPSIwLjAiLz4KCTxsYXllciB2YWw9IjAiLz4KCTxsYWJlbE1vZGUgdmFsPSIwIi8+Cgk8Y29vcmRzIHg9IjAuODQwMDAwMDAwMDAwMDAwMSIgeT0iNC44NDAwMDAwMDAwMDAwMDEiIHo9Ii05LjA3OTIwMDAwMDAwMDAwNCIvPgoJPGxpbmVTdHlsZSB0aGlja25lc3M9IjIiIHR5cGU9IjAiLz4KCTxlcW5TdHlsZSBzdHlsZT0iaW1wbGljaXQiLz4KPC9lbGVtZW50Pgo8Y29tbWFuZCBuYW1lPSJJbnRlcnNlY3QiPgoJPGlucHV0IGEwPSJlIiBhMT0iZiIvPgoJPG91dHB1dCBhMD0iRCIvPgo8L2NvbW1hbmQ+CjxlbGVtZW50IHR5cGU9InBvaW50IiBsYWJlbD0iRCI+Cgk8c2hvdyBvYmplY3Q9InRydWUiIGxhYmVsPSJ0cnVlIi8+Cgk8b2JqQ29sb3Igcj0iNjQiIGc9IjY0IiBiPSI2NCIgYWxwaGE9IjAuMCIvPgoJPGxheWVyIHZhbD0iMCIvPgoJPGxhYmVsTW9kZSB2YWw9IjAiLz4KCTxjb29yZHMgeD0iOS4zNDEyNzE5OTk5OTk5OSIgeT0iMjkuNDU2NjY0MDAwMDAwMDEiIHo9IjE2LjU2NzIiLz4KCTxwb2ludFNpemUgdmFsPSIzIi8+Cgk8cG9pbnRTdHlsZSB2YWw9IjAiLz4KPC9lbGVtZW50Pgo8Y29tbWFuZCBuYW1lPSJDaXJjbGUiPgoJPGlucHV0IGEwPSJEIiBhMT0iQiIvPgoJPG91dHB1dCBhMD0iZyIvPgo8L2NvbW1hbmQ+CjxlbGVtZW50IHR5cGU9ImNvbmljIiBsYWJlbD0iZyI+Cgk8c2hvdyBvYmplY3Q9InRydWUiIGxhYmVsPSJ0cnVlIi8+Cgk8b2JqQ29sb3Igcj0iMCIgZz0iMCIgYj0iMCIgYWxwaGE9IjAuMCIvPgoJPGxheWVyIHZhbD0iMCIvPgoJPGxhYmVsTW9kZSB2YWw9IjAiLz4KCTxsaW5lU3R5bGUgdGhpY2tuZXNzPSIyIiB0eXBlPSIwIi8+Cgk8ZWlnZW52ZWN0b3JzICB4MD0iMS4wIiB5MD0iMC4wIiB6MD0iMS4wIiB4MT0iLTAuMCIgeTE9IjEuMCIgejE9IjEuMCIvPgoJPG1hdHJpeCBBMD0iMS4wIiBBMT0iMS4wIiBBMj0iLTMuOTQ4ODg1OTkxNTk3ODUyIiBBMz0iMC4wIiBBND0iLTAuNTYzODQxMzI1MDI3NzY1MSIgQTU9Ii0xLjc3ODAxMTAwOTcwNTkyNTYiLz4KCTxlcW5TdHlsZSBzdHlsZT0ic3BlY2lmaWMiLz4KPC9lbGVtZW50Pgo8L2NvbnN0cnVjdGlvbj4KPC9nZW9nZWJyYT4=');"+
-		"</script>"+
-		"</body>"+
-		"</html>";
 		try {
+			//parsing begins. Hope, we have a clean export page, and everything can be found
 			Element container = RootPanel.get("geogebramobile_div").getElement();
 			Style style = container.getStyle();
 			w = Integer.parseInt(style.getWidth().substring(0,style.getWidth().length()-2));
 			h = Integer.parseInt(style.getHeight().substring(0, style.getHeight().length()-2));
-			Element noscript = RootPanel.get("ggbappletwrapper").getElement();
-			HTML applet = new HTML(noscript.getInnerText());
+			noscript = RootPanel.get("ggbappletwrapper").getElement();
+			applet = new HTML(noscript.getInnerText());
 			NodeList<com.google.gwt.dom.client.Element> params = applet.getElement().getElementsByTagName("param");
 			for (int i=0; i<params.getLength();i++) {
 				if (params.getItem(i).getAttribute("name").equalsIgnoreCase("ggbbase64")) {
@@ -87,23 +81,30 @@ public class Application extends BaseApplication {
 					break;
 				}
 			}
-			//GWT.log(decodedBase64String);
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
-		initKernel();	
-		initEuclidianView(w,h);
-		initXmlHandler();
-		registerFileDropHandlers(xmlhandler);
-		if (decodedBase64String != null && !decodedBase64String.equals("")) {
-			String Base64DecodedFile = decodedBase64String;
-			JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
+		if (!isCanvasEnabled()) {
+			//do we have canvas? If not, init here, falling back for appelt
+			//Window.alert("Only Browsers with HTML5 <canvas> element supported");
+			if (applet != null) {
+				//clean the <noscript>
+				noscript.getParentElement().removeChild(noscript);
+				//attach the applet
+				RootPanel.getBodyElement().appendChild(applet.getElement());
+			}
+		} else if (w != null && h != null && decodedBase64String != null){
+			//normal behavior, everything is right
+			initKernel();	
+			initEuclidianView(w,h);
+			initXmlHandler();
+			registerFileDropHandlers(xmlhandler);
+			if (decodedBase64String != null && !decodedBase64String.equals("")) {
+				String Base64DecodedFile = decodedBase64String;
+				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
+			}
 		} else {
-			xmlhandler.parseXml(defaultJsString);	
+			//We will use it as an js library, so don't init anything for now
 		}
-		
-		
-
 	}
 	
 	private void initKernel() {
@@ -1579,6 +1580,10 @@ public class Application extends BaseApplication {
 		removeSelectedGeo(geo, true);
 		
 	}
+	
+	public static native boolean isCanvasEnabled() /*-{
+		return !!$doc.createElement('canvas').getContext;
+	}-*/;
 	
 	
 
