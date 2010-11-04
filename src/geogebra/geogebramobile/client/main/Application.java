@@ -64,6 +64,7 @@ public class Application extends BaseApplication {
 		Integer w = null;
 		Integer h = null;
 		Element noscript = null;
+		String base64SpanInnerText = "";
 		HTML applet = null;
 		String decodedBase64String = "";
 		try {
@@ -73,31 +74,28 @@ public class Application extends BaseApplication {
 			w = Integer.parseInt(style.getWidth().substring(0,style.getWidth().length()-2));
 			h = Integer.parseInt(style.getHeight().substring(0, style.getHeight().length()-2));
 			noscript = RootPanel.get("ggbappletwrapper").getElement();
-			applet = new HTML(noscript.getInnerText());
-			NodeList<com.google.gwt.dom.client.Element> params = applet.getElement().getElementsByTagName("param");
-			for (int i=0; i<params.getLength();i++) {
-				if (params.getItem(i).getAttribute("name").equalsIgnoreCase("ggbbase64")) {
-					decodedBase64String = params.getItem(i).getAttribute("value");
-					break;
-				}
-			}
+			base64SpanInnerText = container.getElementsByTagName("span").getItem(0).getInnerText();
+			//log("bodysub:"+RootPanel.getBodyElement().getInnerText().substring(RootPanel.getBodyElement().getInnerText().indexOf("\"UEs")+1,RootPanel.getBodyElement().getInnerText().indexOf("=\"/>")));
+			//log("ninnertext:"+noscriptInnerText+": "+noscript.getInnerHTML());
+			//log("body"+RootPanel.getBodyElement().getInnerText());
+			decodedBase64String = base64SpanInnerText;
 		} catch (Exception e) {
 		}
 		if (!isCanvasEnabled()) {
 			//do we have canvas? If not, init here, falling back for appelt
 			//Window.alert("Only Browsers with HTML5 <canvas> element supported");
-			if (applet != null) {
+				applet = new HTML(noscript.getInnerText());
 				//clean the <noscript>
 				noscript.getParentElement().removeChild(noscript);
 				//attach the applet
 				RootPanel.getBodyElement().appendChild(applet.getElement());
-			}
 		} else if (w != null && h != null && decodedBase64String != null){
 			//normal behavior, everything is right
 			initKernel();	
 			initEuclidianView(w,h);
 			initXmlHandler();
 			registerFileDropHandlers(xmlhandler);
+			//log("inited: "+decodedBase64String);
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
@@ -1583,6 +1581,10 @@ public class Application extends BaseApplication {
 	
 	public static native boolean isCanvasEnabled() /*-{
 		return !!$doc.createElement('canvas').getContext;
+	}-*/;
+	
+	public static native void log(String log) /*-{
+		console.log(log);
 	}-*/;
 	
 	
