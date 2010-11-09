@@ -2895,6 +2895,141 @@ final public void setHits(Point p){
 		return getOffsetHeight();
 	}
 	
+	/**
+	 * returns settings in XML format
+	 */
+	public void getXML(StringBuilder sb) {
+		sb.append("<euclidianView>\n");
+		
+		if (width > MIN_WIDTH && height > MIN_HEIGHT) {
+			sb.append("\t<size ");
+			sb.append(" width=\"");
+			sb.append(width);
+			sb.append("\"");
+			sb.append(" height=\"");
+			sb.append(height);
+			sb.append("\"");
+			sb.append("/>\n");
+		}
+
+		sb.append("\t<coordSystem");
+		sb.append(" xZero=\"");
+		sb.append(xZero);
+		sb.append("\"");
+		sb.append(" yZero=\"");
+		sb.append(yZero);
+		sb.append("\"");
+		sb.append(" scale=\"");
+		sb.append(xscale);
+		sb.append("\"");
+		sb.append(" yscale=\"");
+		sb.append(yscale);
+		sb.append("\"");
+		sb.append("/>\n");
+
+		// NOTE: the attribute "axes" for the visibility state of
+		//  both axes is no longer needed since V3.0.
+		//  Now there are special axis tags, see below.
+		sb.append("\t<evSettings axes=\"");
+		sb.append(showAxes[0] || showAxes[1]);
+		sb.append("\" grid=\"");		
+		sb.append(showGrid);
+		sb.append("\" gridIsBold=\"");	// 
+		sb.append(gridIsBold);			// Michael Borcherds 2008-04-11
+		sb.append("\" pointCapturing=\"");
+		sb.append(pointCapturingMode);
+		sb.append("\" rightAngleStyle=\"");
+		sb.append(rightAngleStyle);
+		
+		sb.append("\" checkboxSize=\"");
+		sb.append(booleanSize); // Michael Borcherds 2008-05-12
+
+		sb.append("\" gridType=\"");
+		sb.append(getGridType()); //		 cartesian/isometric/polar
+
+
+		sb.append("\"/>\n");
+
+		// background color
+		sb.append("\t<bgColor r=\"");
+		sb.append(bgColor.toString());
+		sb.append("\" g=\"");
+		sb.append(bgColor.toString());
+		sb.append("\" b=\"");
+		sb.append(bgColor.toString());
+		sb.append("\"/>\n");
+		// axes color
+		sb.append("\t<axesColor r=\"");
+		sb.append(axesColor.toString());
+		sb.append("\" g=\"");
+		sb.append(axesColor.toString());
+		sb.append("\" b=\"");
+		sb.append(axesColor.toString());
+		sb.append("\"/>\n");
+
+		// grid color
+		sb.append("\t<gridColor r=\"");
+		sb.append(gridColor.toString());
+		sb.append("\" g=\"");
+		sb.append(gridColor.toString());
+		sb.append("\" b=\"");
+		sb.append(gridColor.toString());
+		sb.append("\"/>\n");
+
+		// axes line style
+		sb.append("\t<lineStyle axes=\"");
+		sb.append(axesLineType);
+		sb.append("\" grid=\"");
+		sb.append(gridLineStyle);
+		sb.append("\"/>\n");
+
+		// axis settings
+		for (int i = 0; i < 2; i++) {
+			sb.append("\t<axis id=\"");
+			sb.append(i);
+			sb.append("\" show=\"");
+			sb.append(showAxes[i]);
+			sb.append("\" label=\"");
+			sb.append(axesLabels[i] == null ? "" : axesLabels[i]);
+			sb.append("\" unitLabel=\"");
+			sb.append(axesUnitLabels[i] == null ? "" : axesUnitLabels[i]);
+			sb.append("\" tickStyle=\"");
+			sb.append(axesTickStyles[i]);
+			sb.append("\" showNumbers=\"");
+			sb.append(showAxesNumbers[i]);
+
+			// the tick distance should only be saved if
+			// it isn't calculated automatically
+			if (!automaticAxesNumberingDistances[i]) {
+				sb.append("\" tickDistance=\"");
+				sb.append(axesNumberingDistances[i]);
+			}
+			
+			//  axis crossing values 		
+			sb.append("\" axisCross=\"");
+			sb.append(axisCross[i]);
+
+			// positive direction only flags
+			sb.append("\" positiveAxis=\"");
+			sb.append(positiveAxes[i]);
+
+			sb.append("\"/>\n");
+		}
+
+		// grid distances
+		if (!automaticGridDistance || 
+				// compatibility to v2.7:
+			automaticGridDistanceFactor != DEFAULT_GRID_DIST_FACTOR) 
+		{
+			sb.append("\t<grid distX=\"");
+			sb.append(gridDistances[0]);
+			sb.append("\" distY=\"");
+			sb.append(gridDistances[1]);
+			sb.append("\"/>\n");
+		}
+
+		sb.append("</euclidianView>\n");
+	}
 	
 	
 	

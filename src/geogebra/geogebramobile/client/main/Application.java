@@ -1596,6 +1596,7 @@ public class Application extends BaseApplication {
 		return myXMLio.getFullXML();
 	}
 	
+	
 	public String getCompleteUserInterfaceXML(boolean asPreference) {
 		StringBuilder sb = new StringBuilder();
 
@@ -1606,9 +1607,9 @@ public class Application extends BaseApplication {
 		getEuclidianView().getXML(sb);
 
 		// save spreadsheetView settings
-		if (getGuiManager().hasSpreadsheetView()){
+		/*AGif (getGuiManager().hasSpreadsheetView()){
 			getGuiManager().getSpreadsheetViewXML(sb);
-		}
+		}*/
 		
 		// coord style, decimal places settings etc
 		kernel.getKernelXML(sb);
@@ -1672,7 +1673,7 @@ public class Application extends BaseApplication {
 	}
 	
 	public String getConsProtocolXML() {
-		if (guiManager == null)
+	/*AG	if (guiManager == null)
 			return "";
 
 		StringBuilder sb = new StringBuilder();
@@ -1681,8 +1682,9 @@ public class Application extends BaseApplication {
 		if (getGuiManager().isUsingConstructionProtocol()) {
 			getGuiManager().getConsProtocolXML(sb);
 		}
-
-		return sb.toString();
+		
+		return sb.toString();*/
+		return "";
 	}
 	
 	

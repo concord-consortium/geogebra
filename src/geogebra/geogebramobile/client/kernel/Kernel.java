@@ -6616,6 +6616,63 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
 			return ((GeoGebraCAS) ggbCAS).isVariableBound(var);
 		}
 	}	
+	
+	/**
+	 * Returns the kernel settings in XML format.
+	 */
+	public void getKernelXML(StringBuilder sb) {
+	
+		// kernel settings
+		sb.append("<kernel>\n");
+	
+		// continuity: true or false, since V3.0
+		sb.append("\t<continuous val=\"");
+		sb.append(isContinuous());
+		sb.append("\"/>\n");
+		
+		if (useSignificantFigures) {
+			// significant figures
+			sb.append("\t<significantfigures val=\"");
+			sb.append(getPrintFigures());
+			sb.append("\"/>\n");			
+		}
+		else
+		{
+			// decimal places
+			sb.append("\t<decimals val=\"");
+			sb.append(getPrintDecimals());
+			sb.append("\"/>\n");
+		}
+		
+		// angle unit
+		sb.append("\t<angleUnit val=\"");
+		sb.append(angleUnit == Kernel.ANGLE_RADIANT ? "radiant" : "degree");
+		sb.append("\"/>\n");
+		
+		// algebra style
+		sb.append("\t<algebraStyle val=\"");
+		sb.append(algebraStyle);
+		sb.append("\"/>\n");
+		
+		// coord style
+		sb.append("\t<coordStyle val=\"");
+		sb.append(getCoordStyle());
+		sb.append("\"/>\n");
+		
+		// animation
+		if (isAnimationRunning()) {
+			sb.append("\t<startAnimation val=\"");
+			sb.append(isAnimationRunning());
+			sb.append("\"/>\n");
+		}
+	
+		sb.append("</kernel>\n");
+	}
+	
+	final public int getPrintDecimals() {
+		//AGreturn nf.getMaximumFractionDigits();
+		return 2; //ONly for debug!
+	}
 
 
 }
