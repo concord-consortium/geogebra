@@ -46,4 +46,11 @@ public class GgbAPI {
 		
 		return ret;
 	}
+	
+	/**
+	 * Returns current construction in XML format. May be used for saving.
+	 */
+	public String getXML() {
+		return app.getXML();
+	}
 }

@@ -26,6 +26,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class GeoGebraMobile implements EntryPoint {
 	
 	
+	// File format versions
+	public static final String XML_FILE_FORMAT = "3.3";
+	public static final String BUILD_DATE = "07 November 2010";
+	public static final String VERSION_STRING = "3.9.114.0";
+	public static final String SHORT_VERSION_STRING = "4.0"; // used for online archive
+	public static final String GGB_XSD_FILENAME = "ggb.xsd"; // for ggb files
+	public static final String GGT_XSD_FILENAME = "ggt.xsd"; // for macro files 
 	
 	/**
 	 * This is the entry point method.

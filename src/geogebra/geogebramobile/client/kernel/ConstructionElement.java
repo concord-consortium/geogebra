@@ -125,7 +125,8 @@ implements Comparable {
 	 * GeoGebra File Format.
 	 * @return xml String
 	 */
-    public abstract String getXML();
+    public abstract void getXML(StringBuilder sb);
+    
     
 	/**
 	 * Returns I2G representation of this object.

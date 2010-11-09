@@ -5,7 +5,9 @@ import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.gui.Base64Form;
 import geogebra.geogebramobile.client.gui.GgjsViewerWrapper;
 import geogebra.geogebramobile.client.io.MyXMLHandler;
+import geogebra.geogebramobile.client.io.MyXMLio;
 import geogebra.geogebramobile.client.kernel.BaseApplication;
+import geogebra.geogebramobile.client.kernel.ConstructionDefaults;
 import geogebra.geogebramobile.client.kernel.GeoBoolean;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.GeoLine;
@@ -46,7 +48,10 @@ public class Application extends BaseApplication {
 	private LowerCaseDictionary commandDict;
 	private boolean showResetIcon = false;
 	public boolean runningInFrame = false; // don't want to show resetIcon if running in Frame
-
+	private int labelingStyle = ConstructionDefaults.LABEL_VISIBLE_AUTOMATIC;
+	// currently used application fonts
+	private int appFontSize;
+	
 	// determines which CAS is being used
 	final public static int CAS_MATHPIPER = ExpressionNode.STRING_TYPE_MATH_PIPER;
 	final public static int CAS_MAXIMA = ExpressionNode.STRING_TYPE_MAXIMA;
@@ -56,7 +61,7 @@ public class Application extends BaseApplication {
 	
 	private ArrayList<GeoElement> selectedGeos = new ArrayList<GeoElement>();
 	private GgbAPI ggbapi;
-	
+	private MyXMLio myXMLio;
 	
 	public Application() {
 		super();
@@ -1586,6 +1591,99 @@ public class Application extends BaseApplication {
 	public static native void log(String log) /*-{
 		console.log(log);
 	}-*/;
+
+	public String getXML() {
+		return myXMLio.getFullXML();
+	}
+	
+	public String getCompleteUserInterfaceXML(boolean asPreference) {
+		StringBuilder sb = new StringBuilder();
+
+		// save gui tag settings
+		sb.append(getGuiXML(asPreference));
+
+		// save euclidianView settings
+		getEuclidianView().getXML(sb);
+
+		// save spreadsheetView settings
+		if (getGuiManager().hasSpreadsheetView()){
+			getGuiManager().getSpreadsheetViewXML(sb);
+		}
+		
+		// coord style, decimal places settings etc
+		kernel.getKernelXML(sb);
+
+		// save cas view seeting and cas session
+//		if (casView != null) {
+//			sb.append(((geogebra.cas.view.CASView) casView).getGUIXML());
+//			sb.append(((geogebra.cas.view.CASView) casView).getSessionXML());
+//		}
+
+		return sb.toString();
+	}
+	
+	/**
+	 * Returns gui settings in XML format
+	 */
+	public String getGuiXML(boolean asPreference) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<gui>\n");
+
+		// save the dimensions of the current window
+		sb.append("\t<window width=\"");
+		
+		if(euclidianview != null && euclidianview.getWidth() > 0)
+			sb.append(euclidianview.getWidth());
+		else
+			sb.append(800);
+		
+		sb.append("\" height=\"");
+		
+		if(euclidianview != null && euclidianview.getHeight() > 0)
+			sb.append(euclidianview.getHeight());
+		else
+			sb.append(600);
+		
+		sb.append("\" />");
+		
+		//AGI don't think that we need it right nowgetGuiManager().getLayout().getXml(sb, asPreference);
+
+		// labeling style
+		if (labelingStyle != ConstructionDefaults.LABEL_VISIBLE_AUTOMATIC) {
+			sb.append("\t<labelingStyle ");
+			sb.append(" val=\"");
+			sb.append(labelingStyle);
+			sb.append("\"/>\n");
+		}
+
+		// just save font size as preference
+		if(asPreference) {
+			sb.append("\t<font ");
+			sb.append(" size=\"");
+			sb.append(appFontSize);
+			sb.append("\"/>\n");
+		}
+
+		sb.append(getConsProtocolXML());
+
+		sb.append("</gui>\n");
+
+		return sb.toString();
+	}
+	
+	public String getConsProtocolXML() {
+		if (guiManager == null)
+			return "";
+
+		StringBuilder sb = new StringBuilder();
+
+		// construction protocol
+		if (getGuiManager().isUsingConstructionProtocol()) {
+			getGuiManager().getConsProtocolXML(sb);
+		}
+
+		return sb.toString();
+	}
 	
 	
 

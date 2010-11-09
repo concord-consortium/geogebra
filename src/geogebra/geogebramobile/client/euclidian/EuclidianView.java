@@ -2884,6 +2884,16 @@ final public void setHits(Point p){
 		updateAllDrawables(true);
 		// repaint();
 	}
+
+	public int getWidth() {
+		// TODO Auto-generated method stub
+		return getOffsetWidth();
+	}
+
+	public int getHeight() {
+		// TODO Auto-generated method stub
+		return getOffsetHeight();
+	}
 	
 	
 	

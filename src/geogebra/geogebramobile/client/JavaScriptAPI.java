@@ -13,7 +13,7 @@ public interface JavaScriptAPI {
 	 * Returns current construction as a ggb file in form of a byte array.
 	 * @return null if something went wrong 
 	 */
-	public  byte [] getGGBfile();
+	//AGpublic  byte [] getGGBfile();
 
 	/**
 	 * Returns current construction in XML format. May be used for saving.
