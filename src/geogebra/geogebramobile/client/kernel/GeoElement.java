@@ -4286,7 +4286,77 @@ public abstract class GeoElement
 	public void setFillType(int fillType){
 		this.fillType = fillType;
 	}
+	
+	/*******************************************************
+	 * SAVING
+	 *******************************************************/
+
+	final public String getXMLtypeString() {		
+		return getClassName().substring(3).toLowerCase();
+	}
+	
+	public String getI2GtypeString() {
+		return getXMLtypeString();
+	}
+	
+	
+    	
 	 
+	public String getXML() {
+		StringBuilder sb = new StringBuilder();
+    	getXML(sb);
+    	return sb.toString();
+    }
+    	
+	/**
+	 * save object in xml format
+	 * GeoGebra File Format
+	 */
+	public void getXML(StringBuilder sb) {
+		boolean oldValue = kernel.isTranslateCommandName();
+		kernel.setTranslateCommandName(false);
+		
+		String type = getXMLtypeString();
+
+		sb.append("<element");
+		sb.append(" type=\"");
+		sb.append(type);
+		sb.append("\" label=\"");
+		sb.append(Util.encodeXML(label));		
+		sb.append("\">\n");
+		getXMLtags(sb);
+		
+		// JavaScript
+		if (javaScript.length() > 0) {
+			sb.append("\t<javascript val=\"");
+			sb.append(getXMLJavaScript());
+			sb.append("\"/>\n");				
+		}
+				
+		// Script
+		if (ggbScript.length() > 0) {
+			sb.append("\t<ggbscript val=\"");
+			sb.append(getXMLScript());
+			sb.append("\"/>\n");				
+		}
+				
+		sb.append(getCaptionXML());
+				
+		sb.append("</element>\n");
+		
+		kernel.setTranslateCommandName(oldValue);
+	}
+	
+	public String getCaptionXML() {
+		StringBuilder sb = new StringBuilder();
+		// caption text
+		if (caption != null && caption.length() > 0 && !caption.equals(label)) {
+			sb.append("\t<caption val=\"");
+			sb.append(Util.encodeXML(caption));
+			sb.append("\"/>\n");
+		}
+		return sb.toString();
+	}
 
 
 

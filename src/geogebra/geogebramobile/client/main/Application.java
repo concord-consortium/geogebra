@@ -100,6 +100,8 @@ public class Application extends BaseApplication {
 			initEuclidianView(w,h);
 			initXmlHandler();
 			registerFileDropHandlers(xmlhandler);
+			myXMLio = new MyXMLio(kernel, kernel.getConstruction());
+
 			//log("inited: "+decodedBase64String);
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;

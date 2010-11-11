@@ -49,9 +49,9 @@ public class MyXMLio {
 		cons.getConstructionXML(sb);
 		
 		// save cas session
-		if (app.hasFullGui() && app.getGuiManager().hasCasView()) {
+		/*AGif (app.hasFullGui() && app.getGuiManager().hasCasView()) {
 			app.getGuiManager().getCasView().getSessionXML(sb);
-		}
+		}*/
 
 		sb.append("</geogebra>");
 		return sb.toString();

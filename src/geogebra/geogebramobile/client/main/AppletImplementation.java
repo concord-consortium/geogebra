@@ -25,7 +25,7 @@ import geogebra.geogebramobile.client.plugin.GgbAPI;
 /**
  * GeoGebra applet implementation operating on a given JApplet object.
  */
-public class AppletImplementation implements AppletImplementationInterface {
+public class AppletImplementation /*AGimplements AppletImplementationInterface*/ {
     /*AG
 	private static final long serialVersionUID = 1L;
 
@@ -603,53 +603,53 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns the GeoGebra XML string for the given GeoElement object, 
 	 * i.e. only the <element> tag is returned. 
 	 */
-	public String getXML(String objName) {
-		return ggbApi.getXML(objName);	
-	}
+//	public String getXML(String objName) {
+//		return ggbApi.getXML(objName);	
+//	}
 
 	/**
 	 * For a dependent GeoElement objName the XML string of 
 	 * the parent algorithm and all its output objects is returned. 
 	 * For a free GeoElement objName "" is returned.
 	 */
-	public String getAlgorithmXML(String objName) {
-		return ggbApi.getAlgorithmXML(objName);
-	}	
+	//public String getAlgorithmXML(String objName) {
+	//	return ggbApi.getAlgorithmXML(objName);
+	//}	
 
 	/**
 	 * Opens construction given in XML format. May be used for loading constructions.
 	 */
-	public synchronized void setXML(String xml) {
-		app.setXML(xml, true);
-	}
+//		public synchronized void setXML(String xml) {
+//		app.setXML(xml, true);
+//		}
 
 	/**
 	 * Evaluates the given XML string and changes the current construction. 
 	 * Note: the construction is NOT cleared before evaluating the XML string. 	 
 	 */
-	public synchronized void evalXML(String xmlString) {		
-		StringBuilder sb = new StringBuilder();
+//		public synchronized void evalXML(String xmlString) {		
+//		StringBuilder sb = new StringBuilder();
 
-		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-		sb.append("<geogebra format=\"" + GeoGebra.XML_FILE_FORMAT + "\">\n");
-		ev.getXML(sb);
-		sb.append("<construction>\n");
-		sb.append(xmlString);
-		sb.append("</construction>\n");
-		sb.append("</geogebra>\n");
-		app.setXML(sb.toString(), false);
-	}
+//		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+//		sb.append("<geogebra format=\"" + GeoGebra.XML_FILE_FORMAT + "\">\n");
+//		ev.getXML(sb);
+//		sb.append("<construction>\n");
+//		sb.append(xmlString);
+//		sb.append("</construction>\n");
+//		sb.append("</geogebra>\n");
+//		app.setXML(sb.toString(), false);
+//	}
 
 
 	/**
 	 * Evaluates the given string as if it was entered into GeoGebra's 
 	 * input text field. 	 
 	 */
-	public synchronized boolean evalCommand(final String cmdString) {		
-		//waitForCAS();
+//	public synchronized boolean evalCommand(final String cmdString) {		
+//		//waitForCAS();
 
 		// avoid security problems calling from JavaScript
-		MyBoolean ret = AccessController.doPrivileged(new PrivilegedAction<MyBoolean>() {
+/*AG		MyBoolean ret = AccessController.doPrivileged(new PrivilegedAction<MyBoolean>() {
 			public MyBoolean run() {
 				// perform the security-sensitive operation here
 				
@@ -668,7 +668,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Evaluates the given string using the MathPiper CAS.
 	 */
-	public synchronized String evalMathPiper(String cmdString) {
+/*AG	public synchronized String evalMathPiper(String cmdString) {
 		//waitForCAS();
 
 		final String str = cmdString;
@@ -687,7 +687,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Evaluates the given string using the Yacas CAS.
 	 * @deprecated: use evalMathPiper() instead
 	 */
-	public synchronized String evalYacas(String cmdString) {
+	/*AGpublic synchronized String evalYacas(String cmdString) {
 		return evalMathPiper(cmdString);
 	}
 
@@ -723,7 +723,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * tool "line through two points" will not create points on the fly
 	 * when you click on the background of the graphics view. 
 	 */
-	public synchronized void setOnTheFlyPointCreationActive(boolean flag) {
+/*AG	public synchronized void setOnTheFlyPointCreationActive(boolean flag) {
 		app.setOnTheFlyPointCreationActive(flag);
 	}
 
@@ -735,14 +735,14 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Turns showing of error dialogs on (true) or (off). 
 	 * Note: this is especially useful together with evalCommand().
 	 */
-	public synchronized void setErrorDialogsActive(boolean flag) {
+/*AG	public synchronized void setErrorDialogsActive(boolean flag) {
 		app.setErrorDialogsActive(flag);
 	}
 
 	/**
 	 * Resets the initial construction (given in filename parameter) of this applet.	 
 	 */
-	public synchronized void reset() {	
+/*AG	public synchronized void reset() {	
 		
 		if (fileStr == null) return;
 		
@@ -793,14 +793,14 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Refreshs all views. Note: clears traces in
 	 * geometry window.
 	 */
-	public synchronized void refreshViews() {
+/*AG	public synchronized void refreshViews() {
 		app.refreshViews();		 				
 	}
 
 	/* returns IP address
 	 * 
 	 */
-	public synchronized String getIPAddress() {
+/*AG	public synchronized String getIPAddress() {
 		return (String) AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
 				try {
@@ -817,7 +817,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/* returns hostname
 	 * 
 	 */
-	public synchronized String getHostname() {
+/*AG	public synchronized String getHostname() {
 		return (String) AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
 				try {
@@ -834,7 +834,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Loads a construction from a  file (given URL).	
 	 */
-	public synchronized void openFile(final String strURL) {
+/*AG	public synchronized void openFile(final String strURL) {
 		// avoid security problems calling from JavaScript
 		AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
@@ -863,7 +863,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * @return The border color of the applet.
 	 */
-	public Color getBorderColor() {
+/*AG	public Color getBorderColor() {
 		return borderColor;
 	}
 
@@ -880,7 +880,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Shows or hides the object with the given name in the geometry window.
 	 */
-	public synchronized void setVisible(String objName, boolean visible) {
+/*AG	public synchronized void setVisible(String objName, boolean visible) {
 		ggbApi.setVisible(objName, visible);
 	}
 
@@ -892,7 +892,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Sets the layer of the object with the given name in the geometry window.
 	 * Michael Borcherds 2008-02-27
 	 */
-	public synchronized void setLayer(String objName, int layer) {
+/*AG	public synchronized void setLayer(String objName, int layer) {
 		ggbApi.setLayer(objName, layer);
 
 	}
@@ -902,7 +902,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * returns layer, or -1 if object doesn't exist
 	 * Michael Borcherds 2008-02-27
 	 */
-	public synchronized int getLayer(String objName) {
+/*AG	public synchronized int getLayer(String objName) {
 		return ggbApi.getLayer(objName);
 	}
 
@@ -910,7 +910,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Shows or hides a complete layer
 	 * Michael Borcherds 2008-02-27
 	 */
-	public synchronized void setLayerVisible(int layer, boolean visible) {
+/*AG	public synchronized void setLayerVisible(int layer, boolean visible) {
 		ggbApi.setLayerVisible(layer,visible);
 	}
 
@@ -919,21 +919,21 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Sets the fixed state of the object with the given name.
 	 */
-	public synchronized void setFixed(String objName, boolean flag) {
+/*AG	public synchronized void setFixed(String objName, boolean flag) {
 		ggbApi.setFixed(objName, flag);
 	}
 
 	/**
 	 * Turns the trace of the object with the given name on or off.
 	 */
-	public synchronized void setTrace(String objName, boolean flag) {
+/*AG	public synchronized void setTrace(String objName, boolean flag) {
 		ggbApi.setTrace(objName, flag);
 	}
 
 	/**
 	 * Shows or hides the label of the object with the given name in the geometry window.
 	 */
-	public synchronized void setLabelVisible(String objName, boolean visible) {
+/*AG	public synchronized void setLabelVisible(String objName, boolean visible) {
 		ggbApi.setLabelVisible(objName, visible);
 	}
 
@@ -941,21 +941,21 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Sets the label style of the object with the given name in the geometry window.
 	 * Possible label styles are NAME = 0, NAME_VALUE = 1 and VALUE = 2.
 	 */
-	public synchronized void setLabelStyle(String objName, int style) {
+/*AG	public synchronized void setLabelStyle(String objName, int style) {
 		ggbApi.setLabelStyle(objName, style);
 	}
 
 	/**
 	 * Shows or hides the label of the object with the given name in the geometry window.
 	 */
-	public synchronized void setLabelMode(String objName, boolean visible) {
+/*AG	public synchronized void setLabelMode(String objName, boolean visible) {
 		ggbApi.setLabelMode(objName, visible);
 	}
 
 	/**
 	 * Sets the color of the object with the given name.
 	 */
-	public synchronized void setColor(String objName, int red, int green, int blue) {
+/*AG	public synchronized void setColor(String objName, int red, int green, int blue) {
 		ggbApi.setColor(objName, red, green, blue);
 	}	
 
@@ -982,7 +982,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/*
 	 * used by the automatic file tester (from JavaScript)
 	 */
-	public synchronized String getGraphicsViewCheckSum(final String algorithm, final String format) {
+/*AG	public synchronized String getGraphicsViewCheckSum(final String algorithm, final String format) {
 		// avoid security problems calling from JavaScript
 		return (String)AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
@@ -999,7 +999,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns the color of the object as an hex string. Note that the hex-string 
 	 * starts with # and uses upper case letters, e.g. "#FF0000" for red.
 	 */
-	public synchronized String getColor(String objName) {
+/*AG	public synchronized String getColor(String objName) {
 		return ggbApi.getColor(objName);
 	}
 
@@ -1026,7 +1026,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Deletes the object with the given name.
 	 */
-	public synchronized void deleteObject(String objName) {		
+/*AG	public synchronized void deleteObject(String objName) {		
 		ggbApi.deleteObject(objName);
 	}	
 
@@ -1058,14 +1058,14 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Renames an object from oldName to newName.
 	 * @return whether renaming worked
 	 */
-	public synchronized boolean renameObject(String oldName, String newName) {		
+/*AG	public synchronized boolean renameObject(String oldName, String newName) {		
 		return ggbApi.renameObject(oldName, newName);
 	}	
 
 	/**
 	 * Returns true if the object with the given name exists.
 	 */
-	public synchronized boolean exists(String objName) {	
+/*AG	public synchronized boolean exists(String objName) {	
 		return ggbApi.exists(objName);
 	}	
 
@@ -1073,28 +1073,28 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns true if the object with the given name has a vaild
 	 * value at the moment.
 	 */
-	public synchronized boolean isDefined(String objName) {			
+/*AG	public synchronized boolean isDefined(String objName) {			
 		return ggbApi.isDefined(objName);
 	}	
 
 	/**
 	 * Returns the value of the object with the given name as a string.
 	 */
-	public synchronized String getValueString(String objName) {
+/*AG	public synchronized String getValueString(String objName) {
 		return ggbApi.getValueString(objName);
 	}
 
 	/**
 	 * Returns the definition of the object with the given name as a string.
 	 */
-	public synchronized String getDefinitionString(String objName) {
+/*AG	public synchronized String getDefinitionString(String objName) {
 		return ggbApi.getDefinitionString(objName);
 	}
 
 	/**
 	 * Returns the command of the object with the given name as a string.
 	 */
-	public synchronized String getCommandString(String objName) {	
+/*AG	public synchronized String getCommandString(String objName) {	
 		return ggbApi.getCommandString(objName);
 	}
 
@@ -1102,7 +1102,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns the x-coord of the object with the given name. Note: returns 0 if
 	 * the object is not a point or a vector.
 	 */
-	public synchronized double getXcoord(String objName) {
+/*AG	public synchronized double getXcoord(String objName) {
 		return ggbApi.getXcoord(objName);
 	}
 
@@ -1110,7 +1110,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns the y-coord of the object with the given name. Note: returns 0 if
 	 * the object is not a point or a vector.
 	 */
-	public synchronized double getYcoord(String objName) {
+/*AG	public synchronized double getYcoord(String objName) {
 		return ggbApi.getYcoord(objName);
 	}
 
@@ -1118,7 +1118,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Sets the coordinates of the object with the given name. Note: if the
 	 * specified object is not a point or a vector, nothing happens.
 	 */
-	public synchronized void setCoords(String objName, double x, double y) {
+/*AG	public synchronized void setCoords(String objName, double x, double y) {
 		ggbApi.setCoords(objName,x,y);
 	}
 
@@ -1126,7 +1126,7 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Returns the double value of the object with the given name. Note: returns 0 if
 	 * the object does not have a value.
 	 */
-	public synchronized double getValue(String objName) {
+/*AG	public synchronized double getValue(String objName) {
 		return ggbApi.getValue(objName);
 	}
 
@@ -1134,14 +1134,14 @@ public class AppletImplementation implements AppletImplementationInterface {
 	 * Sets the double value of the object with the given name. Note: if the
 	 * specified object is not a number, nothing happens.
 	 */
-	public synchronized void setValue(String objName, double x) {
+/*AG	public synchronized void setValue(String objName, double x) {
 		ggbApi.setValue(objName,x);
 	}
 
 	/**
 	 * Turns the repainting of all views on or off.
 	 */
-	public synchronized void setRepaintingActive(boolean flag) {		
+/*AG	public synchronized void setRepaintingActive(boolean flag) {		
 		//Application.debug("set repainting: " + flag);
 		ggbApi.setRepaintingActive(flag);
 	}	
@@ -1154,21 +1154,21 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Sets the Cartesian coordinate system in the graphics window.
 	 */
-	public synchronized void setCoordSystem(double xmin, double xmax, double ymin, double ymax) {
+/*AG	public synchronized void setCoordSystem(double xmin, double xmax, double ymin, double ymax) {
 		app.getEuclidianView().setRealWorldCoordSystem(xmin, xmax, ymin, ymax);
 	}
 
 	/**
 	 * Shows or hides the x- and y-axis of the coordinate system in the graphics window.
 	 */
-	public synchronized void setAxesVisible(boolean xVisible, boolean yVisible) {		
+/*AG	public synchronized void setAxesVisible(boolean xVisible, boolean yVisible) {		
 		ggbApi.setAxesVisible(xVisible, yVisible);
 	}	
 
 	/**
 	 * Shows or hides the coordinate grid in the graphics window.
 	 */
-	public synchronized void setGridVisible(boolean flag) {		
+/*AG	public synchronized void setGridVisible(boolean flag) {		
 		app.getEuclidianView().showGrid(flag);
 	}
 
@@ -1177,49 +1177,49 @@ public class AppletImplementation implements AppletImplementationInterface {
 	/**
 	 * Returns an array with all object names.
 	 */
-	public synchronized String [] getAllObjectNames() {			
+/*AG	public synchronized String [] getAllObjectNames() {			
 		return ggbApi.getObjNames();
 	}	
 
 	/**
 	 * Returns the number of objects in the construction.
 	 */
-	public synchronized int getObjectNumber() {					
+/*AG	public synchronized int getObjectNumber() {					
 		return ggbApi.getObjNames().length;			
 	}	
 
 	/**
 	 * Returns the name of the n-th object of this construction.
 	 */
-	public synchronized String getObjectName(int i) {	
+/*AG	public synchronized String getObjectName(int i) {	
 		return ggbApi.getObjectName(i);
 	}
 
 	/**
 	 * Returns the type of the object with the given name as a string (e.g. point, line, circle, ...)
 	 */
-	public synchronized String getObjectType(String objName) {
+/*AG	public synchronized String getObjectType(String objName) {
 		return ggbApi.getObjectType(objName);
 	}
 
 	/**
 	 * returns a String (base-64 encoded PNG file of the Graphics View)
 	 */
-	public synchronized String getPNGBase64(double exportScale, boolean transparent, double DPI) {
+/*AG	public synchronized String getPNGBase64(double exportScale, boolean transparent, double DPI) {
 		return ggbApi.getPNGBase64(exportScale, transparent, DPI);
 	}
 
 	/**
 	 * returns a String (base-64 encoded PNG file of the Graphics View)
 	 */
-	public synchronized boolean writePNGtoFile(String filename, double exportScale, boolean transparent, double DPI) {
+/*AG	public synchronized boolean writePNGtoFile(String filename, double exportScale, boolean transparent, double DPI) {
 		return ggbApi.writePNGtoFile(filename, exportScale, transparent, DPI);
 	}
 
 	/**
 	 * Sets the mode of the geometry window (EuclidianView). 
 	 */
-	public synchronized void setMode(int mode) {
+/*AG	public synchronized void setMode(int mode) {
 		app.setMode(mode);
 	}
 
@@ -1300,5 +1300,5 @@ public class AppletImplementation implements AppletImplementationInterface {
 		app.getScriptManager().unregisterObjectUpdateListener(objName);
 	}
 
-
+*/
 }

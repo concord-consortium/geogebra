@@ -571,7 +571,7 @@ public class Macro {
         
         // macro construction XML
        // sb.append(macroConsXML);
-        macroCons.getConstructionXML();
+        macroCons.getConstructionXML(sb);
         
         sb.append("</macro>\n");           
     }
