@@ -117,8 +117,6 @@ public class Application extends BaseApplication {
 	
 	private static native void initAppletFunctions(AppletImplementation appletImpl) /*-{
 		$wnd.ggbApplet = {};
-		var ggbApplet = {};
-		var cica = "cica";
 		
 		$wnd.ggbApplet.getXml = function() {
 			return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML()();
