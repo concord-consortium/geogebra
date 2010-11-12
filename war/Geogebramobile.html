@@ -67,9 +67,11 @@ Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.5 
 </p>
 <p><span style="font-size:small">Mike, Ez a dokumentum a <a href="http://www.geogebra.org/" target="_blank" >GeoGebra<a/> programmal k&#233;sz&#252;lt.</span></p>
 </td></tr>
-</table><script type="text/javascript">
-var ggbApplet = document.ggbApplet;
-function ggbOnInit() {}
+</table>
+<script type="text/javascript">
+	window.addEventListener("load",function() {
+		console.log(ggbApplet.getXml());
+	},false);
 </script>
-  </body>
+ </body>
 </html>
