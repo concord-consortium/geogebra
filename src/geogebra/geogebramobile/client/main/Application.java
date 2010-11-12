@@ -62,6 +62,7 @@ public class Application extends BaseApplication {
 	private ArrayList<GeoElement> selectedGeos = new ArrayList<GeoElement>();
 	private GgbAPI ggbapi;
 	private MyXMLio myXMLio;
+	private AppletImplementation appletImpl;
 	
 	public Application() {
 		super();
@@ -101,6 +102,8 @@ public class Application extends BaseApplication {
 			initXmlHandler();
 			registerFileDropHandlers(xmlhandler);
 			myXMLio = new MyXMLio(kernel, kernel.getConstruction());
+			appletImpl = new AppletImplementation(this);
+			initAppletFunctions(appletImpl);
 
 			//log("inited: "+decodedBase64String);
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
@@ -112,6 +115,16 @@ public class Application extends BaseApplication {
 		}
 	}
 	
+	private static native void initAppletFunctions(AppletImplementation appletImpl) /*-{
+		$wnd.ggbApplet = {};
+		
+		$wnd.ggbApplet.getXml = function() {
+			return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML();
+		};
+		console.log('itt vagyunk pedig');
+		
+	}-*/;
+
 	private void initKernel() {
 		kernel = new Kernel(this);
 	}
@@ -292,7 +305,6 @@ public class Application extends BaseApplication {
 		if (ggbapi == null) {
 			ggbapi = new GgbAPI(this);
 		}
-
 		return ggbapi;
 	}
 	

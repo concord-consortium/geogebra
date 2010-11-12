@@ -30,10 +30,10 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	private static final long serialVersionUID = 1L;
 
 	private JApplet applet;
-
+	*/
 	protected Application app;
 	protected Kernel kernel;
-	private JButton btOpen;
+	/*private JButton btOpen;
 	private DoubleClickListener dcListener;
 	private EuclidianView ev;
 	public boolean showOpenButton, undoActive;
@@ -68,6 +68,16 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	public String ggbOnInitParam = null;
 
 	/** Creates a new instance of GeoGebraApplet */	
+	/** AG for now I will do it a different way, maybe later we
+	 *  will reset it.
+	 */
+	
+	public AppletImplementation(Application app) {
+		this.app = app;
+		this.kernel = app.getKernel();
+		this.ggbApi = app.getGgbApi();
+	}
+	
 	/*AGpublic AppletImplementation(final JApplet applet) {
 		this.applet = applet;
 
@@ -595,7 +605,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	/**
 	 * Returns current construction in XML format. May be used for saving.
 	 */
-	public synchronized String getXML() {
+	public String getXML() {
 		return ggbApi.getXML();
 	}
 
