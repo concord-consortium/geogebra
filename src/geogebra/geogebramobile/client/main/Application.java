@@ -116,10 +116,14 @@ public class Application extends BaseApplication {
 	}
 	
 	private static native void initAppletFunctions(AppletImplementation appletImpl) /*-{
-		$wnd.ggbApplet = {};
+		//set the reference
+		$doc.ggbApplet = $wnd.ggbApplet = {};
 		
-		$wnd.ggbApplet.getXml = function() {
-			return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML()();
+		$wnd.ggbApplet.getXml = function(objName) {
+			if (objName)
+				return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML(Ljava/lang/String;)(objName);
+			else 
+				return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML()();
 		};
 	}-*/;
 

@@ -613,9 +613,9 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Returns the GeoGebra XML string for the given GeoElement object, 
 	 * i.e. only the <element> tag is returned. 
 	 */
-//	public String getXML(String objName) {
-//		return ggbApi.getXML(objName);	
-//	}
+	public String getXML(String objName) {
+		return ggbApi.getXML(objName);	
+	}
 
 	/**
 	 * For a dependent GeoElement objName the XML string of 
