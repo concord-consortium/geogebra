@@ -121,7 +121,7 @@ public class CommandDispatcher {
     	// external commands: visible to users    	    	
     	cmdTable = new HashMap(500);
     	cmdTable.put("UnitVector", new CmdUnitVector(kernel));	   
-    	//AGcmdTable.put("SecondAxis", new CmdSecondAxis(kernel));	   
+    	cmdTable.put("SecondAxis", new CmdSecondAxis(kernel));	   
     	//AGcmdTable.put("CircleArc", new CmdCircleArc(kernel));	   
     	//AGcmdTable.put("Parameter", new CmdParameter(kernel));	   
     	//AGcmdTable.put("TurningPoint", new CmdTurningPoint(kernel));	   

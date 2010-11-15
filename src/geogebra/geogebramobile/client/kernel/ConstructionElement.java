@@ -31,7 +31,7 @@ implements Comparable {
     
 	protected transient Construction cons; // parent construction of this element
 	protected transient Kernel kernel;      // parent kernel of this element
-	protected transient Application bApp;  // parent application of this element
+	protected transient Application bApp;  // parent application of this element // FIXME: this was "app" in geogebra; AlgoAxisSecond uses this 
 	
 	private int constIndex = -1; // index in construction list 
 	

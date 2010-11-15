@@ -4534,11 +4534,11 @@ public class Kernel {
 	/** 
 	 * second axis of c
 	 */
-	/*AGfinal public GeoLine SecondAxis(String label, GeoConic c) {
+	final public GeoLine SecondAxis(String label, GeoConic c) {
 		AlgoAxisSecond algo = new AlgoAxisSecond(cons, label, c);
 		GeoLine axis = algo.getAxis();
 		return axis;
-	}*/
+	}
 
 	/** 
 	 * directrix of c
