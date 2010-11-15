@@ -3955,13 +3955,13 @@ public class Kernel {
 	}*/
 	
 	/** 
-	 * circle arc from center and twho points on arc
+	 * circle arc from center and two points on arc
 	 */
-	/*AGfinal public GeoConicPart CircleArc(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
+	final public GeoConicPart CircleArc(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
 		AlgoConicPartCircle algo = new AlgoConicPartCircle(cons, label, A,B, C, 															
 				GeoConicPart.CONIC_PART_ARC);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * circle sector from center and twho points on arc

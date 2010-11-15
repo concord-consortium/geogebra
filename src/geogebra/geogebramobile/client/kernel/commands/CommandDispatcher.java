@@ -122,7 +122,7 @@ public class CommandDispatcher {
     	cmdTable = new HashMap(500);
     	cmdTable.put("UnitVector", new CmdUnitVector(kernel));	   
     	cmdTable.put("SecondAxis", new CmdSecondAxis(kernel));	   
-    	//AGcmdTable.put("CircleArc", new CmdCircleArc(kernel));	   
+    	cmdTable.put("CircleArc", new CmdCircleArc(kernel));	   
     	//AGcmdTable.put("Parameter", new CmdParameter(kernel));	   
     	//AGcmdTable.put("TurningPoint", new CmdTurningPoint(kernel));	   
     	cmdTable.put("Derivative", new CmdDerivative(kernel));	   

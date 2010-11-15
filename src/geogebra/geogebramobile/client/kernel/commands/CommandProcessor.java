@@ -1433,7 +1433,7 @@ class CmdSector extends CommandProcessor {
 /*
  * CircleArc[ <GeoPoint center>, <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdCircleArc extends CommandProcessor {
 
 	public CmdCircleArc(Kernel kernel) {
