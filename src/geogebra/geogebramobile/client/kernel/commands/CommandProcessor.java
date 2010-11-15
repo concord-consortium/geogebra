@@ -1653,7 +1653,6 @@ class CmdParabola extends CommandProcessor {
 /*
  * Div[ a, b ]
  */
-/*AG
 
 class CmdDiv extends CommandProcessor {
 
@@ -1703,7 +1702,7 @@ class CmdDiv extends CommandProcessor {
 /*
  * Mod[a, b]
  */
-/*AG
+
 class CmdMod extends CommandProcessor {
 
 	public CmdMod(Kernel kernel) {

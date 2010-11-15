@@ -209,8 +209,8 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Perimeter", new CmdPerimeter(kernel));
     	// Philipp Weissenbacher 10-04-2007
     	
-    	//AGcmdTable.put("Mod", new CmdMod(kernel));
-    	//AGcmdTable.put("Div", new CmdDiv(kernel));
+    	cmdTable.put("Mod", new CmdMod(kernel));
+    	cmdTable.put("Div", new CmdDiv(kernel));
     	//AGcmdTable.put("Min", new CmdMin(kernel));
     	//AGcmdTable.put("Max", new CmdMax(kernel));
     	//AGcmdTable.put("LCM", new CmdLCM(kernel));

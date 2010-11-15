@@ -300,7 +300,7 @@ public class AlgebraProcessor {
 	 * Returns null if something went wrong.
 	 * Michael Borcherds 2008-04-04
 	 */
-/*AG	public GeoFunction evaluateToFunction(String str, boolean suppressErrors) {
+	public GeoFunction evaluateToFunction(String str, boolean suppressErrors) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 

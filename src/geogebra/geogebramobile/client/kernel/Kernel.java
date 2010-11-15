@@ -2552,21 +2552,39 @@ public class Kernel {
 	/** 
 	 * Mod[a, b]
 	 */
-	/*AGfinal public GeoNumeric Mod(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Mod(String label, NumberValue a, NumberValue b) {
 		AlgoMod algo = new AlgoMod(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Div[a, b]
 	 */
-	/*AGfinal public GeoNumeric Div(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Div(String label, NumberValue a, NumberValue b) {
 		AlgoDiv algo = new AlgoDiv(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
-	
+	}
+
+	/** 
+	 * Mod[a, b] Polynomial remainder
+	 */
+	final public GeoFunction Mod(String label, GeoFunction a, GeoFunction b) {
+		AlgoPolynomialMod algo = new AlgoPolynomialMod(cons, label, a, b);
+		GeoFunction f = algo.getResult();
+		return f;
+	}
+
+	/** 
+	 * Div[a, b] Polynomial Division
+	 */
+	final public GeoFunction Div(String label, GeoFunction a, GeoFunction b) {
+		AlgoPolynomialDiv algo = new AlgoPolynomialDiv(cons, label, a, b);
+		GeoFunction f = algo.getResult();
+		return f;
+	}
+
 	/** 
 	 * Min[a, b]
 	 */
