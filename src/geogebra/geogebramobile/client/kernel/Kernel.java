@@ -4579,11 +4579,11 @@ public class Kernel {
 	/** 
 	 * (parabola) parameter of c
 	 */
-	/*AGfinal public GeoNumeric Parameter(String label, GeoConic c) {
+	final public GeoNumeric Parameter(String label, GeoConic c) {
 		AlgoParabolaParameter algo = new AlgoParabolaParameter(cons, label, c);
 		GeoNumeric length = algo.getParameter();
 		return length;
-	}*/
+	}
 
 	/** 
 	 * (circle) radius of c

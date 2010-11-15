@@ -2423,7 +2423,7 @@ class CmdEccentricity extends CommandProcessor {
 /*
  * Parameter[ <GeoConic> ]
  */
-/*AG
+
 class CmdParameter extends CommandProcessor {
 
 	public CmdParameter(Kernel kernel) {

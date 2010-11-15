@@ -123,7 +123,7 @@ public class CommandDispatcher {
     	cmdTable.put("UnitVector", new CmdUnitVector(kernel));	   
     	cmdTable.put("SecondAxis", new CmdSecondAxis(kernel));	   
     	cmdTable.put("CircleArc", new CmdCircleArc(kernel));	   
-    	//AGcmdTable.put("Parameter", new CmdParameter(kernel));	   
+    	cmdTable.put("Parameter", new CmdParameter(kernel));	   
     	//AGcmdTable.put("TurningPoint", new CmdTurningPoint(kernel));	   
     	cmdTable.put("Derivative", new CmdDerivative(kernel));	   
     	//AGcmdTable.put("Integral", new CmdIntegral(kernel));	   
