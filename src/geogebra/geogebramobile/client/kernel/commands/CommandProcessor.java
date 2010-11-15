@@ -1316,7 +1316,7 @@ class CmdLocus extends CommandProcessor {
 /*
  * Arc[ <GeoConic>, <Number>, <Number> ] Arc[ <GeoConic>, <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdArc extends CommandProcessor {
 
 	public CmdArc(Kernel kernel) {

@@ -3903,20 +3903,20 @@ public class Kernel {
 	/** 
 	 * conic arc from conic and parameters
 	 */
-	/*AGfinal public GeoConicPart ConicArc(String label, GeoConic conic, NumberValue a, NumberValue b) {
+	final public GeoConicPart ConicArc(String label, GeoConic conic, NumberValue a, NumberValue b) {
 		AlgoConicPartConicParameters algo = new AlgoConicPartConicParameters(cons, label, conic, a, b, 															
 				GeoConicPart.CONIC_PART_ARC);
 		return algo.getConicPart();
-	}*/
-	
+	}
+
 	/** 
-	 * conic sector from conic and points
+	 * conic arc from conic and points
 	 */
-	/*AGfinal public GeoConicPart ConicArc(String label, GeoConic conic, GeoPoint P, GeoPoint Q) {
+	final public GeoConicPart ConicArc(String label, GeoConic conic, GeoPoint P, GeoPoint Q) {
 		AlgoConicPartConicPoints algo = new AlgoConicPartConicPoints(cons, label, conic, P, Q, 															
 				GeoConicPart.CONIC_PART_ARC);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * conic sector from conic and parameters
