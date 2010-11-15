@@ -16,6 +16,7 @@ import geogebra.geogebramobile.client.kernel.CircularDefinitionException;
 import geogebra.geogebramobile.client.kernel.Construction;
 import geogebra.geogebramobile.client.kernel.GeoBoolean;
 import geogebra.geogebramobile.client.kernel.GeoConic;
+import geogebra.geogebramobile.client.kernel.GeoCurveCartesian;
 import geogebra.geogebramobile.client.kernel.GeoDeriveable;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.GeoFunction;
@@ -2008,7 +2009,7 @@ class CmdDiameter extends CommandProcessor {
  * <NumberValue>, <GeoFunction> ] Tangent[ <GeoPoint>, <GeoFunction> ]
  *  Victor Franco 11-02-2007 (for curve's): Tangent[ <GeoPoint>, <GeoCurveCartesian> ]
  */
-/*AG
+
 class CmdTangent extends CommandProcessor {
 
 	public CmdTangent(Kernel kernel) {

@@ -4451,31 +4451,31 @@ public class Kernel {
 	/** 
 	 * tangents to c through P
 	 */
-	/*AGfinal public GeoLine[] Tangent(
+	final public GeoLine[] Tangent(
 		String[] labels,
 		GeoPoint P,
 		GeoConic c) {
 		AlgoTangentPoint algo = new AlgoTangentPoint(cons, labels, P, c);
 		GeoLine[] tangents = algo.getTangents();		
 		return tangents;
-	}*/
+	}
 
 	/** 
 	 * tangents to c parallel to g
 	 */
-	/*AGfinal public GeoLine[] Tangent(
+	final public GeoLine[] Tangent(
 		String[] labels,
 		GeoLine g,
 		GeoConic c) {
 		AlgoTangentLine algo = new AlgoTangentLine(cons, labels, g, c);
 		GeoLine[] tangents = algo.getTangents();
 		return tangents;
-	}*/
+	}
 
 	/** 
 	 * tangent to f in x = a
 	 */
-	/*AGfinal public GeoLine Tangent(
+	final public GeoLine Tangent(
 		String label,
 		NumberValue a,
 		GeoFunction f) {
@@ -4486,12 +4486,12 @@ public class Kernel {
 		t.update();   
 		notifyUpdate(t);  
 		return t;
-	}*/
+	}
 
 	/** 
 	 * tangent to f in x = x(P)
 	 */
-	/*AGfinal public GeoLine Tangent(
+	final public GeoLine Tangent(
 		String label,
 		GeoPoint P,
 		GeoFunction f) {
@@ -4502,7 +4502,7 @@ public class Kernel {
 		t.update();     
 		notifyUpdate(t);
 		return t;
-	}*/
+	}
 	
 	/** 
 	 * asymptotes to c
@@ -5353,14 +5353,14 @@ public class Kernel {
 	/** 
 	 * tangent to Curve f in point P: (b'(t), -a'(t), a'(t)*b(t)-a(t)*b'(t))
 	 */
-	/*AGfinal public GeoLine Tangent(String label,GeoPoint P,GeoCurveCartesian f) {
+	final public GeoLine Tangent(String label,GeoPoint P,GeoCurveCartesian f) {
 		AlgoTangentCurve algo = new AlgoTangentCurve(cons, label, P, f);
 		GeoLine t = algo.getTangent();
 		t.setToExplicit();
 		t.update();     
 		notifyUpdate(t);
 		return t;
-	}*/
+	}
 
 	/**
 	 * Victor Franco Espino 18-04-2007: End new commands 

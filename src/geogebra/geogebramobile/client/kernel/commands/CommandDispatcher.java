@@ -143,7 +143,7 @@ public class CommandDispatcher {
     	cmdTable.put("Polygon", new CmdPolygon(kernel));
     	//AGcmdTable.put("Direction", new CmdDirection(kernel));	   
     	//AGcmdTable.put("Polynomial", new CmdPolynomial(kernel));	   
-    	//AGcmdTable.put("Tangent", new CmdTangent(kernel));	   
+    	cmdTable.put("Tangent", new CmdTangent(kernel));	   
     	//AGcmdTable.put("UnitOrthogonalVector", new CmdUnitOrthogonalVector(kernel));	   
     	//AGcmdTable.put("Distance", new CmdDistance(kernel));	   
     	//AGcmdTable.put("Asymptote", new CmdAsymptote(kernel));	   
