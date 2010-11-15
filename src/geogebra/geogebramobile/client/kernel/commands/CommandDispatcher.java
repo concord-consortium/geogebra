@@ -134,7 +134,7 @@ public class CommandDispatcher {
     	cmdTable.put("Ellipse", new CmdEllipse(kernel));	   
     	cmdTable.put("Hyperbola", new CmdHyperbola(kernel));	   
     	//AGcmdTable.put("TaylorSeries", new CmdTaylorSeries(kernel));	   
-    	//AGcmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
+    	cmdTable.put("SecondAxisLength", new CmdSecondAxisLength(kernel));	   
     	cmdTable.put("Ray", new CmdRay(kernel));	   
     	cmdTable.put("AngularBisector", new CmdAngularBisector(kernel));	   
     	cmdTable.put("Angle", new CmdAngle(kernel));	   

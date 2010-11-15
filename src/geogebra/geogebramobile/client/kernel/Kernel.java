@@ -4570,11 +4570,11 @@ public class Kernel {
 	/** 
 	 * second axis' length of c
 	 */
-	/*AGfinal public GeoNumeric SecondAxisLength(String label, GeoConic c) {
+	final public GeoNumeric SecondAxisLength(String label, GeoConic c) {
 		AlgoAxisSecondLength algo = new AlgoAxisSecondLength(cons, label, c);
 		GeoNumeric length = algo.getLength();
 		return length;
-	}*/
+	}
 
 	/** 
 	 * (parabola) parameter of c
