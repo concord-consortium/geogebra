@@ -2288,7 +2288,7 @@ class CmdSecondAxis extends CommandProcessor {
 /*
  * FirstAxisLength[ <GeoConic> ]
  */
-/*AG
+
 class CmdFirstAxisLength extends CommandProcessor {
 
 	public CmdFirstAxisLength(Kernel kernel) {

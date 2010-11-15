@@ -4561,11 +4561,11 @@ public class Kernel {
 	/** 
 	 * first axis' length of c
 	 */
-	/*AGfinal public GeoNumeric FirstAxisLength(String label, GeoConic c) {
+	final public GeoNumeric FirstAxisLength(String label, GeoConic c) {
 		AlgoAxisFirstLength algo = new AlgoAxisFirstLength(cons, label, c);
 		GeoNumeric length = algo.getLength();
 		return length;
-	}*/
+	}
 
 	/** 
 	 * second axis' length of c
