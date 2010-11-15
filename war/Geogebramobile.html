@@ -69,8 +69,22 @@ Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.5 
 </td></tr>
 </table>
 <script type="text/javascript">
-	window.addEventListener("load",function() {
+	function ggbOnInit() {
+		//===Js code starts here===//
 		console.log(ggbApplet.getXml());
+		console.log(ggbApplet.getXml("f"));				
+		
+		
+		
+		
+		
+		
+		//===js code ends here===//
+	}
+</script>
+<script type="text/javascript">
+	window.addEventListener("load",function() {
+		ggbOnInit();
 	},false);
 </script>
  </body>
