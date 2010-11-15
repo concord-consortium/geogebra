@@ -53,4 +53,21 @@ public class GgbAPI {
 	public String getXML() {
 		return app.getXML();
 	}
+	
+	/**
+	 * Returns the GeoGebra XML string for the given GeoElement object, 
+	 * i.e. only the <element> tag is returned. 
+	 */
+	public synchronized String getXML(String objName) {
+		GeoElement geo = kernel.lookupLabel(objName);
+		if (geo == null) 
+			return "";	
+		else {
+			//if (geo.isIndependent()) removed as we want a way to get the <element> tag for all objects
+				return geo.getXML();
+			//else
+			//	return "";
+		}
+	}
+	
 }
