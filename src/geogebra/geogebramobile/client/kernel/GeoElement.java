@@ -4286,6 +4286,15 @@ public abstract class GeoElement
 	public void setFillType(int fillType){
 		this.fillType = fillType;
 	}
+
+	/*
+	 * gets shortest distance to point p
+	 * overridden in eg GeoPoint, GeoLine
+	 * for compound paths
+	 */
+	public double distance(GeoPoint p) {
+		return Double.POSITIVE_INFINITY;
+	}
 	
 	/*******************************************************
 	 * SAVING

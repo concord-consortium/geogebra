@@ -145,7 +145,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Polynomial", new CmdPolynomial(kernel));	   
     	cmdTable.put("Tangent", new CmdTangent(kernel));	   
     	//AGcmdTable.put("UnitOrthogonalVector", new CmdUnitOrthogonalVector(kernel));	   
-    	//AGcmdTable.put("Distance", new CmdDistance(kernel));	   
+    	cmdTable.put("Distance", new CmdDistance(kernel));	   
     	//AGcmdTable.put("Asymptote", new CmdAsymptote(kernel));	   
     	cmdTable.put("Mirror", new CmdMirror(kernel));	   
     	cmdTable.put("Center", new CmdCenter(kernel));	   

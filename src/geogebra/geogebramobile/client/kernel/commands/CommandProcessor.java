@@ -770,7 +770,7 @@ class CmdLength extends CommandProcessor {
  * Distance[ <GeoPoint>, <GeoPoint> ] Distance[ <GeoPoint>, <GeoLine> ]
  * Distance[ <GeoLine>, <GeoPoint> ] Distance[ <GeoLine>, <GeoLine> ]
  */
-/*AG
+
 class CmdDistance extends CommandProcessor {
 
 	public CmdDistance(Kernel kernel) {

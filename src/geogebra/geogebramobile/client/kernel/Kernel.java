@@ -2498,31 +2498,31 @@ public class Kernel {
 	/** 
 	 * Distance named label between points P and Q
 	 */
-	/*AGfinal public GeoNumeric Distance(
+	final public GeoNumeric Distance(
 		String label,
 		GeoPoint P,
 		GeoPoint Q) {
 		AlgoDistancePoints algo = new AlgoDistancePoints(cons, label, P, Q);
 		GeoNumeric num = algo.getDistance();
 		return num;
-	}*/
+	}
 
 	/** 
 	 * Distance named label between point P and line g
 	 */
-	/*AGfinal public GeoNumeric Distance(
+	final public GeoNumeric Distance(
 		String label,
 		GeoPoint P,
-		GeoLine g) {
-		AlgoDistancePointLine algo = new AlgoDistancePointLine(cons, label, P, g);
+		GeoElement g) {
+		AlgoDistancePointObject algo = new AlgoDistancePointObject(cons, label, P, g);
 		GeoNumeric num = algo.getDistance();
 		return num;
-	}*/
+	}
 
 	/** 
 	 * Distance named label between line g and line h
 	 */
-	/*AGfinal public GeoNumeric Distance(
+	final public GeoNumeric Distance(
 		String label,
 		GeoLine g,
 		GeoLine h) {
@@ -2530,7 +2530,7 @@ public class Kernel {
 		GeoNumeric num = algo.getDistance();
 		return num;
 	}
-	*/
+
 	/** 
 	 * Area named label of  P[0], ..., P[n]
 	 */

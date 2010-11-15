@@ -550,7 +550,7 @@ GeoPointInterface {
     final public double distance(GeoPoint P) {       
         return GeoVec2D.length(	P.inhomX - inhomX, 
         						P.inhomY - inhomY);
-    }            
+    }
     
     /** returns the square distance of this point and P (may return
      * infinty or NaN).            
