@@ -3921,20 +3921,20 @@ public class Kernel {
 	/** 
 	 * conic sector from conic and parameters
 	 */
-	/*AGfinal public GeoConicPart ConicSector(String label, GeoConic conic, NumberValue a, NumberValue b) {
+	final public GeoConicPart ConicSector(String label, GeoConic conic, NumberValue a, NumberValue b) {
 		AlgoConicPartConicParameters algo = new AlgoConicPartConicParameters(cons, label, conic, a, b, 															
 				GeoConicPart.CONIC_PART_SECTOR);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * conic sector from conic and points
 	 */
-	/*AGfinal public GeoConicPart ConicSector(String label, GeoConic conic, GeoPoint P, GeoPoint Q) {
+	final public GeoConicPart ConicSector(String label, GeoConic conic, GeoPoint P, GeoPoint Q) {
 		AlgoConicPartConicPoints algo = new AlgoConicPartConicPoints(cons, label, conic, P, Q, 															
 				GeoConicPart.CONIC_PART_SECTOR);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * circle arc from three points
@@ -3964,13 +3964,13 @@ public class Kernel {
 	}
 	
 	/** 
-	 * circle sector from center and twho points on arc
+	 * circle sector from center and two points on arc
 	 */
-	/*AGfinal public GeoConicPart CircleSector(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
+	final public GeoConicPart CircleSector(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
 		AlgoConicPartCircle algo = new AlgoConicPartCircle(cons, label, A,B, C, 															
 				GeoConicPart.CONIC_PART_SECTOR);
 		return algo.getConicPart();
-	}*/
+	}
 
 	/** 
 	 * Focuses of conic. returns 2 GeoPoints

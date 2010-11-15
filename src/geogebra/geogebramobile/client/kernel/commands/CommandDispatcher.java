@@ -161,7 +161,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Delete", new CmdDelete(kernel));	   
     	//AGcmdTable.put("Radius", new CmdRadius(kernel));	   
     	cmdTable.put("Arc", new CmdArc(kernel));	   
-    	//AGcmdTable.put("CircleSector", new CmdCircleSector(kernel));	   
+    	cmdTable.put("CircleSector", new CmdCircleSector(kernel));	   
     	//AGcmdTable.put("Polar", new CmdPolar(kernel));	   
     	cmdTable.put("Semicircle", new CmdSemicircle(kernel));	   
     	cmdTable.put("FirstAxisLength", new CmdFirstAxisLength(kernel));	   
@@ -179,7 +179,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Relation", new CmdRelation(kernel));	   
     	//AGcmdTable.put("Polygon", new CmdPolygon(kernel));	   
     	cmdTable.put("Segment", new CmdSegment(kernel));	   
-    	//AGcmdTable.put("Sector", new CmdSector(kernel));	   
+    	cmdTable.put("Sector", new CmdSector(kernel));	   
     	//AGcmdTable.put("Locus", new CmdLocus(kernel));	   
     	//AGcmdTable.put("Centroid", new CmdCentroid(kernel));	   
     	//AGcmdTable.put("Vertex", new CmdVertex(kernel));	   

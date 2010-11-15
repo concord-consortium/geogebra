@@ -1375,7 +1375,7 @@ class CmdArc extends CommandProcessor {
  * Sector[ <GeoConic>, <Number>, <Number> ] Sector[ <GeoConic>, <GeoPoint>,
  * <GeoPoint> ]
  */
-/*AG
+
 class CmdSector extends CommandProcessor {
 
 	public CmdSector(Kernel kernel) {
@@ -1478,7 +1478,7 @@ class CmdCircleArc extends CommandProcessor {
 /*
  * CircleSector[ <GeoPoint center>, <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdCircleSector extends CommandProcessor {
 
 	public CmdCircleSector(Kernel kernel) {
