@@ -893,8 +893,8 @@ public class AlgebraProcessor {
 		else if (eval.isTextValue())
 			return processText(n, eval);				
 		else if (eval instanceof MyList) {
-			GWT.log("processlist needed");
-		//AG	return processList(n, (MyList) eval);
+			//GWT.log("processlist needed");
+			return processList(n, (MyList) eval);
 		} 
 		
 		// REMOVED due to issue 131: http://code.google.com/p/geogebra/issues/detail?id=131
@@ -948,7 +948,7 @@ public class AlgebraProcessor {
 		
 		return ret;
 	}
-	/*
+
 	private GeoElement [] processList(ExpressionNode n, MyList evalList) {		
 		String label = evalList.getLabel();		
 				
@@ -992,7 +992,7 @@ public class AlgebraProcessor {
 		
 		return ret;
 	}
-*/
+
 	private GeoElement[] processText(
 		ExpressionNode n,
 		ExpressionValue evaluate) {

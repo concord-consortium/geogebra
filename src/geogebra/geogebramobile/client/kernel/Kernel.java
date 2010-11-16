@@ -1591,16 +1591,16 @@ public class Kernel {
 			return algoList.getGeoList();
 		}		
 	}
-	/*
+
 	/**
 	 * Creates a dependent list object with the given label, 
 	 * e.g. {3, 2, 1} + {a, b, 2}	 
 	 */
-	/*AGfinal public GeoList ListExpression(String label, ExpressionNode root) {
+	final public GeoList ListExpression(String label, ExpressionNode root) {
 		AlgoDependentListExpression algo =
 			new AlgoDependentListExpression(cons, label, root);		
 		return algo.getList();
-	}*/
+	}
 	
 	/**
 	 * Creates a list object for a range of cells in the spreadsheet. 
@@ -2588,21 +2588,21 @@ public class Kernel {
 	/** 
 	 * Min[a, b]
 	 */
-	/*AGfinal public GeoNumeric Min(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Min(String label, NumberValue a, NumberValue b) {
 		AlgoMin algo = new AlgoMin(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Min[list]
 	 */
-	/*AGfinal public GeoNumeric Min(String label, GeoList list) {
+	final public GeoNumeric Min(String label, GeoList list) {
 		AlgoListMin algo = new AlgoListMin(cons, label, list);
 		GeoNumeric num = algo.getMin();
 		return num;
-	}*/
-	
+	}
+
 	/** 
 	 * Max[a, b]
 	 */
