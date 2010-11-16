@@ -159,7 +159,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("OrthogonalVector", new CmdOrthogonalVector(kernel));	   
     	//AGcmdTable.put("Length", new CmdLength(kernel));	   
     	//AGcmdTable.put("Delete", new CmdDelete(kernel));	   
-    	//AGcmdTable.put("Radius", new CmdRadius(kernel));	   
+    	cmdTable.put("Radius", new CmdRadius(kernel));	   
     	cmdTable.put("Arc", new CmdArc(kernel));	   
     	cmdTable.put("CircleSector", new CmdCircleSector(kernel));	   
     	//AGcmdTable.put("Polar", new CmdPolar(kernel));	   

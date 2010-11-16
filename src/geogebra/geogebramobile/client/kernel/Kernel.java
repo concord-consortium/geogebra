@@ -4588,11 +4588,11 @@ public class Kernel {
 	/** 
 	 * (circle) radius of c
 	 */
-	/*AGfinal public GeoNumeric Radius(String label, GeoConic c) {
+	final public GeoNumeric Radius(String label, GeoConic c) {
 		AlgoRadius algo = new AlgoRadius(cons, label, c);
 		GeoNumeric length = algo.getRadius();
 		return length;
-	}*/
+	}
 
 	/** 
 	 * angle of c (angle between first eigenvector and (1,0))

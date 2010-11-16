@@ -2455,7 +2455,7 @@ class CmdParameter extends CommandProcessor {
 /*
  * Radius[ <GeoConic> ]
  */
-/*AG
+
 class CmdRadius extends CommandProcessor {
 
 	public CmdRadius(Kernel kernel) {
