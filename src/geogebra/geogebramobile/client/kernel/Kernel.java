@@ -2625,41 +2625,41 @@ public class Kernel {
 	 * LCM[a, b]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric LCM(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric LCM(String label, NumberValue a, NumberValue b) {
 		AlgoLCM algo = new AlgoLCM(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * LCM[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric LCM(String label, GeoList list) {
+	final public GeoNumeric LCM(String label, GeoList list) {
 		AlgoListLCM algo = new AlgoListLCM(cons, label, list);
 		GeoNumeric num = algo.getLCM();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * GCD[a, b]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric GCD(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric GCD(String label, NumberValue a, NumberValue b) {
 		AlgoGCD algo = new AlgoGCD(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * GCD[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric GCD(String label, GeoList list) {
+	final public GeoNumeric GCD(String label, GeoList list) {
 		AlgoListGCD algo = new AlgoListGCD(cons, label, list);
 		GeoNumeric num = algo.getGCD();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SigmaXY[list]

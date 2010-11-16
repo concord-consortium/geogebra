@@ -213,8 +213,8 @@ public class CommandDispatcher {
     	cmdTable.put("Div", new CmdDiv(kernel));
     	cmdTable.put("Min", new CmdMin(kernel));
     	cmdTable.put("Max", new CmdMax(kernel));
-    	//AGcmdTable.put("LCM", new CmdLCM(kernel));
-    	//AGcmdTable.put("GCD", new CmdGCD(kernel));
+    	cmdTable.put("LCM", new CmdLCM(kernel));
+    	cmdTable.put("GCD", new CmdGCD(kernel));
     	//AGcmdTable.put("Sort", new CmdSort(kernel));
     	//AGcmdTable.put("First", new CmdFirst(kernel));
     	//AGcmdTable.put("Last", new CmdLast(kernel));
