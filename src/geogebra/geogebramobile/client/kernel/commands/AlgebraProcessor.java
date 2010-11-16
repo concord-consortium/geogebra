@@ -893,7 +893,6 @@ public class AlgebraProcessor {
 		else if (eval.isTextValue())
 			return processText(n, eval);				
 		else if (eval instanceof MyList) {
-			//GWT.log("processlist needed");
 			return processList(n, (MyList) eval);
 		} 
 		

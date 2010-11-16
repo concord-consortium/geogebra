@@ -2606,20 +2606,20 @@ public class Kernel {
 	/** 
 	 * Max[a, b]
 	 */
-	/*AGfinal public GeoNumeric Max(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Max(String label, NumberValue a, NumberValue b) {
 		AlgoMax algo = new AlgoMax(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Max[list]
 	 */
-	/*AGfinal public GeoNumeric Max(String label, GeoList list) {
+	final public GeoNumeric Max(String label, GeoList list) {
 		AlgoListMax algo = new AlgoListMax(cons, label, list);
 		GeoNumeric num = algo.getMax();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * LCM[a, b]
