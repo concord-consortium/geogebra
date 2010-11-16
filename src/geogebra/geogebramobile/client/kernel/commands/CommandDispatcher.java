@@ -175,9 +175,9 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Excentricity", new CmdExcentricity(kernel));	  
     	// eccentricity
     	//AGcmdTable.put("Eccentricity", new CmdEccentricity(kernel));	   
-    	//AGcmdTable.put("OrthogonalLine", new CmdOrthogonalLine(kernel));	   
+    	cmdTable.put("OrthogonalLine", new CmdOrthogonalLine(kernel));	   
     	//AGcmdTable.put("Relation", new CmdRelation(kernel));	   
-    	//AGcmdTable.put("Polygon", new CmdPolygon(kernel));	   
+    	cmdTable.put("Polygon", new CmdPolygon(kernel));	   
     	cmdTable.put("Segment", new CmdSegment(kernel));	   
     	cmdTable.put("Sector", new CmdSector(kernel));	   
     	//AGcmdTable.put("Locus", new CmdLocus(kernel));	   
