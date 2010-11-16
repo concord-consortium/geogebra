@@ -27,6 +27,7 @@ import geogebra.geogebramobile.client.kernel.GeoNumeric;
 import geogebra.geogebramobile.client.kernel.GeoPoint;
 import geogebra.geogebramobile.client.kernel.GeoPolygon;
 import geogebra.geogebramobile.client.kernel.GeoSegment;
+import geogebra.geogebramobile.client.kernel.GeoText;
 import geogebra.geogebramobile.client.kernel.GeoVec3D;
 import geogebra.geogebramobile.client.kernel.GeoVector;
 import geogebra.geogebramobile.client.kernel.Kernel;
@@ -656,7 +657,7 @@ class CmdUnitOrthogonalVector extends CommandProcessor {
  * 							 add Length[ <Curve>, <Number>, <Number> ]
  *                           add Length[ <Curve>, <Point>, <Point> ]
  */
-/*AG
+
 class CmdLength extends CommandProcessor {
 
 	public CmdLength(Kernel kernel) {

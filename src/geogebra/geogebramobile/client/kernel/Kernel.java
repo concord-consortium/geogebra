@@ -2489,11 +2489,11 @@ public class Kernel {
 	/** 
 	 * Length named label of vector v
 	 */
-	/*AGfinal public GeoNumeric Length(String label, GeoVec3D v) {
+	final public GeoNumeric Length(String label, GeoVec3D v) {
 		AlgoLengthVector algo = new AlgoLengthVector(cons, label, v);
 		GeoNumeric num = algo.getLength();
 		return num;
-	}*/
+	}
 
 	/** 
 	 * Distance named label between points P and Q
@@ -3534,11 +3534,19 @@ public class Kernel {
 	/** 
 	 * Length[list]
 	 */
-	/*AGfinal public GeoNumeric Length(String label, GeoList list) {
+	final public GeoNumeric Length(String label, GeoList list) {
 		AlgoListLength algo = new AlgoListLength(cons, label, list);
 		return algo.getLength();
-	}*/
-	
+	}
+
+	/** 
+	 * Length[text]
+	 */
+	final public GeoNumeric Length(String label, GeoText text) {
+		AlgoTextLength algo = new AlgoTextLength(cons, label, text);
+		return algo.getLength();
+	}
+
 	// PhilippWeissenbacher 2007-04-10
 	
 	/**
@@ -5299,56 +5307,39 @@ public class Kernel {
 	/**
 	 * Calculate Function Length between the numbers A and B: integral from A to B on T = sqrt(1+(f')^2)
 	 */
-
-	/*AGfinal public GeoNumeric FunctionLength(String label,GeoFunction f,GeoNumeric A,GeoNumeric B){
-
+	final public GeoNumeric FunctionLength(String label,GeoFunction f,GeoNumeric A,GeoNumeric B){
 		  AlgoLengthFunction algo = new AlgoLengthFunction(cons,label,f,A,B);
 		  GeoNumeric length = algo.getLength();
 		  return length;
-
-	}*/
-
+	}
 	
 
 	/**
 	 * Calculate Function Length between the points A and B: integral from A to B on T = sqrt(1+(f')^2)
 	 */
-
-	/*AGfinal public GeoNumeric FunctionLength2Points(String label,GeoFunction f,GeoPoint A,GeoPoint B){
-
+	final public GeoNumeric FunctionLength2Points(String label,GeoFunction f,GeoPoint A,GeoPoint B){
 		  AlgoLengthFunction2Points algo = new AlgoLengthFunction2Points(cons,label,f,A,B);
 		  GeoNumeric length = algo.getLength();
 		  return length;
-
-	}*/
-
-	
+	}
 
 	/**
-
 	 * Calculate Curve Length between the parameters t0 and t1: integral from t0 to t1 on T = sqrt(a'(t)^2+b'(t)^2)
-
 	 */
-
-	/*AGfinal public GeoNumeric CurveLength(String label, GeoCurveCartesian c, GeoNumeric t0,GeoNumeric t1){
-
+	final public GeoNumeric CurveLength(String label, GeoCurveCartesian c, GeoNumeric t0,GeoNumeric t1){
 		  AlgoLengthCurve algo = new AlgoLengthCurve(cons,label,c,t0,t1);
 		  GeoNumeric length = algo.getLength();
 		  return length;
-
-	}*/
-
+	}
 	
-
 	/**
 	 * Calculate Curve Length between the points A and B: integral from t0 to t1 on T = sqrt(a'(t)^2+b'(t)^2)
 	 */
-	/*AGfinal public GeoNumeric CurveLength2Points(String label, GeoCurveCartesian c, GeoPoint A,GeoPoint B){
+	final public GeoNumeric CurveLength2Points(String label, GeoCurveCartesian c, GeoPoint A,GeoPoint B){
 		  AlgoLengthCurve2Points algo = new AlgoLengthCurve2Points(cons,label,c,A,B);
 		  GeoNumeric length = algo.getLength();
 		  return length;
-	}*/
-
+	}
 
 	/** 
 	 * tangent to Curve f in point P: (b'(t), -a'(t), a'(t)*b(t)-a(t)*b'(t))
