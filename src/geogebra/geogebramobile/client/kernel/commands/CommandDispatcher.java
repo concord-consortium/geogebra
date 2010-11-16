@@ -183,7 +183,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Locus", new CmdLocus(kernel));	   
     	//AGcmdTable.put("Centroid", new CmdCentroid(kernel));	   
     	//AGcmdTable.put("Vertex", new CmdVertex(kernel));	   
-    	//AGcmdTable.put("Conic", new CmdConic(kernel));	   
+    	cmdTable.put("Conic", new CmdConic(kernel));	   
     	cmdTable.put("FirstAxis", new CmdFirstAxis(kernel));	   
     	cmdTable.put("Circle", new CmdCircle(kernel));	   
     	cmdTable.put("LineBisector", new CmdLineBisector(kernel));	   
