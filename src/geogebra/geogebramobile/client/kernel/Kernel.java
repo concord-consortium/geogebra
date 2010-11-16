@@ -2448,20 +2448,20 @@ public class Kernel {
 	/** 
 	 * orthogonal vector of line g
 	 */
-	/*AGfinal public GeoVector OrthogonalVector(String label, GeoLine g) {
+	final public GeoVector OrthogonalVector(String label, GeoLine g) {
 		AlgoOrthoVectorLine algo = new AlgoOrthoVectorLine(cons, label, g);
 		GeoVector n = algo.getVector();
 		return n;
-	}*/
+	}
 
 	/** 
 	 * orthogonal vector of vector v
 	 */
-	/*AGfinal public GeoVector OrthogonalVector(String label, GeoVector v) {
+	final public GeoVector OrthogonalVector(String label, GeoVector v) {
 		AlgoOrthoVectorVector algo = new AlgoOrthoVectorVector(cons, label, v);
 		GeoVector n = algo.getVector();
 		return n;
-	}*/
+	}
 
 	/** 
 	 * unit orthogonal vector of line g

@@ -524,7 +524,7 @@ class CmdSlope extends CommandProcessor {
 /*
  * OrthogonalVector[ <GeoLine> ] OrthogonalVector[ <GeoVector> ]
  */
-/*AG
+
 class CmdOrthogonalVector extends CommandProcessor {
 
 	public CmdOrthogonalVector(Kernel kernel) {
