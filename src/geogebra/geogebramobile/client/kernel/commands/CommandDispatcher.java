@@ -13,7 +13,6 @@ the Free Software Foundation.
 package geogebra.geogebramobile.client.kernel.commands;
 
 
-
 import geogebra.geogebramobile.client.kernel.Construction;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.Kernel;
@@ -257,7 +256,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Normal", new CmdNormal(kernel));
     	//AGcmdTable.put("Binomial", new CmdBinomial(kernel));
     	//AGcmdTable.put("InverseNormal", new CmdInverseNormal(kernel));
-    	//AGcmdTable.put("Expand", new CmdExpand(kernel));
+    	cmdTable.put("Expand", new CmdExpand(kernel));
     	//AGcmdTable.put("Factor", new CmdFactor(kernel));
     	//AGcmdTable.put("Element", new CmdElement(kernel));
     	//AGcmdTable.put("Iteration", new CmdIteration(kernel));
@@ -299,7 +298,7 @@ public class CommandDispatcher {
     	
     	//AGcmdTable.put("IsInteger", new CmdIsInteger(kernel));
     	
-    	//AGcmdTable.put("Random", new CmdRandom(kernel));   
+    	//cmdTable.put("Random", new CmdRandom(kernel));   
     	//AGcmdTable.put("RandomBinomial", new CmdRandomBinomial(kernel));   
     	//AGcmdTable.put("RandomPoisson", new CmdRandomPoisson(kernel));   
     	

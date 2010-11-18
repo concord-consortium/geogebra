@@ -5087,6 +5087,10 @@ public class Kernel {
 		AlgoExpand algo = new AlgoExpand(cons, label, func);
 		return algo.getResult();			
 	}*/
+	final public GeoElement Expand(String label, CasEvaluableFunction func) {		
+		AlgoCasExpand algo = new AlgoCasExpand(cons, label, func);
+		return algo.getResult();			
+	}
 	
 	/**
 	 * Simplify function expression
