@@ -1867,24 +1867,35 @@ public class Kernel {
 	/** 
 	 * Text of geo.
 	 */
-	/*AGfinal public GeoText Text(
+	final public GeoText Text(
 		String label,
 		GeoElement geo, GeoBoolean substituteVars) {
 		AlgoText algo = new AlgoText(cons, label, geo, substituteVars);
 		GeoText t = algo.getGeoText();
 		return t;
-	}*/
+	}
 	
 	/** 
 	 * Text of geo.
 	 */
-	/*AGfinal public GeoText Text(
+	final public GeoText Text(
 		String label,
 		GeoElement geo, GeoPoint p, GeoBoolean substituteVars) {
 		AlgoText algo = new AlgoText(cons, label, geo, p, substituteVars);
 		GeoText t = algo.getGeoText();
 		return t;
-	}*/
+	}
+	
+	/** 
+	 * Text of geo.
+	 */
+	final public GeoText Text(
+		String label,
+		GeoElement geo, GeoPoint p, GeoBoolean substituteVars, GeoBoolean latex) {
+		AlgoText algo = new AlgoText(cons, label, geo, p, substituteVars, latex);
+		GeoText t = algo.getGeoText();
+		return t;
+	}
 	
 	/** 
 	 * Text of geo.
@@ -2466,25 +2477,25 @@ public class Kernel {
 	/** 
 	 * unit orthogonal vector of line g
 	 */
-	/*AGfinal public GeoVector UnitOrthogonalVector(
+	final public GeoVector UnitOrthogonalVector(
 		String label,
 		GeoLine g) {
 		AlgoUnitOrthoVectorLine algo = new AlgoUnitOrthoVectorLine(cons, label, g);
 		GeoVector n = algo.getVector();
 		return n;
-	}*/
+	}
 
 	/** 
 	 * unit orthogonal vector of vector v
 	 */
-	/*AGfinal public GeoVector UnitOrthogonalVector(
+	final public GeoVector UnitOrthogonalVector(
 		String label,
 		GeoVector v) {
 		AlgoUnitOrthoVectorVector algo =
 			new AlgoUnitOrthoVectorVector(cons, label, v);
 		GeoVector n = algo.getVector();
 		return n;
-	}*/
+	}
 
 	/** 
 	 * Length named label of vector v
@@ -3947,20 +3958,20 @@ public class Kernel {
 	/** 
 	 * circle arc from three points
 	 */
-	/*AGfinal public GeoConicPart CircumcircleArc(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
+	final public GeoConicPart CircumcircleArc(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
 		AlgoConicPartCircumcircle algo = new AlgoConicPartCircumcircle(cons, label, A,B, C, 															
 				GeoConicPart.CONIC_PART_ARC);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * circle sector from three points
 	 */
-	/*AGfinal public GeoConicPart CircumcircleSector(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
+	final public GeoConicPart CircumcircleSector(String label, GeoPoint A, GeoPoint B, GeoPoint C) {
 		AlgoConicPartCircumcircle algo = new AlgoConicPartCircumcircle(cons, label, A,B, C, 															
 				GeoConicPart.CONIC_PART_SECTOR);
 		return algo.getConicPart();
-	}*/
+	}
 	
 	/** 
 	 * circle arc from center and two points on arc
@@ -3983,11 +3994,11 @@ public class Kernel {
 	/** 
 	 * Focuses of conic. returns 2 GeoPoints
 	 */
-	/*AGfinal public GeoPoint[] Focus(String[] labels, GeoConic c) {
+	final public GeoPoint[] Focus(String[] labels, GeoConic c) {
 		AlgoFocus algo = new AlgoFocus(cons, labels, c);
 		GeoPoint[] focus = algo.getFocus();
 		return focus;
-	}*/
+	}
 
 	/** 
 	 * Vertices of conic. returns 4 GeoPoints
@@ -4423,38 +4434,38 @@ public class Kernel {
 	/** 
 	 * polar line to P relativ to c
 	 */
-	/*AGfinal public GeoLine PolarLine(
+	final public GeoLine PolarLine(
 		String label,
 		GeoPoint P,
 		GeoConic c) {
 		AlgoPolarLine algo = new AlgoPolarLine(cons, label, c, P);
 		GeoLine polar = algo.getLine();
 		return polar;
-	}*/
+	}
 
 	/** 
 	 * diameter line conjugate to direction of g relative to c
 	 */
-	/*AGfinal public GeoLine DiameterLine(
+	final public GeoLine DiameterLine(
 		String label,
 		GeoLine g,
 		GeoConic c) {
 		AlgoDiameterLine algo = new AlgoDiameterLine(cons, label, c, g);
 		GeoLine diameter = algo.getDiameter();
 		return diameter;
-	}*/
+	}
 
 	/** 
 	 * diameter line conjugate to v relative to c
 	 */
-	/*AGfinal public GeoLine DiameterLine(
+	final public GeoLine DiameterLine(
 		String label,
 		GeoVector v,
 		GeoConic c) {
 		AlgoDiameterVector algo = new AlgoDiameterVector(cons, label, c, v);
 		GeoLine diameter = algo.getDiameter();
 		return diameter;
-	}*/
+	}
 
 	/** 
 	 * tangents to c through P
@@ -4515,20 +4526,20 @@ public class Kernel {
 	/** 
 	 * asymptotes to c
 	 */
-	/*AGfinal public GeoLine[] Asymptote(String[] labels, GeoConic c) {
+	final public GeoLine[] Asymptote(String[] labels, GeoConic c) {
 		AlgoAsymptote algo = new AlgoAsymptote(cons, labels, c);
 		GeoLine[] asymptotes = algo.getAsymptotes();
 		return asymptotes;
-	}*/
+	}
 
 	/** 
 	 * axes of c
 	 */
-	/*AGfinal public GeoLine[] Axes(String[] labels, GeoConic c) {
+	final public GeoLine[] Axes(String[] labels, GeoConic c) {
 		AlgoAxes algo = new AlgoAxes(cons, labels, c);
 		GeoLine[] axes = algo.getAxes();
 		return axes;
-	}*/
+	}
 
 	/** 
 	 * first axis of c
@@ -4558,13 +4569,22 @@ public class Kernel {
 	}
 
 	/** 
-	 * excentricity of c
+	 * linear eccentricity of c
 	 */
-	/*AGfinal public GeoNumeric Excentricity(String label, GeoConic c) {
+	final public GeoNumeric Excentricity(String label, GeoConic c) {
 		AlgoExcentricity algo = new AlgoExcentricity(cons, label, c);
-		GeoNumeric excentricity = algo.getExcentricity();
-		return excentricity;
-	}*/
+		GeoNumeric linearEccentricity = algo.getLinearEccentricity();
+		return linearEccentricity;
+	}
+
+	/** 
+	 * eccentricity of c
+	 */
+	final public GeoNumeric Eccentricity(String label, GeoConic c) {
+		AlgoEccentricity algo = new AlgoEccentricity(cons, label, c);
+		GeoNumeric eccentricity = algo.getEccentricity();
+		return eccentricity;
+	}
 
 	/** 
 	 * first axis' length of c
@@ -5091,7 +5111,16 @@ public class Kernel {
 		AlgoFactor algo = new AlgoFactor(cons, label, func);
 		return algo.getResult();			
 	}*/
-	
+
+	/**
+	 * Asymptotes
+	 * Michael Borcherds 
+	 */
+	final public GeoList AsymptoteFunction(String label, GeoFunction func) {		
+		AlgoAsymptoteFunction algo = new AlgoAsymptoteFunction(cons, label, func);
+		return algo.getResult();			
+	}
+
 	/**
 	 * Taylor series of function f about point x=a of order n
 	 */

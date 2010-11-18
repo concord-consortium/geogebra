@@ -34,6 +34,7 @@ import geogebra.geogebramobile.client.kernel.Kernel;
 import geogebra.geogebramobile.client.kernel.Mirrorable;
 import geogebra.geogebramobile.client.kernel.PointRotateable;
 import geogebra.geogebramobile.client.kernel.Rotateable;
+import geogebra.geogebramobile.client.kernel.Translateable;
 import geogebra.geogebramobile.client.kernel.arithmetic.Command;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
@@ -605,7 +606,7 @@ class CmdUnitVector extends CommandProcessor {
 /*
  * UnitOrthogonalVector[ <GeoLine> ] UnitOrthogonalVector[ <GeoVector> ]
  */
-/*AG
+
 class CmdUnitOrthogonalVector extends CommandProcessor {
 
 	public CmdUnitOrthogonalVector(Kernel kernel) {
@@ -1059,7 +1060,7 @@ class CmdArea extends CommandProcessor {
 /*
  * Focus[ <GeoConic> ]
  */
-/*AG
+
 class CmdFocus extends CommandProcessor {
 
 	public CmdFocus(Kernel kernel) {
@@ -1525,7 +1526,7 @@ class CmdCircleSector extends CommandProcessor {
 /*
  * CircumcircleArc[ <GeoPoint center>, <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdCircumcircleArc extends CommandProcessor {
 
 	public CmdCircumcircleArc(Kernel kernel) {
@@ -1570,7 +1571,7 @@ class CmdCircumcircleArc extends CommandProcessor {
 /*
  * CircumcircleSector[ <GeoPoint center>, <GeoPoint>, <GeoPoint> ]
  */
-/*AG
+
 class CmdCircumcircleSector extends CommandProcessor {
 
 	public CmdCircumcircleSector(Kernel kernel) {
@@ -1906,7 +1907,7 @@ class CmdConic extends CommandProcessor {
 /*
  * Polar[ <GeoPoint>, <GeoConic> ]
  */
-/*AG
+
 class CmdPolar extends CommandProcessor {
 
 	public CmdPolar(Kernel kernel) {
@@ -1951,7 +1952,7 @@ class CmdPolar extends CommandProcessor {
 /*
  * Diameter[ <GeoVector>, <GeoConic> ] Diameter[ <GeoLine>, <GeoConic> ]
  */
-/*AG
+
 class CmdDiameter extends CommandProcessor {
 
 	public CmdDiameter(Kernel kernel) {
@@ -2095,7 +2096,7 @@ class CmdTangent extends CommandProcessor {
 /*
  * Asymptote[ <GeoConic> ]
  */
-/*AG
+
 class CmdAsymptote extends CommandProcessor {
 
 	public CmdAsymptote(Kernel kernel) {
@@ -2196,7 +2197,7 @@ class CmdDenominator extends CommandProcessor {
 /*
  * Axes[ <GeoConic> ]
  */
-/*AG
+
 class CmdAxes extends CommandProcessor {
 
 	public CmdAxes(Kernel kernel) {
@@ -2361,7 +2362,7 @@ class CmdSecondAxisLength extends CommandProcessor {
  * LinearEccentricity[ <GeoConic> ]
  * Excentricity[ <GeoConic> ]
  */
-/*AG
+
 class CmdExcentricity extends CommandProcessor {
 
 	public CmdExcentricity(Kernel kernel) {
@@ -2392,7 +2393,7 @@ class CmdExcentricity extends CommandProcessor {
 /*
  * Eccentricity[ <GeoConic> ]
  */
-/*AG
+
 class CmdEccentricity extends CommandProcessor {
 
 	public CmdEccentricity(Kernel kernel) {
@@ -2526,7 +2527,7 @@ class CmdDirectrix extends CommandProcessor {
  * Translate[ <GeoPolygon>, <GeoVector> ]
  *  
  */
-/*AG
+
 class CmdTranslate extends CommandProcessor {
 
 	public CmdTranslate(Kernel kernel) {
@@ -2565,7 +2566,6 @@ class CmdTranslate extends CommandProcessor {
                     ret = kernel.Translate(label, p, v);                 
                 }
 				 */
-/*AG
 
 				ret = kernel.Translate(label, p, v); 
 				return ret;
@@ -2582,14 +2582,12 @@ class CmdTranslate extends CommandProcessor {
 				GeoPoint P = (GeoPoint) arg[1];
 				/* removed Michael Borcherds 2008-12-03
 				 * doesn't work as the XML etc isn't updated 
-/*AG
 
                 if (label == null) {                    
                     v.setStartPoint(P);
                     v.updateRepaint();
                     ret[0] = v;                 
                 } else*/
-/*AG
 				{
 					ret[0] = kernel.Translate(label, v, P);
 				}
@@ -2981,7 +2979,7 @@ class CmdRelation extends CommandProcessor {
 /*
  * Delete[ <GeoElement> ]
  */
-/*AG
+
 class CmdDelete extends CommandProcessor {
 
 	public CmdDelete(Kernel kernel) {

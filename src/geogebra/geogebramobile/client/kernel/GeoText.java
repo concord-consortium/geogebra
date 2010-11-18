@@ -294,7 +294,12 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	// used for eg Text["text",(1,2)]
 	// to stop it being editable
 	boolean isTextCommand = false;
-	
+
+	public void setIsTextCommand(boolean isCommand) {
+		this.isTextCommand = isCommand;
+	}
+
+	//arpad: deprecated 
 	public void setIsCommand(boolean isCommand) {
 		this.isTextCommand = isCommand;
 	}
@@ -305,7 +310,7 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	
 	void setAlgoMacroOutput(boolean isAlgoMacroOutput) {
 		super.setAlgoMacroOutput(true);
-		setIsCommand(true);
+		setIsTextCommand(true);
 	}
 	
 	// used for eg Text["text",(1,2)]
