@@ -258,6 +258,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("InverseNormal", new CmdInverseNormal(kernel));
     	cmdTable.put("Expand", new CmdExpand(kernel));
     	//AGcmdTable.put("Factor", new CmdFactor(kernel));
+    	cmdTable.put("PrimeFactors", new CmdPrimeFactors(kernel));
     	//AGcmdTable.put("Element", new CmdElement(kernel));
     	//AGcmdTable.put("Iteration", new CmdIteration(kernel));
     	//AGcmdTable.put("IterationList", new CmdIterationList(kernel));
