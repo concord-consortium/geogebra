@@ -4445,7 +4445,7 @@ class CmdTableText extends CommandProcessor {
 	 }
 
  }
-
+*/
  class CmdIsInteger extends CommandProcessor {
 
 	 public CmdIsInteger(Kernel kernel) {
@@ -4475,7 +4475,7 @@ class CmdTableText extends CommandProcessor {
 	 }
 
  }
-*/
+
 
    class CmdPrimeFactors  extends CommandProcessor {
 

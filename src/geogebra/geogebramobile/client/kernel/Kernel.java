@@ -3259,11 +3259,11 @@ public class Kernel {
 	 * IsInteger[number]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoBoolean IsInteger(String label, GeoNumeric geo) {
+	final public GeoBoolean IsInteger(String label, GeoNumeric geo) {
 		AlgoIsInteger algo = new AlgoIsInteger(cons, label, geo);
 		GeoBoolean result = algo.getResult();
 		return result;
-	}*/
+	}
 	
 	/** 
 	 * Mode[list]

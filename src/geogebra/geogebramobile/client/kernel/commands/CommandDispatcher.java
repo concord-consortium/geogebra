@@ -297,7 +297,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Union", new CmdUnion(kernel));   
     	//AGcmdTable.put("Intersection", new CmdIntersection(kernel)); 
     	
-    	//AGcmdTable.put("IsInteger", new CmdIsInteger(kernel));
+    	cmdTable.put("IsInteger", new CmdIsInteger(kernel));
     	
     	//cmdTable.put("Random", new CmdRandom(kernel));   
     	//AGcmdTable.put("RandomBinomial", new CmdRandomBinomial(kernel));   
