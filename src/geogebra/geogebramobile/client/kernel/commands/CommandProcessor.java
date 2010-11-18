@@ -3831,7 +3831,7 @@ class CmdIf extends CommandProcessor {
 /*
  * CountIf[ <GeoBoolean>, <GeoList> ]
  */
-/*AG
+
 class CmdCountIf extends CommandProcessor {
 
 	public CmdCountIf(Kernel kernel) {

@@ -1655,13 +1655,13 @@ public class Kernel {
 	 * If-then-else construct for functions. 
 	 *  example: If[ x < 2, x^2, x + 2 ]
 	 */
-	/*AGfinal public GeoNumeric CountIf(String label, 
+	final public GeoNumeric CountIf(String label, 
 			GeoFunction boolFun,
 			GeoList list) {
 		
 		AlgoCountIf algo = new AlgoCountIf(cons, label, boolFun, list);
 		return algo.getResult();
-	}*/	
+	}	
 	
 	/** 
 	 * Sequence command:

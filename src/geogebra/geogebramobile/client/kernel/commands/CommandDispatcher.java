@@ -284,7 +284,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Histogram", new CmdHistogram(kernel));   
     	//AGcmdTable.put("TrapezoidalSum", new CmdTrapezoidalSum(kernel));  
     	
-    	//AGcmdTable.put("CountIf", new CmdCountIf(kernel));   
+    	cmdTable.put("CountIf", new CmdCountIf(kernel));   
     	
     	//AGcmdTable.put("TableText", new CmdTableText(kernel)); 
     	
