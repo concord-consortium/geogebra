@@ -181,7 +181,7 @@ public class CommandDispatcher {
     	cmdTable.put("Segment", new CmdSegment(kernel));	   
     	cmdTable.put("Sector", new CmdSector(kernel));	   
     	//AGcmdTable.put("Locus", new CmdLocus(kernel));	   
-    	//AGcmdTable.put("Centroid", new CmdCentroid(kernel));	   
+    	cmdTable.put("Centroid", new CmdCentroid(kernel));	   
     	//AGcmdTable.put("Vertex", new CmdVertex(kernel));
     	cmdTable.put("Conic", new CmdConic(kernel));	   
     	cmdTable.put("FirstAxis", new CmdFirstAxis(kernel));	   

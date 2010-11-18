@@ -4031,11 +4031,11 @@ public class Kernel {
 	/** 
 	 * Centroid of a 
 	 */
-	/*AGfinal public GeoPoint Centroid(String label, GeoPolygon p) {
+	final public GeoPoint Centroid(String label, GeoPolygon p) {
 		AlgoCentroidPolygon algo = new AlgoCentroidPolygon(cons, label, p);
 		GeoPoint centroid = algo.getPoint();
 		return centroid;
-	}*/
+	}
 	
 	/** 
 	 * Corner of image

@@ -3722,7 +3722,7 @@ class CmdTurningPoint extends CommandProcessor {
 /*
  * Centroid[ <Polygon> ]
  */
-/*AG
+
 class CmdCentroid extends CommandProcessor {
 
 	public CmdCentroid (Kernel kernel) {
