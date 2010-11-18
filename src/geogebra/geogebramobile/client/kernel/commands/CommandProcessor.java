@@ -4570,7 +4570,7 @@ class CmdTableText extends CommandProcessor {
 		 }
 	 }
 
- }
+ }*/
 
  class CmdKeepIf extends CommandProcessor {
 
@@ -4616,7 +4616,7 @@ class CmdTableText extends CommandProcessor {
 	 }
 
  }
-
+/*AG
  class CmdAxisStepX extends CommandProcessor {
 
 	 public CmdAxisStepX(Kernel kernel) {

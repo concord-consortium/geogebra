@@ -305,7 +305,7 @@ public class CommandDispatcher {
     	
     	//AGcmdTable.put("FractionText", new CmdFractionText(kernel));   
     	
-    	//AGcmdTable.put("KeepIf", new CmdKeepIf(kernel));  
+    	cmdTable.put("KeepIf", new CmdKeepIf(kernel));  
     	
     	//AGcmdTable.put("AxisStepX", new CmdAxisStepX(kernel));   
     	//AGcmdTable.put("AxisStepY", new CmdAxisStepY(kernel));   
