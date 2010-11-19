@@ -10,11 +10,13 @@ public class MyXMLio {
 	private Application app;
 	private Kernel kernel;
 	private Construction cons;
+	private MyXMLHandler xmlParser;
 	
 	public MyXMLio(Kernel kernel, Construction cons) {
 		this.kernel = kernel;
 		this.cons = cons;	
 		app = kernel.getApplication();
+		xmlParser = app.getMyXmlHandler();
 
 	}
 	
@@ -55,6 +57,51 @@ public class MyXMLio {
 
 		sb.append("</geogebra>");
 		return sb.toString();
+	}
+	
+	private void doParseXML(/*AGReader*/String ir, boolean clearConstruction,
+			boolean isGGTFile) throws Exception {
+		boolean oldVal = kernel.isNotifyViewsActive();
+		if (!isGGTFile) {
+			kernel.setNotifyViewsActive(false);
+		}
+
+		if (clearConstruction) {
+			// clear construction
+			kernel.clearConstruction();
+		}
+
+		try {
+			//AGxmlParser.parse(handler, ir);
+			//AGxmlParser.reset();
+			xmlParser.parseXml(ir);
+		} catch (Error e) {
+			// e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (!isGGTFile) {
+				kernel.updateConstruction();
+				kernel.setNotifyViewsActive(oldVal);				
+			}
+		}
+
+		// handle construction step stored in XMLhandler
+		// do this only if the construction protocol navigation is showing	
+		/*AGif (!isGGTFile && oldVal &&
+				app.showConsProtNavigation()) 
+		{
+				app.getGuiManager().setConstructionStep(handler.getConsStep());
+		}*/
+		
+	}
+	
+	public void processXMLString(String str, boolean clearAll, boolean isGGTfile)
+	throws Exception {
+		//AGStringReader rs = new StringReader(str);
+		doParseXML(/*rs*/str, clearAll, isGGTfile);
+		//AGrs.close();
 	}
 
 }

@@ -1000,11 +1000,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return false;
 	}
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 
 	

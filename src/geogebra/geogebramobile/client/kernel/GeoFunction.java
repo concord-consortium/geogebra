@@ -1050,10 +1050,5 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 		return sb.toString();
 	 }
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

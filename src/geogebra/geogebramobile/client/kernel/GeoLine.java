@@ -811,11 +811,7 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 		return false;
 	}
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	 /** returns true if this line and g are parallel (signed)*/
     final public boolean isSameDirection(GeoLine g) {        
     	// check x and g.x have the same sign

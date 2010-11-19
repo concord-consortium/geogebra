@@ -749,11 +749,5 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		return false;
 	}
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

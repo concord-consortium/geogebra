@@ -444,13 +444,7 @@ implements FunctionalNVar, CasEvaluableFunction {
 			return hasDrawable3D();
 		}
 
-		@Override
-		public String getXML() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-	 
+
 	 
 /*
 		public GgbVector evaluateNormal(double u, double v){

@@ -12,6 +12,7 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.ListValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyList;
@@ -47,10 +48,14 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
 	
 	// GeoElement list members
 	private ArrayList geoList;	  
-	
+	// G.Sturr 2010-6-12
+	// Selection index for lists used in comboBoxes
+	private int selectedIndex = 0;
+
  	// lists will often grow and shrink dynamically,
 	// so we keep a cacheList of all old list elements
 	private ArrayList cacheList;	  		
+	public int lineTypeHidden = EuclidianView.DEFAULT_LINE_TYPE_HIDDEN;		
 	
 	private boolean isDefined = true;
 	private boolean isDrawable = true;
@@ -536,12 +541,10 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
 	public ArrayList getMoveableParentPoints() {
 		return null;
 	}
-	
 	/**
 	   * save object in XML format
 	   */ 
-	  public final String getXML() {
-		 StringBuilder sb = new StringBuilder();
+	  public final void getXML(StringBuilder sb) {
 		 		 
 		 // an independent list needs to add
 		 // its expression itself
@@ -560,8 +563,14 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
 			  sb.append(" label=\"");
 			  sb.append(label);
 		  sb.append("\">\n");
-		 //AG sb.append(getXMLtags());
+		  getXMLtags(sb);
 		  
+		  if (selectedIndex != 0) {
+			sb.append("\t<selectedIndex val=\"");
+			sb.append(selectedIndex);
+			sb.append("\"/>\n");
+		  }
+			
 		  // point style
 			sb.append("\t<pointSize val=\"");
 				sb.append(pointSize);
@@ -596,9 +605,35 @@ public class GeoList extends GeoElement implements ListValue, LineProperties, Po
 				sb.append("\"/>\n");
 			}
 		  sb.append("</element>\n");
-		  
-		  return sb.toString();
+
 	  }
+	  
+	  protected void getXMLtags(StringBuilder sb) {
+	        super.getXMLtags(sb);
+	        
+			getLineStyleXML(sb);
+
+	    }
+	  
+	  /**
+		 * Returns line type and line thickness as xml string.
+		 * @see getXMLtags() of GeoConic, GeoLine and GeoVector      
+		 */
+		protected void getLineStyleXML(StringBuilder sb) {
+			if (isGeoPoint()) return;
+			
+			sb.append("\t<lineStyle");
+			sb.append(" thickness=\"");
+			sb.append(lineThickness);
+			sb.append("\"");
+			sb.append(" type=\"");
+			sb.append(lineType);
+			sb.append("\"");
+			sb.append(" typeHidden=\"");
+			sb.append(lineTypeHidden);
+			sb.append("\"");		
+			sb.append("/>\n");
+		}	
 	  
 	  	/**
 		 * Registers geo as a listener for updates

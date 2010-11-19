@@ -109,6 +109,7 @@ public class Application extends BaseApplication {
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
+				ggbOnInit();
 			}
 		} else {
 			//We will use it as an js library, so don't init anything for now
@@ -120,11 +121,16 @@ public class Application extends BaseApplication {
 		$doc.ggbApplet = $wnd.ggbApplet = {};
 		
 		$wnd.ggbApplet.getXml = function(objName) {
-			if (objName)
-				return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML(Ljava/lang/String;)(objName);
-			else 
+			if (objName) {
+				return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXml(Ljava/lang/String;)(objName);
+			} else {
 				return appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::getXML()();
+			}
 		};
+		
+		$wnd.ggbApplet.setXml = function(xml) {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setXML(Ljava/lang/String;)(xml);
+		}
 	}-*/;
 
 	private void initKernel() {
@@ -1607,6 +1613,10 @@ public class Application extends BaseApplication {
 	public static native void log(String log) /*-{
 		console.log(log);
 	}-*/;
+	
+	public static native void ggbOnInit() /*-{
+		$wnd.ggbOnInit();
+	}-*/;
 
 	public String getXML() {
 		return myXMLio.getFullXML();
@@ -1701,6 +1711,23 @@ public class Application extends BaseApplication {
 		
 		return sb.toString();*/
 		return "";
+	}
+	
+	
+	
+	public void setXML(String xml, boolean clearAll) {
+		if (clearAll)
+			//AGsetCurrentFile(null);
+
+		try {
+			myXMLio.processXMLString(xml, clearAll, false);
+		} catch (MyError err) {
+			err.printStackTrace();
+			showError(err);
+		} catch (Exception e) {
+			e.printStackTrace();
+			showError("LoadFileFailed");
+		}
 	}
 	
 	

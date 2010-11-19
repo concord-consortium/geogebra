@@ -344,10 +344,5 @@ implements Path, Traceable, LineProperties
 	 }
 
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

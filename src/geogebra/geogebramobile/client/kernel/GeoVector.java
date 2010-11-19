@@ -534,11 +534,5 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 		return false;
 	}
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	
 }

@@ -1112,11 +1112,7 @@ GeoPointInterface {
 
 		
 
-		@Override
-		public String getXML() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+
 
 		@Override
 		public double distance(GeoPointInterface P) {
@@ -1141,13 +1137,5 @@ GeoPointInterface {
 			
 		}
 
-	
-		/*@Override
-		public String getXML() {
-			// TODO Auto-generated method stub
-			return null;
-		}*/
-
-	    
 
 }

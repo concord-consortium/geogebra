@@ -107,7 +107,13 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	public static final double XZERO_STANDARD = 215;
 
 	public static final double YZERO_STANDARD = 315;
-
+public static final int LINE_TYPE_HIDDEN_NONE = 0;
+	
+	public static final int LINE_TYPE_HIDDEN_DASHED = 1;
+	
+	public static final int LINE_TYPE_HIDDEN_AS_NOT_HIDDEN = 2;
+	
+	public static final int DEFAULT_LINE_TYPE_HIDDEN1 = LINE_TYPE_HIDDEN_DASHED;
 	public static final int LINE_TYPE_FULL = 0;
 
 	public static final int LINE_TYPE_DASHED_SHORT = 10;
@@ -350,6 +356,7 @@ public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasM
 	// Michael Borcherds 2008-03-01
 	public static final int MAX_LAYERS = 9;
 	private static final int DEFAULT_FONT_SIZE = 12;
+	public static final int DEFAULT_LINE_TYPE_HIDDEN = 0;
 	private int MAX_LAYER_USED = 0;
 	public DrawableList drawLayers[]; 
 

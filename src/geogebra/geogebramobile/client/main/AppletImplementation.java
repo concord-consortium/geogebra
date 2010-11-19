@@ -15,6 +15,7 @@ package geogebra.geogebramobile.client.main;
 import com.google.gwt.widgetideas.graphics.client.Color;
 
 import geogebra.geogebramobile.client.AppletImplementationInterface;
+import geogebra.geogebramobile.client.GeoGebraMobile;
 import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.kernel.Kernel;
 import geogebra.geogebramobile.client.plugin.GgbAPI;
@@ -35,8 +36,9 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	protected Kernel kernel;
 	/*private JButton btOpen;
 	private DoubleClickListener dcListener;
+	*/
 	private EuclidianView ev;
-	public boolean showOpenButton, undoActive;
+	/*AGpublic boolean showOpenButton, undoActive;
 	public boolean showToolBar, showToolBarHelp, showAlgebraInput;
 	public boolean enableRightClick = true;
 	public boolean useBrowserForJavaScript = true;
@@ -76,6 +78,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 		this.app = app;
 		this.kernel = app.getKernel();
 		this.ggbApi = app.getGgbApi();
+		this.ev = app.getEuclidianView();
 	}
 	
 	/*AGpublic AppletImplementation(final JApplet applet) {
@@ -613,7 +616,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Returns the GeoGebra XML string for the given GeoElement object, 
 	 * i.e. only the <element> tag is returned. 
 	 */
-	public String getXML(String objName) {
+	public String getXml(String objName) {
 		return ggbApi.getXML(objName);	
 	}
 
@@ -622,33 +625,33 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * the parent algorithm and all its output objects is returned. 
 	 * For a free GeoElement objName "" is returned.
 	 */
-	//public String getAlgorithmXML(String objName) {
-	//	return ggbApi.getAlgorithmXML(objName);
-	//}	
+	public String getAlgorithmXML(String objName) {
+		return ggbApi.getAlgorithmXML(objName);
+	}	
 
 	/**
 	 * Opens construction given in XML format. May be used for loading constructions.
 	 */
-//		public synchronized void setXML(String xml) {
-//		app.setXML(xml, true);
-//		}
+	public synchronized void setXML(String xml) {
+		app.setXML(xml, true);
+		}
 
 	/**
 	 * Evaluates the given XML string and changes the current construction. 
 	 * Note: the construction is NOT cleared before evaluating the XML string. 	 
 	 */
-//		public synchronized void evalXML(String xmlString) {		
-//		StringBuilder sb = new StringBuilder();
+		public synchronized void evalXML(String xmlString) {		
+		StringBuilder sb = new StringBuilder();
 
-//		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-//		sb.append("<geogebra format=\"" + GeoGebra.XML_FILE_FORMAT + "\">\n");
-//		ev.getXML(sb);
-//		sb.append("<construction>\n");
-//		sb.append(xmlString);
-//		sb.append("</construction>\n");
-//		sb.append("</geogebra>\n");
-//		app.setXML(sb.toString(), false);
-//	}
+		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+		sb.append("<geogebra format=\"" + GeoGebraMobile.XML_FILE_FORMAT + "\">\n");
+		ev.getXML(sb);
+		sb.append("<construction>\n");
+		sb.append(xmlString);
+		sb.append("</construction>\n");
+		sb.append("</geogebra>\n");
+		app.setXML(sb.toString(), false);
+	}
 
 
 	/**

@@ -30,6 +30,7 @@ import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.commands.AlgebraProcessor;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
 
@@ -6725,6 +6726,29 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
 		//AGreturn nf.getMaximumFractionDigits();
 		return 2; //ONly for debug!
 	}
+	
+
+	/** 
+	 * Rank[list]
+	 * Michael Borcherds
+	 */
+	final public GeoList Rank(String label, GeoList list) {
+		AlgoRank algo = new AlgoRank(cons, label, list);
+		GeoList list2 = algo.getResult();
+		return list2;
+	}
+	
+	/** 
+	 * Sort[list]
+	 * Michael Borcherds
+	 */
+	final public GeoList Sort(String label, GeoList list) {
+		AlgoSort algo = new AlgoSort(cons, label, list);
+		GeoList list2 = algo.getResult();
+		return list2;
+	}
+	
+	
 
 
 }

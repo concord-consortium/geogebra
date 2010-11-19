@@ -790,10 +790,4 @@ implements NumberValue,  AbsoluteScreenLocateable, GeoFunctionable , Animatable 
 		return false;
 	}
 
-	@Override
-	public String getXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
