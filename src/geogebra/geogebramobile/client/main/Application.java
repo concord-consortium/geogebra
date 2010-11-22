@@ -109,7 +109,7 @@ public class Application extends BaseApplication {
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
-				ggbOnInit();
+				//ARggbOnInit();
 			}
 		} else {
 			//We will use it as an js library, so don't init anything for now
@@ -1614,9 +1614,9 @@ public class Application extends BaseApplication {
 		console.log(log);
 	}-*/;
 	
-	public static native void ggbOnInit() /*-{
-		$wnd.ggbOnInit();
-	}-*/;
+//AR	public static native void ggbOnInit() /*-{
+//AR		$wnd.ggbOnInit();
+//AR	}-*/;
 
 	public String getXML() {
 		return myXMLio.getFullXML();
