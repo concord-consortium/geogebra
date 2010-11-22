@@ -5153,30 +5153,29 @@ public class Kernel {
 	/**
 	 * Integral of function f
 	 */
-	/*AGfinal public GeoFunction Integral(String label, GeoFunction f) {
-		AlgoIntegral algo = new AlgoIntegral(cons, label, f);
-		GeoFunction g = algo.getIntegral();
-		return g;
-	}*/
+	final public GeoElement Integral(String label, CasEvaluableFunction f, GeoNumeric var) {
+		AlgoCasIntegral algo = new AlgoCasIntegral(cons, label, f, var);
+		return algo.getResult();
+	}
 	
 	/**
 	 * definite Integral of function f from x=a to x=b
 	 */
-	/*AGfinal public GeoNumeric Integral(String label, GeoFunction f, NumberValue a, NumberValue b) {
+	final public GeoNumeric Integral(String label, GeoFunction f, NumberValue a, NumberValue b) {
 		AlgoIntegralDefinite algo = new AlgoIntegralDefinite(cons, label, f, a, b);
 		GeoNumeric n = algo.getIntegral();
 		return n;
-	}*/
+	}
 
 	/** 
 	 * definite integral of function (f - g) in interval [a, b]
 	 */
-	/*AGfinal public GeoNumeric Integral(String label, GeoFunction f, GeoFunction g,
+	final public GeoNumeric Integral(String label, GeoFunction f, GeoFunction g,
 												NumberValue a, NumberValue b) {
 		AlgoIntegralFunctions algo = new AlgoIntegralFunctions(cons, label, f, g, a, b);
 		GeoNumeric num = algo.getIntegral();
 		return num;
-	}*/		
+	}	
 	
 	/**
 	 * all Roots of polynomial f (works only for polynomials and functions

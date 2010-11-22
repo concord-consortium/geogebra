@@ -12,6 +12,7 @@
 
 package geogebra.geogebramobile.client.kernel.commands;
 
+import geogebra.geogebramobile.client.kernel.CasEvaluableFunction;
 import geogebra.geogebramobile.client.kernel.CircularDefinitionException;
 import geogebra.geogebramobile.client.kernel.Construction;
 import geogebra.geogebramobile.client.kernel.GeoBoolean;
@@ -3081,14 +3082,16 @@ class CmdDerivative extends CommandProcessor {
 	}
 }
 
-/*
+/**
  * Integral[ <GeoFunction> ] Integral[ <GeoFunction>, <Number a>, <Number b> ]
  * Integral[ <GeoFunction f>, <GeoFunction g>, <Number a>, <Number b> ]
  */
-/*AG
-/*AG
 class CmdIntegral extends CommandProcessor {
 
+	/**
+	* Create new command processor
+	* @param kernel kernel
+	*/
 	public CmdIntegral (Kernel kernel) {
 		super(kernel);
 	}
@@ -3096,18 +3099,35 @@ class CmdIntegral extends CommandProcessor {
 	final public    GeoElement[] process(Command c) throws MyError {
 		int n = c.getArgumentNumber();
 		boolean[] ok = new boolean[n];
-		GeoElement[] arg = resArgs(c);     
+		GeoElement[] arg;     
 
 		switch (n) {
 		case 1 :                
+			arg = resArgs(c);
 			if (ok[0] = (arg[0].isGeoFunctionable())) {
 				GeoElement[] ret =
-				{ kernel.Integral(c.getLabel(), ((GeoFunctionable) arg[0]).getGeoFunction())};
+				{ kernel.Integral(c.getLabel(), ((GeoFunctionable) arg[0]).getGeoFunction(), null)};
 				return ret;
 			} else
 				throw argErr(app, "Integral", arg[0]);
 
-		case 3 :          
+		case 2 :     
+			// Integral[ f(x,y), x]
+			arg = resArgsLocalNumVar(c, 1,1); 
+			if (arg[0] instanceof CasEvaluableFunction && arg[1].isGeoNumeric()) {			              	
+				GeoElement[] ret =
+				{
+						kernel.Integral(
+								c.getLabel(),
+								(CasEvaluableFunction) arg[0], // function
+								(GeoNumeric) arg[1])}; // var
+				return ret;
+			} 
+			else
+				throw argErr(app, "Integral", arg[0]);
+			
+		case 3 :  
+			arg = resArgs(c);
 			if ((ok[0] = (arg[0].isGeoFunctionable()))
 					&& (ok[1] = (arg[1] .isNumberValue()))
 					&& (ok[2] = (arg[2] .isNumberValue()))) {
@@ -3129,7 +3149,7 @@ class CmdIntegral extends CommandProcessor {
 			}
 
 		case 4 :
-
+			arg = resArgs(c);
 			if ((ok[0] = (arg[0] .isGeoFunctionable()))
 					&& (ok[1] = (arg[1] .isGeoFunctionable()))
 					&& (ok[2] = (arg[2] .isNumberValue()))
