@@ -87,5 +87,18 @@ public class GgbAPI {
 		}
 	}	
 	
+
+	/**
+	 * Sets the fixed state of the object with the given name.
+	 */
+	public synchronized void setFixed(String objName, boolean flag) {
+		GeoElement geo = kernel.lookupLabel(objName);
+		if (geo != null && geo.isFixable()) {		
+			geo.setFixed(flag);
+			geo.updateRepaint();
+		}
+	}
+	
+	
 	
 }

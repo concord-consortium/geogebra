@@ -3,7 +3,6 @@ package geogebra.geogebramobile.client.main;
 import geogebra.geogebramobile.client.euclidian.EuclidianController;
 import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.gui.Base64Form;
-import geogebra.geogebramobile.client.gui.GgjsViewerWrapper;
 import geogebra.geogebramobile.client.io.MyXMLHandler;
 import geogebra.geogebramobile.client.io.MyXMLio;
 import geogebra.geogebramobile.client.kernel.BaseApplication;
@@ -63,6 +62,7 @@ public class Application extends BaseApplication {
 	private GgbAPI ggbapi;
 	private MyXMLio myXMLio;
 	private AppletImplementation appletImpl;
+	private boolean isOnTheFlyPointCreationActive;
 	
 	public Application() {
 		super();
@@ -109,7 +109,7 @@ public class Application extends BaseApplication {
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
-				//ARggbOnInit();
+				ggbOnInit();
 			}
 		} else {
 			//We will use it as an js library, so don't init anything for now
@@ -130,7 +130,20 @@ public class Application extends BaseApplication {
 		
 		$wnd.ggbApplet.setXml = function(xml) {
 			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setXML(Ljava/lang/String;)(xml);
-		}
+		};
+		
+		$wnd.ggbApplet.evalCommand = function(cmdString) {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::evalCommand(Ljava/lang/String;)(cmdString);
+		};
+		
+		$wnd.ggbApplet.setFixed = function(objName,flag) {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setFixed(Ljava/lang/String;Z)(objName,flag);
+		};
+		
+		$wnd.ggbApplet.setOnTheFlyPointCreationActive = function(flag) {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setOnTheFlyPointCreationActive(Z)(flag);
+		};
+		
 	}-*/;
 
 	private void initKernel() {
@@ -1614,9 +1627,10 @@ public class Application extends BaseApplication {
 		console.log(log);
 	}-*/;
 	
-//AR	public static native void ggbOnInit() /*-{
-//AR		$wnd.ggbOnInit();
-//AR	}-*/;
+	public static native void ggbOnInit() /*-{
+		if (typeof $wnd.ggbOnInit === 'function')
+			$wnd.ggbOnInit();
+	}-*/;
 
 	public String getXML() {
 		return myXMLio.getFullXML();
@@ -1728,6 +1742,10 @@ public class Application extends BaseApplication {
 			e.printStackTrace();
 			showError("LoadFileFailed");
 		}
+	}
+
+	public final void setOnTheFlyPointCreationActive(boolean isOnTheFlyPointCreationActive) {
+		this.isOnTheFlyPointCreationActive = isOnTheFlyPointCreationActive;
 	}
 	
 	

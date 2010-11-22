@@ -18,6 +18,7 @@ import geogebra.geogebramobile.client.AppletImplementationInterface;
 import geogebra.geogebramobile.client.GeoGebraMobile;
 import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.kernel.Kernel;
+import geogebra.geogebramobile.client.kernel.arithmetic.MyBoolean;
 import geogebra.geogebramobile.client.plugin.GgbAPI;
 
 
@@ -658,24 +659,25 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Evaluates the given string as if it was entered into GeoGebra's 
 	 * input text field. 	 
 	 */
-//	public synchronized boolean evalCommand(final String cmdString) {		
-//		//waitForCAS();
+	public synchronized boolean evalCommand(final String cmdString) {		
+		//waitForCAS();
 
 		// avoid security problems calling from JavaScript
-/*AG		MyBoolean ret = AccessController.doPrivileged(new PrivilegedAction<MyBoolean>() {
-			public MyBoolean run() {
+		//AGMyBoolean ret = AccessController.doPrivileged(new PrivilegedAction<MyBoolean>() {
+			//AGpublic MyBoolean run() {
 				// perform the security-sensitive operation here
 				
 				// make sure translated command names are loaded
-				app.initTranslatedCommands();
+				//AG TODO app.initTranslatedCommands();
 				
-				return new MyBoolean(app.getGgbApi().evalCommand(cmdString));
+				//AG return new MyBoolean(app.getGgbApi().evalCommand(cmdString));
 				
-			}
-		});
+			//AG}
+		//AG});
 
 		//return success
-		return ret.getBoolean();
+		//AGreturn ret.getBoolean();
+		return app.getGgbApi().evalCommand(cmdString);
 	}
 
 	/**
@@ -736,13 +738,13 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * tool "line through two points" will not create points on the fly
 	 * when you click on the background of the graphics view. 
 	 */
-/*AG	public synchronized void setOnTheFlyPointCreationActive(boolean flag) {
+	public synchronized void setOnTheFlyPointCreationActive(boolean flag) {
 		app.setOnTheFlyPointCreationActive(flag);
 	}
 
-	public synchronized void setUndoPoint() {
+	/*AGpublic synchronized void setUndoPoint() {
 		app.getKernel().getConstruction().storeUndoInfo();
-	}
+	}*/
 
 	/**
 	 * Turns showing of error dialogs on (true) or (off). 
@@ -932,7 +934,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	/**
 	 * Sets the fixed state of the object with the given name.
 	 */
-/*AG	public synchronized void setFixed(String objName, boolean flag) {
+	public synchronized void setFixed(String objName, boolean flag) {
 		ggbApi.setFixed(objName, flag);
 	}
 
