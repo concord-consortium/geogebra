@@ -21,6 +21,7 @@ package geogebra.geogebramobile.client.kernel;
 
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.main.Application;
+import geogebra.geogebramobile.client.util.Util;
 
 import java.util.ArrayList;
 import java.util.Comparator;

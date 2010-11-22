@@ -18,6 +18,7 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.util.Util;
 //AGimport geogebra.util.Util;
 
 import java.util.ArrayList;

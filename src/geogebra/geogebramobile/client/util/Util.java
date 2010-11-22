@@ -1,5 +1,7 @@
 package geogebra.geogebramobile.client.util;
 
+import geogebra.geogebramobile.client.kernel.gawt.Color;
+
 public class Util {
 	 private static StringBuilder sb;
 	    
@@ -303,4 +305,79 @@ public class Util {
 		}
 		return sb.toString();
 	    }
+
+		public static Object toHexString(Color col) {
+			byte r = (byte) col.getRed();
+			byte g = (byte) col.getGreen();
+			byte b = (byte) col.getBlue();
+
+			StringBuilder sb = new StringBuilder(8);
+			// RED      
+			sb.append(hexChar[(r & 0xf0) >>> 4]);
+			// look up high nibble char             
+			sb.append(hexChar[r & 0x0f]); // look up low nibble char
+			// GREEN
+			sb.append(hexChar[(g & 0xf0) >>> 4]);
+			// look up high nibble char             
+			sb.append(hexChar[g & 0x0f]); // look up low nibble char
+			// BLUE     
+			sb.append(hexChar[(b & 0xf0) >>> 4]);
+			// look up high nibble char             
+			sb.append(hexChar[b & 0x0f]); // look up low nibble char
+			return sb.toString();
+		}
+		 //     table to convert a nibble to a hex char.
+	    private static char[] hexChar = { '0', '1', '2', '3', '4', '5', '6', '7',
+		    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+	    
+	    final public static String toHTMLString(String str) {
+	    	if (str == null)
+	    	    return null;
+
+	    	StringBuilder sb = new StringBuilder();
+
+	    	// convert every single character and append it to sb
+	    	int len = str.length();
+	    	for (int i = 0; i < len; i++) {
+	    	    char c = str.charAt(i);
+	    	    int code = c;
+
+	    	    //  standard characters have code 32 to 126
+	    	    if ((code >= 32 && code <= 126)) {
+	    		switch (code) {
+	    		case 60:
+	    		    sb.append("&lt;");
+	    		    break; //   <
+	    		case 62:
+	    		    sb.append("&gt;");
+	    		    break; // >
+
+	    		default:
+	    		    //do not convert                
+	    		    sb.append(c);
+	    		}
+	    	    }
+	    	    // special characters
+	    	    else {
+	    		switch (code) {
+	    		case 10:
+	    		case 13: // replace LF or CR with <br/>
+	    		    sb.append("<br/>\n");
+	    		    break;
+
+	    		case 9: // replace TAB with space
+	    		    sb.append("&nbsp;"); // space
+	    		    break;
+
+	    		default:
+	    		    //  convert special character to escaped HTML               
+	    		    sb.append("&#");
+	    		    sb.append(code);
+	    		    sb.append(';');
+	    		}
+	    	    }
+	    	}
+	    	return sb.toString();
+	        }
+
 }

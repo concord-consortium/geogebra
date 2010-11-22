@@ -20,6 +20,7 @@ import geogebra.geogebramobile.client.kernel.gawt.Color;
 import geogebra.geogebramobile.client.kernel.gawt.Font;
 
 import java.util.ArrayList;
+import geogebra.geogebramobile.client.util.Util;
 
 
 /*import geogebra.euclidian.EuclidianView;
