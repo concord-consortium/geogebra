@@ -12,16 +12,21 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import java.util.List;
+
 import geogebra.geogebramobile.client.Matrix.GgbVector;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.Function;
 import geogebra.geogebramobile.client.kernel.arithmetic.FunctionVariable;
 import geogebra.geogebramobile.client.kernel.arithmetic.Functional;
+//ARimport geogebra.geogebramobile.client.kernel.arithmetic.Inequality;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.roots.RealRootFunction;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+
 
 
 /**
@@ -58,6 +63,8 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 	 */
 	double CURVATURE_COLOR = 15;//optimal value 
 
+	//ARprivate List<Inequality> ineqs;
+	
     //Victor Franco Espino 25-04-2007
 
 	public GeoFunction(Construction c) {
@@ -387,10 +394,11 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 		}
 		return label;
 	}*/
-	
+	/*AR
 	/**
 	   * save object in xml format
 	   */ 
+	/*AR
 	  public final void getXML(StringBuilder sb) {
 		 
 		 // an indpendent function needs to add
@@ -415,7 +423,7 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 		  //AGsb.append(getCaptionXML());
 		  sb.append("</element>\n");
 
-	  }
+	  }*/
 	
 	/**
 	* returns all class-specific xml tags for getXML
@@ -428,10 +436,71 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 
    }
 
+		/* 
+		 * Path interface
+		 */	 
+		public void pointChanged(GeoPointND PI) {			
+			
+			GeoPoint P = (GeoPoint) PI;
+			
+			if (P.z == 1.0) {
+				P.x = P.x;			
+			} else {
+				P.x = P.x / P.z;			
+			}
+					
+			
+			if(!isBooleanFunction()){
+				if (interval) {
+					//	don't let P move out of interval			
+					if (P.x < intervalMin) 
+						P.x = intervalMin;
+					else if (P.x > intervalMax) 
+						P.x = intervalMax;
+				}
+				P.y = evaluate(P.x);// changed from fun.evaluate so that it works with eg Point[If[x < -1, x + 1, x�]] 
+			}
+			else {
+				//ARpointChangedBoolean(true,P);
+			}
+			P.z = 1.0;
+			
+			// set path parameter for compatibility with
+			// PathMoverGeneric
+			PathParameter pp = P.getPathParameter();
+			pp.t = P.x;
+		}
+
+		/*ARprivate void pointChangedBoolean(boolean b, GeoPoint P) {
+			double px;
+			boolean yfun = getVarString().equals("y");
+			if(yfun){
+				if(b)P.x = 0.0;
+				px = P.y;
+			}else{
+				if(b)P.y = 0.0;
+				px = P.x;
+			}
+			double bestDist = Double.MAX_VALUE;
+			getIneqs();			
+			if(!this.evaluateBoolean(px))
+				for(Inequality ineq:ineqs){
+					for(GeoPoint point:ineq.getZeros())
+						if(Math.abs(point.x-px)<bestDist){
+							bestDist = Math.abs(point.x-px);
+							if(yfun)
+								P.y = point.x;
+							else
+								P.x=point.x;
+						}
+				}
+			
+		}*/
+
 	/* 
 	 * Path interface
 	 */	 
-	public void pointChanged(GeoPointInterface PI) {			
+	/*ARpublic void pointChanged(GeoPointInterface PI) {			
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -456,9 +525,28 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 		// PathMoverGeneric
 		PathParameter pp = P.getPathParameter();
 		pp.t = P.x;
+	}*/
+
+	public boolean isOnPath(GeoPointND PI, double eps) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		if (P.getPath() == this)
+			return true;
+		
+		if(!isBooleanFunction()){
+			return isDefined &&	Math.abs(fun.evaluate(P.inhomX) - P.inhomY) <= eps;
+		}
+		else{
+			double px = getVarString().equals("y") ? P.y :P.x;
+			if (P.z != 1.0) {
+					px = px / P.z;		
+			}
+			return evaluateBoolean(px);
+		}
 	}
 	
-	public boolean isOnPath(GeoPointInterface PI, double eps) {
+	/*ARpublic boolean isOnPath(GeoPointInterface PI, double eps) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -467,9 +555,18 @@ CasEvaluableFunction, ParametricCurve, LineProperties, RealRootFunction {
 		
 		return isDefined &&
 			Math.abs(fun.evaluate(P.inhomX) - P.inhomY) <= eps;
-	}
+	}*/
 
-	public void pathChanged(GeoPointInterface PI) {
+	/*ARpublic void pathChanged(GeoPointInterface PI) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		PathParameter pp = P.getPathParameter();
+		P.x = pp.t;
+		pointChanged(P);
+	}*/
+
+	public void pathChanged(GeoPointND PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		

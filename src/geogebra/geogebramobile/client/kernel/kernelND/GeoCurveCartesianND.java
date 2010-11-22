@@ -1,6 +1,9 @@
-package geogebra.geogebramobile.client.kernel;
+package geogebra.geogebramobile.client.kernel.kernelND;
 
+import geogebra.geogebramobile.client.kernel.Construction;
+import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.arithmetic.Function;
+import geogebra.geogebramobile.client.main.Application;
 
 
 /**
@@ -91,7 +94,7 @@ public abstract class GeoCurveCartesianND extends GeoElement{
 	   super.getXMLtags(sb);
 	 
 	   //	line thickness and type  
-		getLineStyleXML();
+		getLineStyleXML(sb);
  
    }
 	
@@ -124,7 +127,7 @@ public abstract class GeoCurveCartesianND extends GeoElement{
 		if (isLabelSet()) {
 			sbToString.append(label);
 			sbToString.append('(');
-			sbToString.append(fun[0].getFunctionVariables().toString());
+			sbToString.append(fun[0].getFunctionVariables()[0].toString());
 			sbToString.append(") = ");					
 		}		
 		sbToString.append(toValueString());

@@ -125,7 +125,7 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
     	// update input random numbers without label
     	if (randomUnlabeledInput != null) {
     		for (int i=0; i < randomUnlabeledInput.length; i++) {
-    			randomUnlabeledInput[i].updateRandomNumber();
+    			randomUnlabeledInput[i].updateRandomGeo();
     		}
     	}
     	
@@ -227,7 +227,7 @@ public abstract class AlgoElement extends ConstructionElement implements Euclidi
         for (int i = 0; i < input.length; i++) {  
        	 if (input[i].isGeoNumeric() && !input[i].isLabelSet()) {
        		 GeoNumeric num = (GeoNumeric) input[i];
-       		 if (num.isRandomNumber()) {
+       		 if (num.isRandomGeo()) {
        			 if (tempList == null) tempList = new ArrayList();
        			 tempList.add(num);
        		 }

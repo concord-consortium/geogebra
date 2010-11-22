@@ -12,6 +12,11 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.Matrix.GgbCoordSys;
+import geogebra.geogebramobile.client.euclidian.EuclidianConstants;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoSegmentND;
+
 
 
 
@@ -24,12 +29,12 @@ package geogebra.geogebramobile.client.kernel;
 public class AlgoPolygon extends AlgoElement {
 
 	private static final long serialVersionUID = 1L;
-	protected GeoPointInterface [] points;  // input
+	protected GeoPointND [] points;  // input
 	private GeoList geoList;  // alternative input
     protected GeoPolygon poly;     // output
     
     /** /2D coord sys used for 3D */
-    protected GeoElement cs2D; 
+    protected GgbCoordSys cs2D; 
     
     /** polyhedron (when segment is part of), used for 3D */
     protected GeoElement polyhedron; 
@@ -39,11 +44,11 @@ public class AlgoPolygon extends AlgoElement {
     	this(cons, labels, null, geoList);
     }
     
-    protected AlgoPolygon(Construction cons, String [] labels, GeoPointInterface [] points) {
+    protected AlgoPolygon(Construction cons, String [] labels, GeoPointND [] points) {
     	this(cons, labels, points, null);
     }
  
-    protected AlgoPolygon(Construction cons, String [] labels, GeoPointInterface [] points, GeoList geoList) {
+    protected AlgoPolygon(Construction cons, String [] labels, GeoPointND [] points, GeoList geoList) {
     	this(cons,labels,points,geoList,null,true,null);
     }
     
@@ -57,7 +62,7 @@ public class AlgoPolygon extends AlgoElement {
      * @param polyhedron polyhedron (when segment is part of), used for 3D
      */
     protected AlgoPolygon(Construction cons, String [] labels, 
-    		GeoPointInterface [] points, GeoList geoList, GeoElement cs2D, 
+    		GeoPointND [] points, GeoList geoList, GgbCoordSys cs2D, 
     		boolean createSegments, GeoElement polyhedron) {
         super(cons);
         this.points = points;           
@@ -97,8 +102,12 @@ public class AlgoPolygon extends AlgoElement {
     	poly = new GeoPolygon(this.cons, this.points);
     }
         
-    protected String getClassName() {
+    public String getClassName() {
         return "AlgoPolygon";
+    }
+    
+    public int getRelatedModeID() {
+    	return EuclidianConstants.MODE_POLYGON;
     }
     
     /**
@@ -142,9 +151,11 @@ public class AlgoPolygon extends AlgoElement {
     		}
     	} else {    	
     		// points as input
-    		if (polyhedron==null)
-    			input = (GeoElement[]) points;
-    		else{
+    		if (polyhedron==null){
+    			input = new GeoElement[points.length];
+    			for(int i = 0; i < points.length; i++)
+    				input[i]=(GeoElement) points[i];
+    		}else{
     			input = new GeoElement[points.length+1];
     			for(int i = 0; i < points.length; i++)
     				input[i]=(GeoElement) points[i];
@@ -164,7 +175,7 @@ public class AlgoPolygon extends AlgoElement {
     }    
     
     private void setOutput() {
-    	GeoSegmentInterface [] segments = poly.getSegments();
+    	GeoSegmentND [] segments = poly.getSegments();
     	int size = 1;
     	if (segments!=null)
     		size+=segments.length;
@@ -207,7 +218,7 @@ public class AlgoPolygon extends AlgoElement {
     }  
     
         
-    protected final void compute() { 
+    protected void compute() { 
     	if (geoList != null) {
     		updatePointArray(geoList);
     	}

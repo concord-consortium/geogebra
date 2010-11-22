@@ -27,6 +27,7 @@ import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNodeEvaluator;
 import geogebra.geogebramobile.client.kernel.arithmetic.Function;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyDouble;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoConicND;
 import geogebra.geogebramobile.client.kernel.commands.AlgebraProcessor;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
@@ -1681,18 +1682,18 @@ public class Kernel {
 	 * Cartesian curve command:
  	 * Curve[ <expression x-coord>, <expression x-coord>, <number-var>, <from>, <to> ]  
 	 */
-	/*AGfinal public GeoCurveCartesian CurveCartesian(String label, 
+	final public GeoCurveCartesian CurveCartesian(String label, 
 			NumberValue xcoord, NumberValue ycoord, 
 			GeoNumeric localVar, NumberValue from, NumberValue to) 
 	{									
-		AlgoCurveCartesian algo = new AlgoCurveCartesian(cons, label, xcoord, ycoord, localVar, from, to);
-		return algo.getCurve();		
-	}	*/
+		AlgoCurveCartesian algo = new AlgoCurveCartesian(cons, label, new NumberValue[] {xcoord, ycoord} , localVar, from, to);
+		return (GeoCurveCartesian) algo.getCurve();		
+	}
 	
 	/**
 	 * Converts a NumberValue object to an ExpressionNode object. 
 	 */
-	/*AGpublic ExpressionNode convertNumberValueToExpressionNode(NumberValue nv) {
+	public ExpressionNode convertNumberValueToExpressionNode(NumberValue nv) {
 		GeoElement geo = nv.toGeoElement();
 		AlgoElement algo = geo.getParentAlgorithm();
 		
@@ -1703,7 +1704,7 @@ public class Kernel {
 		else {
 			return new ExpressionNode(this, geo);
 		}		
-	}*/
+	}
 	
 	/** Number dependent on arithmetic expression with variables,
 	 * represented by a tree. e.g. t = 6z - 2
@@ -5423,10 +5424,10 @@ public class Kernel {
 	}*/
 
 	/** is abs(x) < epsilon ? */
-	final public boolean isZero(double x) {
+	final public static boolean isZero(double x) {
 		return -EPSILON < x && x < EPSILON;
 	}
-
+	
 	final boolean isZero(double[] a) {
 		for (int i = 0; i < a.length; i++) {
 			if (!isZero(a[i]))
@@ -5449,14 +5450,14 @@ public class Kernel {
 	 * -infinity == -infinity returns true
 	 * undefined == undefined returns false eg 0/0	 
 	 */
-	final public boolean isEqual(double x, double y) {	
+	final public static boolean isEqual(double x, double y) {	
 		if (x == y) // handles infinity and NaN cases
 			return true;
 		else
 			return x - EPSILON <= y && y <= x + EPSILON;
 	}
 	
-	public static boolean isEqual(double x, double y, double eps) {		
+	final public static boolean isEqual(double x, double y, double eps) {		
 		return x - eps < y && y < x + eps;
 	}
 	

@@ -17,8 +17,9 @@ import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.Function;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyDouble;
-import geogebra.geogebramobile.client.kernel.arithmetic.MyList;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoCurveCartesianND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.roots.RealRootFunction;
 
@@ -29,7 +30,7 @@ import geogebra.geogebramobile.client.kernel.roots.RealRootFunction;
  * @author Markus Hohenwarter
  */
 public class GeoCurveCartesian extends GeoCurveCartesianND
-implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilateable, MatrixTransformable,Traceable, CasEvaluableFunction, ParametricCurve, LineProperties {
+implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilateable, MatrixTransformable,Traceable, CasEvaluableFunction, ParametricCurve, LineProperties, ConicMirrorable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,6 +49,16 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 
 
 	private ParametricCurveDistanceFunction distFun;
+	
+	/**
+	 * Creates new curve
+	 * @param c construction
+	 * 
+	 */
+	public GeoCurveCartesian(Construction c) 
+	{
+		super(c);
+	}
 	
 	/**
 	 * Creates new curve
@@ -165,6 +176,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 //				System.out.println("   funX after: " + funX.toLaTeXString(true));
 			}
 		}
+		distFun = new ParametricCurveDistanceFunction(this);
 	}		
 	
 	
@@ -183,6 +195,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		} else {
 			isDefined = false;
 		}	
+		distFun = new ParametricCurveDistanceFunction(this);
 	}
 	
 	
@@ -278,10 +291,9 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		
 	
 	final public void rotate(NumberValue phi){
-		ExpressionNode cosPhi = new ExpressionNode(kernel,phi,ExpressionNode.COS,null);
-		ExpressionNode sinPhi = new ExpressionNode(kernel,phi,ExpressionNode.SIN,null);
-		ExpressionNode minSinPhi = new ExpressionNode(kernel,new MyDouble(kernel,0.0),ExpressionNode.MINUS,sinPhi);
-		matrixTransform(cosPhi,minSinPhi,sinPhi,cosPhi);
+		double cosPhi = Math.cos(phi.getDouble());
+		double sinPhi = Math.sin(phi.getDouble());
+		matrixTransform(cosPhi,-sinPhi,sinPhi,cosPhi);
 	}
 	
 	public void dilate(NumberValue ratio,GeoPoint P){
@@ -299,32 +311,13 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
      *  [ sin(phi)      -cos(phi)   ]  
      */
 	private void mirror(NumberValue phi){				
-		ExpressionNode cosPhi = new ExpressionNode(kernel,phi,ExpressionNode.COS,null);
-		ExpressionNode sinPhi = new ExpressionNode(kernel,phi,ExpressionNode.SIN,null);
-		ExpressionNode minCosPhi = new ExpressionNode(kernel,new MyDouble(kernel,0.0),ExpressionNode.MINUS,cosPhi);
-		matrixTransform(cosPhi,sinPhi,sinPhi,minCosPhi);				
+		double cosPhi = Math.cos(phi.getDouble());
+		double sinPhi = Math.sin(phi.getDouble());
+		matrixTransform(cosPhi,sinPhi,sinPhi,-cosPhi);				
 	}
 	
 	
-	public void matrixTransform(GeoList matrix) {
-		
-		MyList list = matrix.getMyList();
-		
-		if (list.getMatrixCols() != 2 || list.getMatrixRows() != 2) {
-			setUndefined();
-			return;
-		}
-		 
-		ExpressionValue a,b,c,d;
-		
-		a = ((NumberValue)(MyList.getCell(list,0,0).evaluate()));
-		b = ((NumberValue)(MyList.getCell(list,1,0).evaluate()));
-		c = ((NumberValue)(MyList.getCell(list,0,1).evaluate()));
-		d = ((NumberValue)(MyList.getCell(list,1,1).evaluate()));
- 
-		matrixTransform(a,b,c,d);
-		
-	}
+	
 	
 	/**
 	 * Transforms curve using matrix
@@ -335,17 +328,21 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 	 * @param c bottom left matrix element
 	 * @param d bottom right matrix element
 	 */
-	public void matrixTransform(ExpressionValue a,ExpressionValue b, ExpressionValue c, ExpressionValue d){
+	public void matrixTransform(double a,double b, double c, double d){
+		MyDouble ma = new MyDouble(kernel,a);
+		MyDouble mb = new MyDouble(kernel,b);
+		MyDouble mc = new MyDouble(kernel,c);
+		MyDouble md = new MyDouble(kernel,d);
 		ExpressionNode exprX = ((Function)funX.deepCopy(kernel)).getExpression();
 		ExpressionNode exprY = ((Function)funY.deepCopy(kernel)).getExpression();
 		ExpressionNode transX = new ExpressionNode(kernel,
-				new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,a),
+				new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,ma),
 				ExpressionNode.PLUS,
-				new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,b));
+				new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,mb));
 		ExpressionNode transY = new ExpressionNode(kernel,
-				new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,c),
+				new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,mc),
 				ExpressionNode.PLUS,
-				new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,d));
+				new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,md));
 		funX.setExpression(transX);
 		funY.setExpression(transY);
 	}
@@ -436,7 +433,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 	/* 
 	 * Path interface
 	 */	 
-	public void pointChanged(GeoPointInterface PI) {	
+	public void pointChanged(GeoPointND PI) {	
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -447,7 +444,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		pathChanged(P);	
 	}
 	
-	public boolean isOnPath(GeoPointInterface PI, double eps) {		
+	public boolean isOnPath(GeoPointND PI, double eps) {		
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -463,7 +460,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		return onPath;
 	}
 
-	public void pathChanged(GeoPointInterface PI) {
+	public void pathChanged(GeoPointND PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -493,7 +490,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		distFun.setDistantPoint(P.x/P.z, P.y/P.z);	
 		
 		// check if P is on this curve and has the right path parameter already
-    	if (P.getPath() == this) { 
+    	if (P.getPath() == this || true) { 
     		// point A is on curve c, take its parameter
     		PathParameter pp = P.getPathParameter();
     		double pathParam = pp.t;
@@ -650,7 +647,7 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 	}
 
 	public String getVarString() {	
-		return funX.getFunctionVariables().toString();
+		return funX.getVarString();
 	}
 	
 	final public boolean isFunctionInX() {		
@@ -672,5 +669,44 @@ implements Path, Translateable, Rotateable, PointRotateable, Mirrorable, Dilatea
 		return false;
 	}
 
+	 final public void mirror(GeoConic c) {
+	    	if (c.getType()==GeoConic.CONIC_CIRCLE)
+	    	{ 
+	    		
+	    		// Mirror point in circle
+	    		double r =  c.getHalfAxes()[0];
+	    		GeoVec2D midpoint=c.getTranslationVector();
+	    		double a=midpoint.x;
+	    		double b=midpoint.y;
+	    		this.translate(-a, -b);
+	    		ExpressionNode exprX = ((Function)funX.deepCopy(kernel)).getExpression();
+	    		ExpressionNode exprY = ((Function)funY.deepCopy(kernel)).getExpression();
+	    		
+	    		ExpressionNode sf=new ExpressionNode(kernel, new MyDouble(kernel,r*r),ExpressionNode.DIVIDE,new ExpressionNode(kernel,
+	    				new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,exprX),
+	    				ExpressionNode.PLUS,
+	    				new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,exprY)));
+	    		ExpressionNode transX = new ExpressionNode(kernel,exprX,ExpressionNode.MULTIPLY,sf);
+	    		ExpressionNode transY = new ExpressionNode(kernel,exprY,ExpressionNode.MULTIPLY,sf);
+	    		funX.setExpression(transX);
+	    		funY.setExpression(transY);
+	    		this.translate(a, b);
+	            
+	    	}
+	    	else
+	    	{
+	    		setUndefined();
+	    	}
+	    }
+	 
+		/*
+		 * gets shortest distance to point p
+		 * overridden in eg GeoPoint, GeoLine
+		 * for compound paths
+		 */
+		public double distance(GeoPoint p) {
+			double t = getClosestParameter(p, 0);
+			return GeoVec2D.length(funX.evaluate(t) - p.x, funY.evaluate(t) - p.y);
+		}
 
 }

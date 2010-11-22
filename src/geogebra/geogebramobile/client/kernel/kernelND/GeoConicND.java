@@ -1,7 +1,11 @@
-package geogebra.geogebramobile.client.kernel;
+package geogebra.geogebramobile.client.kernel.kernelND;
 
+import geogebra.geogebramobile.client.Matrix.GgbMatrix;
 import geogebra.geogebramobile.client.Matrix.GgbVector;
-
+import geogebra.geogebramobile.client.kernel.Construction;
+import geogebra.geogebramobile.client.kernel.GeoPoint;
+import geogebra.geogebramobile.client.kernel.GeoVec2D;
+import geogebra.geogebramobile.client.kernel.LineProperties;
 
 
 /** Class for conic in any dimension.
@@ -13,7 +17,7 @@ public abstract class GeoConicND extends GeoQuadricND implements LineProperties 
 	
 	
 	// two Eigenvectors (unit vectors), set by setEigenvectors()
-	protected GeoVec2D[] eigenvec = { new GeoVec2D(kernel, 1, 0), new GeoVec2D(kernel, 0, 1)};
+	public GeoVec2D[] eigenvec = { new GeoVec2D(kernel, 1, 0), new GeoVec2D(kernel, 0, 1)};
 	
 	
 	protected GgbVector getEigenvec(int i){
@@ -30,12 +34,33 @@ public abstract class GeoConicND extends GeoQuadricND implements LineProperties 
 	}
 
 	
+	
+	
+	/**
+	 * @return the matrix representation of the conic in its 2D sub space
+	 */
+	protected GgbMatrix getGgbMatrix(double[] vals){
+		//TODO
+		return null;
+	}
+	
+	
+	/**
+	 * sets the matrix values from the symmetric matrix m
+	 * @param m
+	 */
+	protected void setMatrix(GgbMatrix m){
+		//TODO
+	}
+	
+	
+	
 
 	/**
 	 * Adds a point to the list of points that this conic passes through.
 	 * @param p 
 	 */
-	abstract protected void addPointOnConic(GeoPointInterface p);
+	public abstract void addPointOnConic(GeoPointND p);
 	
 	
 	

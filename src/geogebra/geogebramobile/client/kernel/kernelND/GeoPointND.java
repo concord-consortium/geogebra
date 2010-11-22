@@ -1,0 +1,154 @@
+package geogebra.geogebramobile.client.kernel.kernelND;
+
+import geogebra.geogebramobile.client.Matrix.GgbVector;
+import geogebra.geogebramobile.client.kernel.LocateableList;
+import geogebra.geogebramobile.client.kernel.Path;
+import geogebra.geogebramobile.client.kernel.PathParameter;
+import geogebra.geogebramobile.client.kernel.Region;
+import geogebra.geogebramobile.client.kernel.RegionParameters;
+
+/**
+ * 
+ * @author ggb3D
+ *
+ * interface for stuff common to 2D and 3D points
+ *
+ */
+
+public interface GeoPointND {
+
+	
+	/** Returns whether this point has changeable numbers as coordinates */
+	public boolean hasChangeableCoordParentNumbers();
+
+	public void setLabel(String string);
+
+	public boolean isLabelSet();
+
+	public String getLabel();
+
+	public boolean isInfinite();
+
+	public boolean showInEuclidianView();
+
+	public void remove();
+	
+	public boolean getSpreadsheetTrace();
+
+	public RegionParameters getRegionParameters();
+
+	public void updateCoords2D();
+
+	public double getX2D();
+	
+	public double getY2D();
+
+	public void updateCoordsFrom2D(boolean b);
+
+	public boolean isPointOnPath();
+
+	public int getMode();
+	
+	public boolean isFinite();
+
+	public void set(GeoPointND p);
+	
+	public String getStartPointXML();
+	
+	public LocateableList getLocateableList();
+
+	/** return the coordinates of the vector (this,Q) 
+	 * @param Q ending point
+	 * @return coords of the vector */
+	public double[] vectorTo(GeoPointND Q);
+	
+	
+	public GgbVector getInhomCoords();
+	
+	public void getInhomCoords(double[] coords);
+	
+	public double distance(GeoPointND P);
+
+	public boolean isPointInRegion();
+	
+	public int getPointSize();
+	
+	public boolean hasPath();
+	
+	public PathParameter getPathParameter();
+	
+	//public void doPath();
+	
+	public boolean hasRegion();
+	
+	/** 
+	 * Sets homogeneous coordinates and updates
+	 * inhomogeneous coordinates
+	 */
+	public void setCoords(double x, double y, double z);
+	
+
+    
+	/** Sets homogenous coordinates and updates
+	 * inhomogenous coordinates
+	 * @param v coords
+	 * @param doPathOrRegion says if path (or region) calculations have to be done
+	 */    
+	public void setCoords(GgbVector v, boolean doPathOrRegion);
+
+    /** set 2D coords
+     * @param x x-coord
+     * @param y y-coord
+     */
+    public void setCoords2D(double x, double y, double z);
+    
+	
+	/**
+	 * @param dimension
+	 * @return the coords of the point in the given dimension (extended or projected)
+	 */
+	public GgbVector getInhomCoordsInD(int dimension);
+	
+	/**
+	 * @param dimension
+	 * @return the coords of the point in the given dimension (extended or projected)
+	 */
+	public GgbVector getCoordsInD(int dimension);
+
+	public int getPointStyle();
+
+	public boolean getTrace();
+
+	public Path getPath();
+
+	public Region getRegion();
+	
+	
+	/////////////////////////////////////////
+	// MOVING THE POINT (3D)
+	/////////////////////////////////////////
+	
+	
+	public static boolean MOVE_MODE_XY = true;
+	public static boolean MOVE_MODE_Z = false;
+	
+	/**
+	 * sets the move mode (along xOy or along Oz)
+	 */
+	public void switchMoveMode();
+	
+	/**
+	 * 
+	 * @return the move mode (along xOy or along Oz)
+	 */
+	public boolean getMoveMode();
+
+	public boolean isDefined();
+
+	public void updateCoords();
+	
+	//private boolean movePointMode = MOVE_POINT_MODE_XY;
+
+	
+	
+}

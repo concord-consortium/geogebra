@@ -23,6 +23,9 @@ import geogebra.geogebramobile.client.kernel.arithmetic.MyList;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.gawt.AffineTransform;
 import geogebra.geogebramobile.client.util.MyMath;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoConicND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoSegmentND;
 
 import java.util.ArrayList;
 
@@ -195,15 +198,24 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 	final void setPointsOnConic(ArrayList points) {
 		pointsOnConic = points;
 	}
-	
+
 	/**
 	 * Adds a point to the list of points that this conic passes through.
 	 */
-	protected final void addPointOnConic(GeoPointInterface p) {
+	public final void addPointOnConic(GeoPointND p) {
+		if (pointsOnConic == null)
+			pointsOnConic = new ArrayList<GeoPoint>();
+		pointsOnConic.add((GeoPoint)p);				
+	}
+
+	/**
+	 * Adds a point to the list of points that this conic passes through.
+	 */
+	/*ARprotected final void addPointOnConic(GeoPointInterface p) {
 		if (pointsOnConic == null)
 			pointsOnConic = new ArrayList();
 		pointsOnConic.add(p);				
-	}
+	}*/
 	
 	/**
 	 * Removes a point from the list of points that this conic passes through.
@@ -797,6 +809,23 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 		return true;
 	}
 
+	final public void matrixTransform(double a, double b, double c, double d) {
+		double det = a * d - b * c;
+		double det2 = det * det;
+		
+		double A0 = d * (d * matrix[0] - c * matrix[3]) - c * ( d * matrix[3] - c * matrix[1]);
+		double A3 = a * (d * matrix[3] - c * matrix[1]) - b * ( d * matrix[0] - c * matrix[3]);
+		double A1 = a * (a * matrix[1] - b * matrix[3]) - b * ( a * matrix[3] - b * matrix[0]);
+		double A4 = d * matrix[4] - c * matrix[5];
+		matrix[5] = (a * matrix[5] - b * matrix[4]) / det;
+		matrix[0] = A0 / det2;
+		matrix[1] = A1 / det2;
+		matrix[3] = A3 / det2;
+		matrix[4] = A4 / det;
+		
+		classifyConic();
+	}
+	
 	public void matrixTransform(GeoList matrix) {
 		
 		MyList list = matrix.getMyList();
@@ -972,7 +1001,11 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 	
 	
 	
-	public void setSphereND(GeoPointInterface M, GeoSegmentInterface segment){
+	/*ARpublic void setSphereND(GeoPointInterface M, GeoSegmentInterface segment){
+		setCircle((GeoPoint) M, (GeoSegment) segment);
+	}*/
+
+	public void setSphereND(GeoPointND M, GeoSegmentND segment){
 		setCircle((GeoPoint) M, (GeoSegment) segment);
 	}
 	
@@ -1001,7 +1034,11 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 		} 		
 	}
 
-	
+
+	public void setSphereND(GeoPointND M, GeoPointND P){
+		setCircle((GeoPoint) M, (GeoPoint) P);
+	}
+
 	public void setSphereND(GeoPointInterface M, GeoPointInterface P){
 		setCircle((GeoPoint) M, (GeoPoint) P);
 	}
@@ -2332,7 +2369,7 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 	protected void getXMLtags(StringBuilder sb) {
 		super.getXMLtags(sb);
 		//	line thickness and type  
-		sb.append(getLineStyleXML());
+		getLineStyleXML(sb);
 
 		sb.append("\t<eigenvectors ");
 		sb.append(" x0=\"" + eigenvec[0].x + "\"");
@@ -2409,7 +2446,7 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 	 * Path interface
 	 */
 	 
-	public void pointChanged(GeoPointInterface PI) {
+	/*ARpublic void pointChanged(GeoPointInterface PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -2441,7 +2478,7 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 				 *   second line:  s = (t-2) /(1 - abs(t-2))
 				 * which allows us to use the line's path parameter s
 				 */
-				
+				/*
 				// choose closest line
 				boolean firstLine = lines[0].distanceHom(P) <= lines[1].distanceHom(P);
 				GeoLine line = firstLine ? lines[0] : lines[1];
@@ -2494,7 +2531,7 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 				 *   (a*cosh(s), b*sinh(s))
 				 * for the right branch of the hyperbola.
 				 */ 
-				
+				/*
 				// transform to eigenvector coord-system
 				coordsRWtoEV(P);
 				px = P.x / P.z;
@@ -2532,16 +2569,16 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 				coordsEVtoRW(P);		
 			break;
 		}		
-	}
-	
-	public void pathChanged(GeoPointInterface PI) {
+	}*/
+
+	public void pathChanged(GeoPointND PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
 		// if type of path changed (other conic) then we
 		// have to recalc the parameter with pointChanged()
 		PathParameter pp = P.getPathParameter();		
-		if (pp.pathType != type || Double.isNaN(pp.t)) {		
+		if (pp.getPathType() != type || Double.isNaN(pp.t)) {		
 			pointChanged(P);
 			return;
 		}
@@ -2636,8 +2673,111 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 				break;
 		}
 	}
-	
-	public boolean isOnPath(GeoPointInterface PI, double eps) {
+
+	/*ARpublic void pathChanged(GeoPointInterface PI) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		// if type of path changed (other conic) then we
+		// have to recalc the parameter with pointChanged()
+		PathParameter pp = P.getPathParameter();		
+		if (pp.pathType != type || Double.isNaN(pp.t)) {		
+			pointChanged(P);
+			return;
+		}
+		
+		switch (type) {
+			case CONIC_EMPTY:
+				P.x = Double.NaN;
+				P.y = Double.NaN;
+				P.z = Double.NaN;
+				break;
+			
+			case CONIC_SINGLE_POINT:
+				P.x = singlePoint.x;
+				P.y = singlePoint.y;
+				P.z = singlePoint.z;
+				break;
+			
+			case CONIC_INTERSECTING_LINES:
+			case CONIC_PARALLEL_LINES:
+				/* 
+				 * For line conics, we use the parameter ranges 
+				 *   first line: t = (-1, 1)
+				 *   second line: t = (1, 3)
+				 * and convert this to s = (-inf, inf) using		
+				 *   first line: s = t /(1 - abs(t)) 
+				 *   second line:  s = (t-2) /(1 - abs(t-2))
+				 * which allows us to use the line's path parameter s
+				 *//*AR 
+				double pathParam = pp.t;
+				boolean leftBranch = pathParam > 1;
+				pp.t = leftBranch ? pathParam - 2 : pathParam;
+				// convert from (-1,1) to (-inf, inf) line path parameter
+				pp.t = pp.t /(1 - Math.abs(pp.t));
+				if (leftBranch) {
+					lines[1].pathChanged(P);					 
+				} else {
+					lines[0].pathChanged(P);										
+				}
+						
+				// set our path parameter again
+				pp.t = pathParam;
+				break;
+				
+			case CONIC_LINE:
+			case CONIC_DOUBLE_LINE:
+				lines[0].pathChanged(P);	
+				break;
+			
+			case CONIC_CIRCLE:
+			case CONIC_ELLIPSE:						
+				// calc Point on conic using this parameter (in eigenvector space)
+				P.x = halfAxes[0] * Math.cos(pp.t);	
+				P.y = halfAxes[1] * Math.sin(pp.t);
+				P.z = 1.0;		
+				
+				// transform back to real world coord system
+				coordsEVtoRW(P);
+				break;			
+			
+			case CONIC_HYPERBOLA:			
+				/* 
+				 * For hyperbolas, we use the parameter ranges 
+				 *   right branch: t = (-1, 1)
+				 *   left branch: t = (1, 3)
+				 * and convert this to s = (-inf, inf) using		
+				 *   right branch: s = t /(1 - abs(t)) 
+				 *   left branch:  s = (t-2) /(1 - abs(t-2))
+				 * which allows us to use the parameter form
+				 *   (a*cosh(s), b*sinh(s))
+				 * for the right branch of the hyperbola.
+				 */ /*AR
+				leftBranch = pp.t > 1;
+				double t = leftBranch ? pp.t - 2 : pp.t;
+				double s = t /(1 - Math.abs(t));
+				
+				P.x = halfAxes[0] * MyMath.cosh(s);
+				P.y = halfAxes[1] * MyMath.sinh(s);
+				P.z = 1.0;				
+				if (leftBranch) P.x = -P.x;
+				
+				// transform back to real world coord system
+				coordsEVtoRW(P);
+				break;																			
+			
+			case CONIC_PARABOLA:
+				P.y = p * pp.t;				
+				P.x = P.y * pp.t  / 2.0;				
+				P.z = 1.0;	
+				
+				// transform back to real world coord system
+				coordsEVtoRW(P);
+				break;
+		}
+	}*/
+
+	public boolean isOnPath(GeoPointND PI, double eps) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -2646,6 +2786,16 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 		
 		return isOnFullConic(P, eps);
 	}
+
+	/*ARpublic boolean isOnPath(GeoPointInterface PI, double eps) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		if (P.getPath() == this)
+			return true;
+		
+		return isOnFullConic(P, eps);
+	}*/
 	
 	/**
 	 * Returns the smallest possible parameter value for this
@@ -2773,7 +2923,23 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 	public boolean isRegion() {
 		return true;
 	}
+
+	public boolean isInRegion(GeoPointND PI) {
+		double x0 = PI.getX2D();
+		double y0 = PI.getY2D();
 		
+		return isInRegion(x0,y0);
+		
+	}
+
+	public boolean isInRegion(double x0, double y0) {
+		if(type == CONIC_INTERSECTING_LINES)
+				return evaluate(x0,y0)*evaluate(b.x+lines[0].x+lines[1].x,b.y+lines[0].y+lines[1].y) >= 0;
+		if(type == CONIC_HYPERBOLA)
+			return evaluate(x0,y0)*evaluate(b.x,b.y) <= 0;		
+		return evaluate(x0,y0)*evaluate(b.x,b.y) >= 0; 
+		
+	}
 
 	/**
 	 * Returns true if point is in circle/ellipse. Coordinates of PointInterface
@@ -2798,9 +2964,171 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 		}
 	}
 
+	/* 
+	 * Path interface
+	 */
+	 
+	public void pointChanged(GeoPointND PI) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		double px, py;		
+		PathParameter pp = P.getPathParameter();
+		pp.setPathType(type);
+			
+		switch (type) {
+			case CONIC_EMPTY:
+				P.x = Double.NaN;
+				P.y = Double.NaN;
+				P.z = Double.NaN;
+			break;
+			
+			case CONIC_SINGLE_POINT:
+				P.x = singlePoint.x;
+				P.y = singlePoint.y;
+				P.z = singlePoint.z;
+			break;
+			
+			case CONIC_INTERSECTING_LINES:
+			case CONIC_PARALLEL_LINES:
+				/* 
+				 * For line conics, we use the parameter ranges 
+				 *   first line: t = (-1, 1)
+				 *   second line: t = (1, 3)
+				 * and convert this to s = (-inf, inf) using		
+				 *   first line: s = t /(1 - abs(t)) 
+				 *   second line:  s = (t-2) /(1 - abs(t-2))
+				 * which allows us to use the line's path parameter s
+				 */
+				
+				// choose closest line
+				boolean firstLine = lines[0].distanceHom(P) <= lines[1].distanceHom(P);
+				GeoLine line = firstLine ? lines[0] : lines[1];
+				
+				// compute line path parameter
+				line.pointChanged(P);
+							
+				// convert line parameter to (-1,1)
+				pp.t = PathNormalizer.inverseInfFunction(pp.t);
+				if (!firstLine) {
+					pp.t = pp.t + 2;// convert from (-1,1) to (1,3)									
+				}				
+			break;
+			
+			case CONIC_LINE:
+			case CONIC_DOUBLE_LINE:
+				lines[0].pointChanged(P);
+			break;
+			
+			case CONIC_CIRCLE:
+			case CONIC_ELLIPSE:			
+				//	transform to eigenvector coord-system
+				coordsRWtoEV(P);				
 
+				// calc parameter 
+				px = P.x / P.z;
+				py = P.y / P.z;		
+				
+				// relation between the internal parameter t and the angle theta:
+				// t = atan(a/b tan(theta)) where tan(theta) = py / px
+				pp.t = Math.atan2(halfAxes[0]*py, halfAxes[1]*px);											
+				
+				// calc Point on conic using this parameter
+				P.x = halfAxes[0] * Math.cos(pp.t);	
+				P.y = halfAxes[1] * Math.sin(pp.t);												
+				P.z = 1.0;
+				
+				//	transform back to real world coord system
+				coordsEVtoRW(P);				
+			break;			
+			
+			case CONIC_HYPERBOLA:
+				/* 
+				 * For hyperbolas, we use the parameter ranges 
+				 *   right branch: t = (-1, 1)
+				 *   left branch: t = (1, 3)
+				 * and get this from  s = (-inf, inf) using		
+				 *   right branch: s = t /(1 - abs(t)) 
+				 * where we use the parameter form
+				 *   (a*cosh(s), b*sinh(s))
+				 * for the right branch of the hyperbola.
+				 */ 
+				
+				// transform to eigenvector coord-system
+				coordsRWtoEV(P);
+				px = P.x / P.z;
+				py = P.y / P.z;
+				
+				// calculate s in (-inf, inf) and keep py				
+				double s = MyMath.asinh(py / halfAxes[1]);
+				P.x = halfAxes[0] * MyMath.cosh(s);	
+				P.y = py;
+				P.z = 1.0;
 
-	public void pointChangedForRegion(GeoPointInterface PI) {
+				// compute t in (-1,1) from s in (-inf, inf)
+				pp.t = PathNormalizer.inverseInfFunction(s);	
+				if (px < 0) { // left branch									
+					pp.t = pp.t + 2; // convert (-1,1) to (1,3)
+					P.x = -P.x;
+				}		
+
+				// transform back to real world coord system
+				coordsEVtoRW(P);													
+			break;																			
+			
+			case CONIC_PARABOLA:
+				//	transform to eigenvector coord-system
+				coordsRWtoEV(P);
+				
+				// keep py
+				py = P.y / P.z;
+				pp.t = py / p;
+				P.x = p * pp.t  * pp.t  / 2.0;
+				P.y = py;
+				P.z = 1.0; 									
+				
+				// transform back to real world coord system
+				coordsEVtoRW(P);		
+			break;
+		}		
+	}
+
+	/**
+	 * Point's parameters are set to its EV coordinates
+	 * @version 2010-07-30
+	 * Last change: Zbynek Konecny
+	 */
+	
+	public void pointChangedForRegion(GeoPointND PI) {
+		PI.updateCoords2D();
+
+		RegionParameters rp = PI.getRegionParameters();
+
+		if (!isInRegion(PI)){
+
+			moveBackToRegion(PI,rp);
+		}else{
+			GeoPoint P=(GeoPoint)PI;
+			rp.setIsOnPath(false);
+				
+			coordsRWtoEV(P);
+			rp.setT1(P.x/this.halfAxes[0]);
+			rp.setT2(P.y/this.halfAxes[1]);
+			coordsEVtoRW(P);
+		}
+	}
+
+	/**
+	 * Move a point  back to region
+	 * @param pi
+	 * @param rp
+	 */
+	protected void moveBackToRegion(GeoPointND pi,RegionParameters rp) {
+		pointChanged(pi);
+		rp.setIsOnPath(true);		
+	}
+	
+	/*ARpublic void pointChangedForRegion(GeoPointInterface PI) {
 		PI.updateCoords2D();
 
 		RegionParameters rp = PI.getRegionParameters();
@@ -2815,12 +3143,35 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 		}
 
 
+	}*/
+
+
+	/**
+	 * When elipse is moved, the points moves as well
+	 * and its EV coordinates remain the same
+	 * @version 2010-07-30
+	 * Last change: Zbynek Konecny
+	 */
+	
+	public void regionChanged(GeoPointND PI) {
+		//GeoPoint P = (GeoPoint) PI;
+		RegionParameters rp = PI.getRegionParameters();
+		
+		if (rp.isOnPath())
+			pathChanged(PI);
+		else{
+			//pointChangedForRegion(P);
+			GeoPoint P=(GeoPoint)PI;
+			if(P.isDefined()){
+			P.x=rp.getT1()*halfAxes[0];
+			P.y=rp.getT2()*halfAxes[1];
+			P.z = 1.0;
+			coordsEVtoRW(P);
+			}
+		}
 	}
 
-
-
-
-	public void regionChanged(GeoPointInterface P) {
+	/*ARpublic void regionChanged(GeoPointInterface P) {
 		//GeoPoint P = (GeoPoint) PI;
 		RegionParameters rp = P.getRegionParameters();
 		
@@ -2836,7 +3187,7 @@ Translateable, PointRotateable, Mirrorable, Dilateable, LineProperties, MatrixTr
 			
 		}
 		
-	}
+	}*/
 
 
 

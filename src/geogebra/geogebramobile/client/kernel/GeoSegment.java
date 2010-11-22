@@ -15,6 +15,7 @@ package geogebra.geogebramobile.client.kernel;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyDouble;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoSegmentND;
 
 import java.util.HashSet;
 
@@ -23,8 +24,7 @@ import java.util.HashSet;
 /**
  * @author Markus Hohenwarter
  */
-final public class GeoSegment extends GeoLine implements LimitedPath, NumberValue, LineProperties,
-GeoSegmentInterface {
+final public class GeoSegment extends GeoLine implements LimitedPath, NumberValue, LineProperties, GeoSegmentND {
 
 	private static final long serialVersionUID = 1L;
 	// GeoSegment is constructed by AlgoJoinPointsSegment 
@@ -278,7 +278,7 @@ GeoSegmentInterface {
 	/* 
 	 * Path interface
 	 */	     	
-    public void pointChanged(GeoPointInterface PI) {
+    /*ARpublic void pointChanged(GeoPointInterface PI) {
 		GeoPoint P = (GeoPoint) PI;
 			
 		PathParameter pp = P.getPathParameter();
@@ -310,7 +310,7 @@ GeoSegmentInterface {
 			P.z = endPoint.z; 
 			pp.t = 1.0;
 		}
-	}
+	}*/
 
 	public void pathChanged(GeoPointInterface PI) {
 		

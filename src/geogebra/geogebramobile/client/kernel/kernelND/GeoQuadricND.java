@@ -1,8 +1,12 @@
-package geogebra.geogebramobile.client.kernel;
+package geogebra.geogebramobile.client.kernel.kernelND;
 
+import geogebra.geogebramobile.client.Matrix.GgbMatrix;
 import geogebra.geogebramobile.client.Matrix.GgbVector;
-
-
+import geogebra.geogebramobile.client.kernel.Construction;
+import geogebra.geogebramobile.client.kernel.GeoConic;
+import geogebra.geogebramobile.client.kernel.GeoElement;
+import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
+import geogebra.geogebramobile.client.main.Application;
 
 /** Abstract class describing quadrics in n-dimension space.
  * Extended by GeoConic, GeoQuadric3D
@@ -30,7 +34,7 @@ public abstract class GeoQuadricND extends GeoElement {
 	public static final int QUADRIC_CONE = 30;
 	public static final int QUADRIC_CYLINDER = 31;
 	
-	protected int type = -1; // of quadric
+	public int type = -1; // of quadric
 
 
 
@@ -38,10 +42,10 @@ public abstract class GeoQuadricND extends GeoElement {
 	 * @see {@link GeoConic}
 	 * @see {@link GeoQuadric3D}
 	 */
-	protected double[] matrix;
+	public double[] matrix;
 	
 	
-	protected double[] halfAxes;
+	public double[] halfAxes;
 	
 
 	
@@ -57,6 +61,11 @@ public abstract class GeoQuadricND extends GeoElement {
 	
 	
 	protected GgbVector midpoint;
+	//TODO merge with 2D eigenvec
+	protected GgbVector[] eigenvecND;
+
+
+	protected double[] diagonal;
 	
 	
 	//string
@@ -76,21 +85,68 @@ public abstract class GeoQuadricND extends GeoElement {
 		midpoint = new GgbVector(dimension+1);
 		midpoint.set(dimension+1, 1);
 	}
+	
+	
+	
+	/////////////////////////////////
+	// MATRIX REPRESENTATION
+	/////////////////////////////////
+	
+	/**
+	 * @return the matrix representation of the quadric in its dimension
+	 * regarding vals
+	 */
+	abstract protected GgbMatrix getGgbMatrix(double[] vals);
+		
+	/**
+	 * @return the matrix representation of the quadric in its dimension
+	 */
+	protected GgbMatrix getGgbMatrix(){
+		return getGgbMatrix(matrix);
+	}
+	
+	
+	/**
+	 * sets the matrix values from eigenvectors, midpoint and "diagonal" values
+	 */
+	protected void setMatrixFromEigen(){
+		
+		GgbMatrix diagonalizedMatrix = GgbMatrix.DiagonalMatrix(diagonal);
+		
+		GgbMatrix eigenMatrix = new GgbMatrix(4, 4);
+		eigenMatrix.set(eigenvecND);
+		eigenMatrix.set(getMidpoint(),4);
+		
+		GgbMatrix eigenMatrixInv = eigenMatrix.inverse();
+		
+		GgbMatrix finalMatrix = eigenMatrixInv.transposeCopy().mul(diagonalizedMatrix).mul(eigenMatrixInv);
+		
+		setMatrix(finalMatrix);
+	}
 
+	/**
+	 * sets the matrix values from the symmetric matrix m
+	 * @param m
+	 */
+	abstract protected void setMatrix(GgbMatrix m);
+	
+	/////////////////////////////////
+	// SPECIAL CASES SETTERS
+	/////////////////////////////////
 
 	
 	/** set the center and radius (as segment) of the N-sphere
 	 * @param M center
 	 * @param segment
 	 */
-	abstract public void setSphereND(GeoPointInterface M, GeoSegmentInterface segment);
+	abstract public void setSphereND(GeoPointND M, GeoSegmentND segment);
 	
 	
 	
 	/**
 	 * makes this quadric a sphere with midpoint M and radius r
 	 */
-	public void setSphereND(GeoPointInterface M, double r) {
+	public void setSphereND(GeoPointND M, double r) {
 		defined = ((GeoElement) M).isDefined() && !M.isInfinite(); // check midpoint
 		
 		// check radius
@@ -108,13 +164,13 @@ public abstract class GeoQuadricND extends GeoElement {
 	}
 	
 	
-	abstract public void setSphereND(GeoPointInterface M, GeoPointInterface P);
+	abstract public void setSphereND(GeoPointND M, GeoPointND P);
 	
 	
-	protected void setSphereNDMatrix(GeoPointInterface M, double r){
+	protected void setSphereNDMatrix(GeoPointND M, double r){
 				
 		
-		double[] coords = M.getInhomCoords().get();
+		double[] coords = M.getInhomCoordsInD(3).get();
 		
 		// set midpoint
 		setMidpoint(coords);
@@ -215,6 +271,9 @@ public abstract class GeoQuadricND extends GeoElement {
 		return type;
 	}
 	
+	final public void setType(int type) {
+		this.type = type;
+	}
 	
 	//////////////////////////////////////:
 	// STRING
@@ -240,7 +299,7 @@ public abstract class GeoQuadricND extends GeoElement {
 		sbToString.setLength(0);
 		sbToString.append(label);
 		sbToString.append(": ");
-		sbToString.append(buildValueString().toString()); 
+		sbToString.append(buildValueString()); 
 		return sbToString.toString();
 	}
 		
@@ -261,17 +320,19 @@ public abstract class GeoQuadricND extends GeoElement {
 	
 	
 	protected void buildSphereNDString(){
+		String squared = (kernel.getCASPrintForm() == ExpressionNode.STRING_TYPE_LATEX) ? "^{2}" : "\u00b2";
 				
 		for (int i=0; i<dimension; i++){
 			if (kernel.isZero(getMidpoint().get(i+1))) {
 				sbToValueString.append(VAR_STRING[i]);
-				sbToValueString.append("\u00b2");
+				sbToValueString.append(squared);
 			} else {
 				sbToValueString.append("(");
 				sbToValueString.append(VAR_STRING[i]);
 				sbToValueString.append(" ");
-				sbToValueString.append(kernel.formatSigned(-getMidpoint().get(i+1)).toString());
-				sbToValueString.append(")\u00b2");
+				sbToValueString.append(kernel.formatSigned(-getMidpoint().get(i+1)));
+				sbToValueString.append(")");
+				sbToValueString.append(squared);
 			}	
 			if (i<dimension-1)
 				sbToValueString.append(" + ");

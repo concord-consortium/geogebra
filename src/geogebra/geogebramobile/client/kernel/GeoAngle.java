@@ -106,7 +106,7 @@ public final class GeoAngle extends GeoNumeric {
 		setLabel(label);
 	}
 
-	protected String getClassName() {
+	public String getClassName() {
 		return "GeoAngle";
 	}
 
@@ -357,10 +357,10 @@ public final class GeoAngle extends GeoNumeric {
 		if (isDrawable() || isSliderable()) {
 			// save slider info before show to have min and max set
 			// before setEuclidianVisible(true) is called
-			sb.append(getXMLsliderTag());
+			getXMLsliderTag(sb);
 
-			sb.append(getXMLvisualTags());
-			sb.append(getLineStyleXML());
+			getXMLvisualTags(sb);
+			getLineStyleXML(sb);
 
 			// arc size
 			sb.append("\t<arcSize val=\"");
@@ -370,9 +370,9 @@ public final class GeoAngle extends GeoNumeric {
 		sb.append(getXMLAllowReflexAngleTag());
 		sb.append(getXMLEmphasizeRightAngleTag());		
 		//sb.append(getXMLanimationTags());
-		sb.append(getXMLfixedTag());
+		getXMLfixedTag(sb);
 		//sb.append(getAuxiliaryXML());
-		sb.append(getBreakpointXML());
+		getBreakpointXML(sb);
 	}
 
 	private String getXMLAllowReflexAngleTag() {

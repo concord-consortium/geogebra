@@ -233,8 +233,8 @@ AbsoluteScreenLocateable {
 		sb.append(value);
 		sb.append("\"/>\n");				
 				
-		sb.append(getXMLvisualTags(isIndependent()));
-		sb.append(getXMLfixedTag());
+		getXMLvisualTags(sb, isIndependent());
+		getXMLfixedTag(sb);
 		//AGsb.append(getAuxiliaryXML());
 		
 		// checkbox fixed

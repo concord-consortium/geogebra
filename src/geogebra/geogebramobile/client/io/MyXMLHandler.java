@@ -12,7 +12,7 @@ import geogebra.geogebramobile.client.kernel.GeoAngle;
 import geogebra.geogebramobile.client.kernel.GeoBoolean;
 import geogebra.geogebramobile.client.kernel.GeoButton;
 import geogebra.geogebramobile.client.kernel.GeoConic;
-import geogebra.geogebramobile.client.kernel.GeoCubic;
+//ARimport geogebra.geogebramobile.client.kernel.GeoCubic;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.GeoLine;
 import geogebra.geogebramobile.client.kernel.GeoNumeric;
@@ -34,6 +34,7 @@ import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.main.MyError;
 import geogebra.geogebramobile.client.util.Base64;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -110,8 +111,27 @@ public class MyXMLHandler  {
 			this.exp = exp;
 		}
 	}
-	
+
 	private class LocateableExpPair {
+		Locateable locateable;
+		String exp; // String with expression to create point 
+		GeoPointND point; // free point
+		int number; // number of startPoint
+
+		LocateableExpPair(Locateable g, String s, int n) {
+			locateable = g;
+			exp = s;
+			number = n;
+		}
+		
+		LocateableExpPair(Locateable g, GeoPointND p, int n) {
+			locateable = g;
+			point = p;
+			number = n;
+		}
+	}
+
+	/*ARprivate class LocateableExpPair {
 		Locateable locateable;
 		String exp; // String with expression to create point 
 		GeoPointInterface point; // free point
@@ -128,7 +148,7 @@ public class MyXMLHandler  {
 			point = p;
 			number = n;
 		}
-	}
+	}*/
 	
 	public MyXMLHandler(Kernel kernel, Construction cons) {
 		origKernel = kernel;
@@ -1062,13 +1082,13 @@ public class MyXMLHandler  {
 	}
 
 	private boolean handleMatrix(Node item, GeoElement geoElement) {
-		if (!(geoElement.isGeoConic()) && !(geoElement.isGeoCubic())) {
+		if (!(geoElement.isGeoConic()) /*AR && !(geoElement.isGeoCubic())*/) {
 			System.err.println("wrong element type for <matrix>: "
 					+ geoElement.getClass());
 			return false;
 		}
 		try {
-			if (geoElement.isGeoConic()) {
+//AR			if (geoElement.isGeoConic()) {
 			GeoConic conic = (GeoConic) geoElement;
 			// set matrix and classify conic now
 			// <eigenvectors> should have been set earlier
@@ -1079,7 +1099,7 @@ public class MyXMLHandler  {
 					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A4"))),
 					Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A5"))) };
 			conic.setMatrix(matrix);
-			} else {
+/*AR			} else {
 				GeoCubic cubic = (GeoCubic) geoElement;
 				double[] coefficients = { Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A0"))),
 						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A1"))),
@@ -1098,7 +1118,7 @@ public class MyXMLHandler  {
 						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A14"))),
 						Double.parseDouble((String) getNodeAttr(item.getAttributes().getNamedItem("A15"))) };
 				cubic.setCoeffs(coefficients);				
-			}
+			}*/
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -1512,7 +1532,8 @@ public class MyXMLHandler  {
 				attrs.put("y", getNodeAttr(item.getAttributes().getNamedItem("y")));
 				attrs.put("z", getNodeAttr(item.getAttributes().getNamedItem("z")));
 				
-				GeoPointInterface p = handleAbsoluteStartPoint(attrs);
+				//ARGeoPointInterface p = handleAbsoluteStartPoint(attrs);
+				GeoPointND p = handleAbsoluteStartPoint(attrs);
 				
 				if (number == 0) {
 					// set first start point right away
@@ -1531,9 +1552,11 @@ public class MyXMLHandler  {
 		
 		return true;
 	}
-	
-	/** create absolute start point (coords expected) */
-	protected GeoPointInterface handleAbsoluteStartPoint(LinkedHashMap<String, String> attrs) {
+
+	/** create absolute start point (coords expected) 
+	 * @param attrs 
+	 * @return start point */
+	protected GeoPointND handleAbsoluteStartPoint(LinkedHashMap<String, String> attrs) {
 		double x = Double.parseDouble((String) attrs.get("x"));
 		double y = Double.parseDouble((String) attrs.get("y"));
 		double z = Double.parseDouble((String) attrs.get("z"));
@@ -1541,6 +1564,16 @@ public class MyXMLHandler  {
 		p.setCoords(x, y, z);
 		return p;
 	}
+	
+	/** create absolute start point (coords expected) */
+	/*ARprotected GeoPointInterface handleAbsoluteStartPoint(LinkedHashMap<String, String> attrs) {
+		double x = Double.parseDouble((String) attrs.get("x"));
+		double y = Double.parseDouble((String) attrs.get("y"));
+		double z = Double.parseDouble((String) attrs.get("z"));
+		GeoPoint p = new GeoPoint(cons);
+		p.setCoords(x, y, z);
+		return p;
+	}*/
 	
 	public void setApplication(Application app) {
 		this.app = app;
@@ -1551,8 +1584,28 @@ public class MyXMLHandler  {
 	protected boolean parseBoolean(String str) throws Exception {
 		return "true".equals(str);
 	}
-	
+
 	private void processStartPointList() {
+		try {
+			Iterator<LocateableExpPair> it = startPointList.iterator();
+			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
+
+			while (it.hasNext()) {
+				LocateableExpPair pair = it.next();
+				GeoPointND P = pair.point != null ? pair.point : 
+								algProc.evaluateToPoint(pair.exp);
+				pair.locateable.setStartPoint(P, pair.number);
+								
+			}
+		} catch (Exception e) {
+			startPointList.clear();
+			e.printStackTrace();
+			throw new MyError(app, "processStartPointList: " + e.toString());
+		}
+		startPointList.clear();
+	}
+
+	/*ARprivate void processStartPointList() {
 		try {
 			Iterator it = startPointList.iterator();
 			AlgebraProcessor algProc = kernel.getAlgebraProcessor();
@@ -1571,7 +1624,7 @@ public class MyXMLHandler  {
 			throw new MyError(app, "processStartPointList: " + e.toString());
 		}
 		startPointList.clear();
-	}
+	}*/
 	
 	private void processShowObjectConditionList() {
 		try {

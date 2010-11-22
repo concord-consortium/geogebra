@@ -5,39 +5,43 @@ http://www.geogebra.org
 This file is part of GeoGebra.
 
 This program is free software; you can redistribute it and/or modify it 
-under the terms of the GNU General Public License v2 as published by 
+under the terms of the GNU General Public License as published by 
 the Free Software Foundation.
 
 */
 
 package geogebra.geogebramobile.client.kernel;
 
-
-
+import geogebra.geogebramobile.client.Matrix.GgbCoordSys;
+import geogebra.geogebramobile.client.Matrix.GgbVector;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyDouble;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
-import geogebra.geogebramobile.client.kernel.gawt.Color;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoSegmentND;
+import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.MyMath;
 
+import geogebra.geogebramobile.client.kernel.gawt.Color;
 import java.util.HashSet;
-
 
 /**
  * Polygon through given points
  * 
  * @author Markus Hohenwarter
  */
-public class GeoPolygon extends GeoElement implements NumberValue, Path, Region {
+public class GeoPolygon extends GeoElement implements NumberValue, Path, Region, Traceable {
 	
 	private static final long serialVersionUID = 1L;
 
 	public static final int POLYGON_MAX_POINTS = 100;
 	
-	protected GeoPointInterface [] points;
-	protected GeoSegmentInterface [] segments;
+	protected GeoPointND [] points;
+	protected GeoSegmentND [] segments;
 	
-
+	/** view direction of the polygon (TODO generalize) */
+	private GgbVector viewDirection = new GgbVector(0, 0, 1, 0);
+	
 	/** first point for region coord sys */
 	protected GeoPoint p0;
 	/** second point for region coord sys */
@@ -60,7 +64,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	 * @param c the construction
 	 * @param points vertices 
 	 */
-	public GeoPolygon(Construction c, GeoPointInterface[] points) {
+	public GeoPolygon(Construction c, GeoPointND[] points) {
 		this(c,points,null,true);
 	}
 	
@@ -70,25 +74,30 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	 * @param cs for 3D stuff : 2D coord sys
 	 * @param createSegments says if the polygon has to creates its edges
 	 */	
-	public GeoPolygon(Construction c, GeoPointInterface[] points, GeoElement cs, boolean createSegments) {
-		super(c);
+	public GeoPolygon(Construction c, GeoPointND[] points, GgbCoordSys cs, boolean createSegments) {
+		this(c);
+		//Application.printStacktrace("poly");
 		this.createSegments=createSegments;
 		setPoints(points, cs, createSegments);
 		setLabelVisible(false);
 		setAlphaValue(ConstructionDefaults.DEFAULT_POLYGON_ALPHA);
 	}
 	
+	public GeoPolygon(Construction cons) {
+		super(cons);
+	}
+
 	/** for 3D stuff (unused here)
 	 * @param cs GeoCoordSys2D
 	 */
-	public void setCoordSys(GeoElement cs) {
+	public void setCoordSys(GgbCoordSys cs) {
 		
 	}
 	
 	
 	
 
-	protected String getClassName() {
+	public String getClassName() {
 		return "GeoPolygon";
 	}
 	
@@ -125,7 +134,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
      * set the vertices to points
      * @param points the vertices
      */
-    public void setPoints(GeoPointInterface [] points) {
+    public void setPoints(GeoPointND [] points) {
     	setPoints(points,null,true);
     }
 
@@ -136,7 +145,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
      * @param cs used for 3D stuff
      * @param createSegments says if the polygon has to creates its edges
      */
-    public void setPoints(GeoPointInterface [] points, GeoElement cs, boolean createSegments) {
+    public void setPoints(GeoPointND [] points, GgbCoordSys cs, boolean createSegments) {
 		this.points = points;
 		setCoordSys(cs);
 		
@@ -165,7 +174,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	/** return number for points
 	 * @return number for points
 	 */
-	public int getNumPoints(){
+	public int getPointsLength(){
 		return points.length;
 	}
 	
@@ -267,7 +276,12 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
     private void defaultSegmentLabels() {
     	//  no labels for segments specified
         //  set labels of segments according to point names
-        if (points.length == 3) {          
+        if (points.length == 3) {    
+        	
+        	// make sure segment opposite C is called c not a_1
+        	if (getParentAlgorithm() instanceof AlgoPolygonRegular)
+        		points[2].setLabel(null);
+        	
            setLabel(segments[0], points[2]);
            setLabel(segments[1], points[0]);
            setLabel(segments[2], points[1]); 
@@ -284,7 +298,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
      * If the lower case label of the point is already used, an indexed label
      * is created.
      */
-    private void setLabel(GeoSegmentInterface s, GeoPointInterface p) {
+    private void setLabel(GeoSegmentND s, GeoPointND p) {
         if (!p.isLabelSet() || p.getLabel() == null) {
         	s.setLabel(null);
         } else {
@@ -302,8 +316,8 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	 private void updateSegments() {  	
 		 if (points == null) return;
 		 
-		GeoSegmentInterface [] oldSegments = segments;				
-		segments = new GeoSegmentInterface[points.length]; // new segments
+		GeoSegmentND [] oldSegments = segments;				
+		segments = new GeoSegmentND[points.length]; // new segments
 				
 		if (oldSegments != null) {
 			// reuse or remove old segments
@@ -323,13 +337,16 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 			}
 		}			
 		
+		// make sure segments created visible if appropriate
+		setDefined();
+		
 		// create missing segments
         for (int i=0; i < segments.length; i++) {
-        	GeoPointInterface startPoint = points[i];
-        	GeoPointInterface endPoint = points[(i+1) % points.length];
+        	GeoPointND startPoint = points[i];
+        	GeoPointND endPoint = points[(i+1) % points.length];
         	
         	if (segments[i] == null) {
-         		segments[i] = createSegment(startPoint, endPoint);
+         		segments[i] = createSegment(startPoint, endPoint, i == 0 ? isEuclidianVisible() : segments[0].isEuclidianVisible());
         	}     
         }         
         
@@ -341,7 +358,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	  * remove an old segment
 	  * @param oldSegment the old segment 
 	  */
-	 public void removeSegment(GeoSegmentInterface oldSegment){
+	 public void removeSegment(GeoSegmentND oldSegment){
 		 ((AlgoJoinPointsSegment) ((GeoSegment) oldSegment).getParentAlgorithm()).removeSegmentOnly();
 	 }
 	 
@@ -353,8 +370,8 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	  * @param endPoint the end point
 	  * @return the segment
 	  */
-	 public GeoSegmentInterface createSegment(GeoPointInterface startPoint, GeoPointInterface endPoint){
-		 GeoSegmentInterface segment;
+	 public GeoSegmentND createSegment(GeoPointND startPoint, GeoPointND endPoint, boolean euclidianVisible){
+		 GeoSegmentND segment;
 
 		 AlgoJoinPointsSegment algoSegment = new AlgoJoinPointsSegment(cons, (GeoPoint) startPoint, (GeoPoint) endPoint, this);            
 		 cons.removeFromConstructionList(algoSegment);               
@@ -363,6 +380,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		 // refresh color to ensure segments have same color as polygon:
 		 segment.setObjColor(getObjectColor()); 
          segment.setLineThickness(getLineThickness()); 
+         segment.setEuclidianVisible(euclidianVisible);
          //segment.setAuxiliaryObject(true);
 
 		 return segment;
@@ -386,24 +404,31 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return ret;		
 	} 		
 	
+	protected GeoPointND newGeoPoint(){
+		return new GeoPoint(cons);
+	}
+	
 	public void set(GeoElement geo) {
 		GeoPolygon poly = (GeoPolygon) geo;		
 		area = poly.area;
-		defined = poly.defined;	
+		
 		
 		// make sure both arrays have same size
 		if (points.length != poly.points.length) {
-			GeoPointInterface [] tempPoints = new GeoPointInterface[poly.points.length];
+			GeoPointND [] tempPoints = new GeoPointND[poly.points.length];
 			for (int i=0; i < tempPoints.length; i++) {
-				tempPoints[i] = i < points.length ? points[i] : new GeoPoint(cons);
+				tempPoints[i] = i < points.length ? points[i] : newGeoPoint();
 			}
 			points = tempPoints;
 		}
 		
 		for (int i=0; i < points.length; i++) {				
-			((GeoPoint) points[i]).set(poly.points[i]);
+			((GeoElement) points[i]).set((GeoElement) poly.points[i]);
 		}	
+		
+		setCoordSys(null);
 		updateSegments();
+		defined = poly.defined;	
 	}
 	
 	
@@ -425,18 +450,26 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return (GeoPoint []) points;
 	}
 	
+	public GeoPointND [] getPointsND() {
+		return points;
+	}
+	
+	public GeoPointND getPointND(int i) {
+		return points[i];
+	}	
+	
 	/**
 	 * Returns the segments of this polygon.
 	 * Note that this array may change dynamically.
 	 */
-	public GeoSegmentInterface [] getSegments() {
+	public GeoSegmentND [] getSegments() {
 		return segments;
 	}
 	
 	/** sets the segments (used by GeoPolyhedron)
 	 * @param segments the segments
 	 */
-	public void setSegments(GeoSegmentInterface [] segments){
+	public void setSegments(GeoSegmentND [] segments){
 		this.segments = segments;
 	}
 
@@ -613,6 +646,16 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		}	
    }
    
+   public void setLineTypeHidden(int type) {
+		super.setLineType(type);
+		if (segments != null) {
+			for (int i=0; i < segments.length; i++) {
+				((GeoElement) segments[i]).setLineTypeHidden(type);	
+				segments[i].update();
+			}
+		}	
+  }
+   
    public void setLineThickness(int th) {
 		super.setLineThickness(th);
 		if (segments != null) {
@@ -631,7 +674,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	    return sbToString.toString();
    }      
    private StringBuilder sbToString = new StringBuilder(50);
-   
+
    final public String toValueString() {
 	   return kernel.format(getArea());
    }
@@ -721,7 +764,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return true;
 	}
 
-	public boolean isOnPath(GeoPointInterface PI, double eps) {
+	public boolean isOnPath(GeoPointND PI, double eps) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -736,7 +779,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return false;
 	}
 
-	public void pathChanged(GeoPointInterface PI) {		
+	public void pathChanged(GeoPointND PI) {		
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -748,7 +791,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		if (pp.t < 0) 
 			pp.t += segments.length;
 		int index = (int) Math.floor(pp.t) ;		
-		GeoSegmentInterface seg = segments[index];
+		GeoSegmentND seg = segments[index];
 		double segParameter = pp.t - index;
 		
 		// calc point for given parameter
@@ -761,7 +804,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		P.z = 1.0;	
 	}
 
-	public void pointChanged(GeoPointInterface PI) {
+	public void pointChanged(GeoPointND PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -809,7 +852,11 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return true;
 	}
 	
-	public boolean isInRegion(GeoPointInterface PI){
+	protected boolean isInRegion(GeoPointND PI, boolean update){
+		return isInRegion(PI);
+	}
+	
+	public boolean isInRegion(GeoPointND PI){
 		
 		GeoPoint P = (GeoPoint) PI;
 		double x0 = P.x/P.z;
@@ -843,7 +890,9 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return ret;
 	}
 	
-	public void regionChanged(GeoPointInterface P){
+	public void regionChanged(GeoPointND P){
+		
+
 		
 		//GeoPoint P = (GeoPoint) PI;
 		RegionParameters rp = P.getRegionParameters();
@@ -862,7 +911,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 					p0.inhomX + rp.getT1()*xu + rp.getT2()*xv,
 					p0.inhomY + rp.getT1()*yu + rp.getT2()*yv);
 			
-			if (!isInRegion(P)){
+			if (!isInRegion(P,false)){
 				pointChanged(P);
 				rp.setIsOnPath(true);
 			}	
@@ -876,7 +925,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	 * @param x x-coord
 	 * @param y y-coord
 	 */
-	public void setRegionChanged(GeoPointInterface PI, double x, double y){
+	public void setRegionChanged(GeoPointND PI, double x, double y){
 		GeoPoint P = (GeoPoint) PI;
 		P.x = x;
 		P.y = y;
@@ -885,7 +934,7 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	}
 	
 	
-	public void pointChangedForRegion(GeoPointInterface P){
+	public void pointChangedForRegion(GeoPointND P){
 		
 		P.updateCoords2D();
 		
@@ -988,9 +1037,18 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 	}
 	
 	
-	
-	
-	
+	/**
+	 * returns all class-specific xml tags for getXML
+	 * GeoGebra File Format
+	 */
+	protected void getXMLtags(StringBuilder sb) {
+		getLineStyleXML(sb);
+		getXMLvisualTags(sb);
+		getXMLanimationTags(sb);
+		getXMLfixedTag(sb);
+		getAuxiliaryXML(sb);
+		getBreakpointXML(sb);		
+	}
 	
 	
 	
@@ -1000,11 +1058,71 @@ public class GeoPolygon extends GeoElement implements NumberValue, Path, Region 
 		return false;
 	}
 
+	/**
+	 * @return minimum line thickness (normally 1, but 0 for polygons, integrals etc)
+	 */
+	public int getMinimumLineThickness() {		
+		return 0;
+	}
+
+   public boolean trace;
 
 
+	public boolean isTraceable() {
+		return true;
+	}
 
+	public void setTrace(boolean trace) {
+		this.trace = trace;
+	}
+
+	public boolean getTrace() {
+		return trace;
+	}
 	
 	
 	
+	/////////////////////
+	// 3D stuff
+	/////////////////////
+
+	public GgbVector getViewDirection(){
+		return viewDirection;
+	}
+
+	/**
+	 * Returns the i-th 3D point of this polygon.
+	 * @param i number of point
+	 * @return the i-th point
+	 */	 
+	public GgbVector getPoint3D(int i){
+		return getPoint(i).getCoordsInD(3);
+	}
+	
+
+	/** if this is a part of a closed surface
+	 * @return if this is a part of a closed surface
+	 */
+	public boolean isPartOfClosedSurface(){
+		return false; //TODO
+	}
+
+
+	public boolean hasDrawable3D() {
+		return true;
+	}	
+	
+	public GgbVector getLabelPosition(){
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for (int i=0; i<getPointsLength(); i++){
+			GgbVector coords = getPoint3D(i);
+			x+=coords.getX();
+			y+=coords.getY();
+			z+=coords.getZ();
+		}
+		return new GgbVector(x/getPointsLength(), y/getPointsLength(), z/getPointsLength(), 1);
+	}
 
 }

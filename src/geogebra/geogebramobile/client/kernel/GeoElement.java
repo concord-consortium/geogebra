@@ -1,15 +1,3 @@
-/* 
-GeoGebra - Dynamic Mathematics for Everyone
-http://www.geogebra.org
-
-This file is part of GeoGebra.
-
-This program is free software; you can redistribute it and/or modify it 
-under the terms of the GNU General Public License as published by 
-the Free Software Foundation.
-
-*/
-
 /*
  * GeoElement.java
  *
@@ -287,6 +275,7 @@ public abstract class GeoElement
 	public static final int LABEL_CAPTION = 3; // Michael Borcherds 2008-02-18
 
 	protected String label; // should only be used directly in subclasses
+	private String realLabel; //for macro constructions, see setRealLabel() for details 
 	private String oldLabel; // see doRenameLabel
 	private String caption; // only used by GeoBoolean for check boxes at the moment	
 	boolean labelWanted = false, labelSet = false, localVarLabelSet = false;
@@ -335,17 +324,20 @@ public abstract class GeoElement
 	protected boolean highlighted = false;
 	private boolean selected = false;		
 	private String strAlgebraDescription, strAlgebraDescTextOrHTML, strAlgebraDescriptionHTML,
-		strLabelTextOrHTML, strLaTeX;
+		strLabelTextOrHTML;
+	protected String strLaTeX;
 	private boolean strAlgebraDescriptionNeedsUpdate = true;
 	private boolean strAlgebraDescTextOrHTMLneedsUpdate = true;
 	private boolean strAlgebraDescriptionHTMLneedsUpdate = true;
 	private boolean strLabelTextOrHTMLUpdate = true;
-	private boolean strLaTeXneedsUpdate = true;	
+	protected boolean strLaTeXneedsUpdate = true;	
 	
 	// line thickness and line type: s	
 	// note: line thickness in Drawable is calculated as lineThickness / 2.0f
 	public int lineThickness = EuclidianViewConstants.DEFAULT_LINE_THICKNESS;
-	public int lineType = EuclidianViewConstants.DEFAULT_LINE_TYPE;		
+	public int lineType = EuclidianViewConstants.DEFAULT_LINE_TYPE;
+	/** line type for hidden parts (for 3D) */
+	public int lineTypeHidden = EuclidianView.DEFAULT_LINE_TYPE_HIDDEN;
 	
 	// decoration types
 	public int decorationType = DECORATION_NONE;	
@@ -381,6 +373,8 @@ public abstract class GeoElement
 	// public int geoID;    
 	//  static private int geoCounter = 0;
 	private AlgoElement algoParent = null; // Parent Algorithm
+	/** draw algorithm */
+	protected AlgoElement algoDraw = null;
 	private ArrayList algorithmList; 	// directly dependent algos
 	
 	//	set of all dependent algos sorted in topological order    
@@ -1181,6 +1175,12 @@ public abstract class GeoElement
 
 	final public AlgoElement getParentAlgorithm() {
 		return algoParent;
+	}
+
+	final public AlgoElement getDrawAlgorithm() {
+		if(algoDraw == null)
+			return algoParent;
+		return algoDraw;
 	}
 	
 	final public ArrayList getAlgorithmList() {
@@ -2440,7 +2440,7 @@ public abstract class GeoElement
 				GeoElement geo = (GeoElement) it.next();
 				if (geo.isGeoNumeric()) {
 					GeoNumeric num = (GeoNumeric) geo;
-					if (num.isRandomNumber() && !num.isLabelSet()) {
+					if (num.isRandomGeo() && !num.isLabelSet()) {
 						if (randNumbers == null)
 							randNumbers = new ArrayList();
 						randNumbers.add(num);					
@@ -2911,7 +2911,7 @@ public abstract class GeoElement
 		return strAlgebraDescription;
 	}	
 	
-	final public String getLaTeXdescription() {
+	public String getLaTeXdescription() {
 		if (strLaTeXneedsUpdate) {			
 			if (isDefined()) {
 				strLaTeX = toLaTeXString(false);
@@ -3213,28 +3213,24 @@ public abstract class GeoElement
 		
 		kernel.setTranslateCommandName(oldValue);
 		return sb.toString();
-	}
+	}*/
 	
-    final String getAuxiliaryXML() {
+    final void getAuxiliaryXML(StringBuilder sb) {
 		if (auxiliaryObject) {
-			StringBuilder sb = new StringBuilder();
 			sb.append("\t<auxiliary val=\"");
 			sb.append(auxiliaryObject);
 			sb.append("\"/>\n");
-			return sb.toString();
-		} else 
-			return "";		
-	}*/
+		}		
+	}
 
 	/**
 	 * returns all visual xml tags (like show, objColor, labelOffset, ...)
 	 */
-	String getXMLvisualTags() {
-		return getXMLvisualTags(true);
+	void getXMLvisualTags(StringBuilder sb) {
+		getXMLvisualTags(sb, true);
 	}
 		
-	String getXMLvisualTags(boolean withLabelOffset) {
-		StringBuilder sb = new StringBuilder();
+	void getXMLvisualTags(StringBuilder sb, boolean withLabelOffset) {
 		boolean isDrawable = isDrawable();
 		
 		// show object and/or label in EuclidianView
@@ -3341,14 +3337,11 @@ public abstract class GeoElement
 			sb.append(decorationType);
 			sb.append("\"/>\n");
 		}
-		
-		return sb.toString();	
 	}
 
-	/*AGString getXMLanimationTags() {
+	void getXMLanimationTags(StringBuilder sb) {
 		// animation step width
 		if (isChangeable()) {
-			StringBuilder sb = new StringBuilder();
 			sb.append("\t<animation");
 			sb.append(" step=\""+animationIncrement+"\"");
 			String animSpeed = animationSpeedObj == null ? "1" : animationSpeedObj.toGeoElement().getLabel();
@@ -3358,21 +3351,16 @@ public abstract class GeoElement
 			sb.append((isAnimating() ? "true" : "false"));
 			sb.append("\"");
 			sb.append("/>\n");
-			return sb.toString();
 		}
-		return "";
-	}*/
+	}
 
-	String getXMLfixedTag() {
+	void getXMLfixedTag(StringBuilder sb) {
 		//		is object fixed
 		if (fixed && isFixable()) {
-			StringBuilder sb = new StringBuilder();
 			sb.append("\t<fixed val=\"");
 			sb.append(fixed);
 			sb.append("\"/>\n");
-			return sb.toString();
 		}
-		return "";
 	}
 
 	/**
@@ -3386,11 +3374,11 @@ public abstract class GeoElement
 	 */
 	protected void getXMLtags(StringBuilder sb) {
 		//sb.append(getLineStyleXML());
-		sb.append(getXMLvisualTags());
+		getXMLvisualTags(sb);
 		//AGsb.append(getXMLanimationTags());
-		sb.append(getXMLfixedTag());
+		getXMLfixedTag(sb);
 		//AGsb.append(getAuxiliaryXML());
-		sb.append(getBreakpointXML());		
+		getBreakpointXML(sb);		
 	}
 
 
@@ -3398,18 +3386,16 @@ public abstract class GeoElement
 	 * returns all class-specific i2g tags for getI2G
 	 * Intergeo File Format (Yves Kreis)
 	 */
-	protected String getI2Gtags() {
-		return "";
+	protected void getI2Gtags(StringBuilder sb) {
 	}
 
 	/**
 	 * Returns line type and line thickness as xml string.
 	 * @see getXMLtags() of GeoConic, GeoLine and GeoVector      
 	 */
-	String getLineStyleXML() {
-		if (isGeoPoint()) return "";
+	protected void getLineStyleXML(StringBuilder sb) {
+		if (isGeoPoint()) return;
 		
-		StringBuilder sb = new StringBuilder();
 		sb.append("\t<lineStyle");
 		sb.append(" thickness=\"");
 		sb.append(lineThickness);
@@ -3417,23 +3403,22 @@ public abstract class GeoElement
 		sb.append(" type=\"");
 		sb.append(lineType);
 		sb.append("\"");
+		sb.append(" typeHidden=\"");
+		sb.append(lineTypeHidden);
+		sb.append("\"");		
 		sb.append("/>\n");
-		return sb.toString();
-	}	
+	}
 
 	/**
 	 * Returns line type and line thickness as xml string.
 	 * @see getXMLtags() of GeoConic, GeoLine and GeoVector      
 	 */
-	String getBreakpointXML() {		
+	void getBreakpointXML(StringBuilder sb) {		
 		if (isConsProtBreakpoint) {
-			StringBuilder sb = new StringBuilder();		
 			sb.append("\t<breakpoint val=\"");		
 			sb.append(isConsProtBreakpoint);
 			sb.append("\"/>\n");
-			return sb.toString();		
-		} else
-			return "";			
+		}
 	}
 	
 	private String getShowObjectConditionXML() {
@@ -3473,6 +3458,13 @@ public abstract class GeoElement
 	 */
 	public void setLineType(int i) {
 		lineType = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setLineTypeHidden(int i) {
+		lineTypeHidden = i;
 	}
 	
 	public void setDecorationType(int type) {
@@ -3948,7 +3940,7 @@ public abstract class GeoElement
 		return oldSpreadsheetCoords;
 	}
 
-	final boolean isAlgoMacroOutput() {
+	public final boolean isAlgoMacroOutput() {
 		return isAlgoMacroOutput;
 	}
 
@@ -4189,7 +4181,50 @@ public abstract class GeoElement
 	public boolean getShowTrimmedIntersectionLines() {
 		return showTrimmedIntersectionLines;
 	}
+
+	protected void setRandomGeo(boolean flag) {
+		isRandomGeo = flag;
+	}
 	
+	private boolean isRandomGeo = false;
+
+	public boolean isRandomGeo() {
+		return isRandomGeo;
+	}
+
+	public void updateRandomGeo() {	
+		
+		// update parent algorithm, like AlgoRandom
+		AlgoElement algo = getParentAlgorithm();
+		if (algo != null) {
+			algo.compute(); // eg AlgoRandom etc
+		} else if (this.isGeoNumeric()) {
+			((GeoNumeric)this).updateRandom();
+		}
+	}
+
+	/**
+	 * In case this geo is part of macro construction, it
+	 * keeps its own label. To get correct output of Name[geo]
+	 * we need to keep the label of the real-world geo represented by this
+	 * formal geo. 
+	 * 
+	 * @param realLabel Label of the real geo represented by this one
+	 */
+	public void setRealLabel(String realLabel){
+		this.realLabel=realLabel;
+	}
+	
+	/**
+	 * Used for Name command. See {@link #setRealLabel(String)}
+	 * @return label of this geo, or label of a real geo in case this one is formal
+	 */
+	public String getRealLabel(){
+		if(realLabel==null || realLabel.equals(""))return label;
+		return realLabel;
+	}
+
+
 	/*
 	 * In future, this can be used to turn on/off whether transformed objects 
 	 * have the same style as the original object

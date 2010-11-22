@@ -67,7 +67,10 @@ public class Construction {
 
 	// set with all labeled GeoElements in alphabetical order
 	private TreeSet geoSetLabelOrder;
-	
+
+	// list of random numbers or lists
+	private TreeSet<GeoElement> randomElements;
+
 	// list of random numbers
 	private TreeSet randomNumbers;
 
@@ -1582,6 +1585,16 @@ public class Construction {
 	public void addRandomGeo(GeoNumeric randNum) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * Removes a number from the set of random numbers of this construction.
+	 * @param num Element to be removed
+	 */
+	public void removeRandomGeo(GeoElement num) {
+		if (randomElements != null) 
+			randomElements.remove(num);
+		num.setRandomGeo(false);
 	}
 
 	public Application getApplication() {

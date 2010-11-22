@@ -20,15 +20,17 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.Matrix.GgbVector;
+import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.VectorValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoVectorND;
 import geogebra.geogebramobile.client.main.Application;
 
 import java.util.HashSet;
 import java.util.Iterator;
-
-
 
 /**
  *
@@ -36,7 +38,7 @@ import java.util.Iterator;
  * @version 
  */
 final public class GeoVector extends GeoVec3D
-implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
+implements Path, VectorValue, Locateable, Translateable, PointRotateable, Mirrorable, Dilateable, MatrixTransformable, GeoVectorND {
 
 	/**
 	 * 
@@ -57,7 +59,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
     	//setEuclidianVisible(false);
     }
     
-	protected String getClassName() {
+	public String getClassName() {
 		return "GeoVector";
 	}
 	
@@ -170,7 +172,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 		return startPoint == null || startPoint.isAbsoluteStartPoint();
 	}
 	
-	public void setStartPoint(GeoPointInterface p, int number)  throws CircularDefinitionException {
+	public void setStartPoint(GeoPointND p, int number)  throws CircularDefinitionException {
 		setStartPoint(p);
 	}
 	
@@ -178,11 +180,11 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 	 * Sets the startpoint without performing any checks.
 	 * This is needed for macros.	 
 	 */
-	public void initStartPoint(GeoPointInterface p, int number) {
+	public void initStartPoint(GeoPointND p, int number) {
 		startPoint = (GeoPoint) p;
 	}
 	
-	public void removeStartPoint(GeoPointInterface p) {    
+	public void removeStartPoint(GeoPointND p) {    
 		if (startPoint == p) {
 			try {
 				setStartPoint(null);
@@ -192,7 +194,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 	
 
    
-    public void setStartPoint(GeoPointInterface pI) throws CircularDefinitionException {  
+    public void setStartPoint(GeoPointND pI) throws CircularDefinitionException {  
     	
     	GeoPoint p = (GeoPoint) pI;
     	
@@ -294,14 +296,47 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
      * rotate this vector by angle phi around (0,0)
      */
     final public void rotate(NumberValue phi) {    	
-    	double ph = phi.getDouble();
-        double cos = Math.cos(ph);
-        double sin = Math.sin(ph);
-        
-        double x0 = x * cos - y * sin;
-        y = x * sin + y * cos;
-        x = x0;        
+    	rotateXY(phi);  
+    
     }            
+    
+    /** 
+     * Called when transforming Ray[point,direction] -- doesn't do anything.
+     */
+    public void translate(GgbVector v) {
+    	
+    }
+
+	public void rotate(NumberValue r, GeoPoint S) {
+		
+	}
+
+	public void mirror(GeoPoint Q) {
+    
+		setCoords(- x,- y, z );
+		
+	}
+
+	public void mirror(GeoLine g) {
+		mirrorXY(2.0 * Math.atan2(-g.x, g.y));
+		
+	}
+
+	public void dilate(NumberValue rval, GeoPoint S) {
+		double r = rval.getDouble();	
+	    setCoords(r * x, r * y, z);
+	 	
+	}
+
+	public void matrixTransform(double a,double b,double c,double d) {
+		 
+		Double x1 = a*x + b*y;
+		Double y1 = c*x + d*y;
+
+		setCoords(x1, y1, z);
+		
+	}
+
     
 /*********************************************************************/   
     
@@ -322,7 +357,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 			sbToString.append(" = ");
 	}
 	
-		sbToString.append(buildValueString().toString());
+		sbToString.append(buildValueString());
   		return sbToString.toString();
     }
 	private StringBuilder sbToString = new StringBuilder(50); 
@@ -401,10 +436,9 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
      * returns all class-specific xml tags for saveXML
      */
 	protected void getXMLtags(StringBuilder sb) {
-       /*AGHacked
-		super.getXMLvisualTags();
+        super.getXMLtags(sb);
 		//	line thickness and type  
-		sb.append(getLineStyleXML());	  
+		getLineStyleXML(sb);
         
         // polar or cartesian coords
 		switch(toStringMode) {
@@ -424,7 +458,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 		if (startPoint != null) {
 			sb.append(startPoint.getStartPointXML());
 		}
-	*/
+
     }   
     
 	public boolean isNumberValue() {
@@ -451,7 +485,7 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 		return false;
 	}
 	
-	public void pointChanged(GeoPointInterface P) {
+	public void pointChanged(GeoPointND P) {
 		if (startPoint == null && waitingForStartPoint) {
 			// remember waiting points
 			if (waitingPointSet == null) waitingPointSet = new HashSet();
@@ -463,12 +497,12 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 		pathSegment.pointChanged(P);
 	}
 
-	public void pathChanged(GeoPointInterface P) {		
+	public void pathChanged(GeoPointND P) {		
 		updatePathSegment();
 		pathSegment.pathChanged(P);
 	}
 	
-	public boolean isOnPath(GeoPointInterface P, double eps) {
+	public boolean isOnPath(GeoPointND P, double eps) {
 		updatePathSegment(); // Michael Borcherds 2008-06-10 bugfix
 		return pathSegment.isOnPath(P, eps);
 	}
@@ -520,6 +554,8 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 								1.0);
 								
 		GeoVec3D.lineThroughPoints(pathStartPoint, pathEndPoint, pathSegment);
+		// length is used in GeoSement.pointChanged() and GeoSegment.pathChanged()
+		pathSegment.calcLength(); 
 	}
 	
 	public boolean isGeoVector() {
@@ -531,8 +567,57 @@ implements Path, VectorValue, Locateable, Rotateable, GeoVectorInterface {
 	}
 
 	public boolean isVector3DValue() {
-		return false;
+		return false;		
 	}
+	
+	public boolean isMatrixTransformable() {
+		return true;
+	}
+	
+	private StringBuilder sb;
 
+    public String toLaTeXString(boolean symbolic) {
+    	if (sb == null) sb = new StringBuilder();
+    	else sb.setLength(0);
+    	
+    	
+    	String[] inputs;
+    	if (symbolic && getParentAlgorithm() instanceof AlgoDependentVector) {
+    		AlgoDependentVector algo = (AlgoDependentVector)getParentAlgorithm();
+    		String symbolicStr = algo.toString();
+    		inputs = symbolicStr.substring(1, symbolicStr.length() - 1).split(",");
+    	} else {
+    		inputs = new String[2];
+    		inputs[0] = kernel.format(x);
+    		inputs[1] = kernel.format(y);
+    	}
+    	
+    	boolean alignOnDecimalPoint = true;
+		for (int i = 0 ; i < inputs.length ; i++) {
+	    	if (inputs[i].indexOf('.') == -1) {
+	    		alignOnDecimalPoint = false;
+	    		continue;
+	    	}
+		}
+		
+		if (alignOnDecimalPoint) {
+			sb.append("\\left( \\begin{tabular}{r@{.}l}");
+			for (int i = 0 ; i < inputs.length ; i++) {
+				inputs[i] = inputs[i].replace('.', '&');
+			}
+		} else {			
+			sb.append("\\left( \\begin{tabular}{r}");
+		}
+		
+		
+		for (int i = 0 ; i < inputs.length ; i++) {
+	    	sb.append(inputs[i]);
+	    	sb.append(" \\\\ ");    			
+		}
+    	
+    	sb.append("\\end{tabular} \\right)"); 
+    	return sb.toString();
+    }     
 
+	
 }

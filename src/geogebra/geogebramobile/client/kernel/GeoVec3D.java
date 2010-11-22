@@ -18,6 +18,9 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.util.Util;
+
 
 /**
  *
@@ -306,9 +309,9 @@ implements Traceable {
         super.getXMLtags(sb);
         
         sb.append("\t<coords");
-                sb.append(" x=\"" + x + "\"");
-                sb.append(" y=\"" + y + "\"");
-                sb.append(" z=\"" + z + "\"");
+        sb.append(" x=\""); sb.append(x); sb.append("\"");
+        sb.append(" y=\""); sb.append(y); sb.append("\"");
+        sb.append(" z=\""); sb.append(z); sb.append("\"");        
         sb.append("/>\n");
 
     }
@@ -318,7 +321,7 @@ implements Traceable {
      * Intergeo File Format (Yves Kreis)
      */
     protected void getI2Gtags(StringBuilder sb) {
-        super.getI2Gtags();
+        super.getI2Gtags(sb);
 
         sb.append("\t\t\t<homogeneous_coordinates>\n");
         		sb.append("\t\t\t\t<double>" + x + "</double>\n");
@@ -344,5 +347,33 @@ implements Traceable {
 		y=0;
 		z=0;
 	}
+	
+	protected void rotateXY(NumberValue phi){
+		double ph = phi.getDouble();
+        double cos = Math.cos(ph);
+        double sin = Math.sin(ph);
+        
+        double x0 = x * cos - y * sin;
+        y = x * sin + y * cos;
+        x = x0; 
+	}
+	
+	  /**
+     * mirror transform with angle phi
+     *  [ cos(phi)       sin(phi)   ]
+     *  [ sin(phi)      -cos(phi)   ]  
+     */
+    protected final void mirrorXY(double phi) {
+        double cos = Math.cos(phi);
+        double sin = Math.sin(phi);
+                
+        double x0 = x * cos + y * sin;
+        y = x * sin - y * cos;
+        x = x0;        
+    }
+    
+    
+    
+    
     
 }

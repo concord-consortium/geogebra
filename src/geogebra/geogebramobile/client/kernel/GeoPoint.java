@@ -25,6 +25,7 @@ import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.arithmetic.VectorValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,7 +44,7 @@ import java.util.TreeSet;
 final public class GeoPoint extends GeoVec3D 
 implements VectorValue, 
 Translateable, PointRotateable, Mirrorable, Dilateable, PointProperties,
-GeoPointInterface {   	
+GeoPointND, GeoPointInterface {   	
 	
 	private static final long serialVersionUID = 1L;
 
@@ -135,7 +136,10 @@ GeoPointInterface {
     	super(point.cons);    	
         set((GeoElement) point);        
     }
-    
+
+    public void set(GeoPointND p){
+    	set((GeoElement) p);
+    }
     
     public void set(GeoPointInterface p){
     	set((GeoElement) p);
@@ -396,7 +400,13 @@ GeoPointInterface {
 	final public boolean isFixable() {
 		return path != null || super.isFixable();
 	}		
-    
+
+    public void setCoords2D(double x, double y, double z){
+    	this.x = x;
+		this.y = y;
+		this.z = z;
+    }
+
 	/** 
 	 * Sets homogeneous coordinates and updates
 	 * inhomogeneous coordinates
@@ -432,7 +442,19 @@ GeoPointInterface {
 			pathParameter.set(tempPathParameter);
 		}			
 	}  
-	
+
+	public void setCoords(GgbVector v, boolean doPathOrRegion){
+		
+		if (doPathOrRegion)
+			setCoords(v.getX(),v.getY(),v.getLast());
+		else{
+			// set coordinates
+			this.x = v.getX();
+			this.y = v.getY();
+			this.z = v.getLast();	
+		}
+	}
+
 	private PathParameter tempPathParameter;
 	private PathParameter getTempPathparameter() {
 		if (tempPathParameter == null) {
@@ -522,7 +544,33 @@ GeoPointInterface {
     final public void getInhomCoords(double [] res) {
        	res[0] = inhomX;
        	res[1] = inhomY;
-    }        	
+    }
+   
+	public GgbVector getInhomCoordsInD(int dimension){
+		switch(dimension){
+		case 2:
+			return getInhomCoords();
+		case 3:
+			GgbVector v = new GgbVector(3);
+			v.setX(inhomX);
+			v.setY(inhomY);
+			v.setZ(0);
+			return v;
+		default:
+			return null;
+		}
+	}
+
+	public GgbVector getCoordsInD(int dimension){
+		switch(dimension){
+		case 2:
+			return new GgbVector(x,y,z);
+		case 3:
+			return new GgbVector(x,y,0,z);
+		default:
+			return null;
+		}
+	}
     
     final public void getPolarCoords(double [] res) {
        	res[0] = GeoVec2D.length(inhomX, inhomY);
@@ -536,7 +584,21 @@ GeoPointInterface {
     final public double getInhomY() {
        	return inhomY;
     }     
-    
+
+    final public double[] vectorTo(GeoPointND QI){
+    	GeoPoint Q = (GeoPoint) QI;
+    	return new double[]{
+    			Q.getInhomX()-getInhomX(),
+    			Q.getInhomY()-getInhomY(),
+    			0
+    	                  };
+    }
+
+    public double distance(GeoPointND P){
+    	//TODO dimension ?
+    	return getInhomCoordsInD(3).distance(P.getInhomCoordsInD(3));
+    }
+
     final public double[] vectorTo(GeoPointInterface QI){
     	GeoPoint Q = (GeoPoint) QI;
     	return new double[]{
@@ -1110,9 +1172,7 @@ GeoPointInterface {
 			
 		}
 
-		
-
-
+	
 
 		@Override
 		public double distance(GeoPointInterface P) {
@@ -1136,6 +1196,20 @@ GeoPointInterface {
 			// TODO Auto-generated method stub
 			
 		}
+	
+		/////////////////////////////////////////
+		// MOVING THE POINT (3D)
+		/////////////////////////////////////////
 
+		public void switchMoveMode(){
+			
+		}
+
+		public boolean getMoveMode(){
+			if (hasPath())
+				return MOVE_MODE_Z;
+			else
+				return MOVE_MODE_XY;
+		}
 
 }

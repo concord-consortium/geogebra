@@ -196,7 +196,7 @@ public static final int LINE_TYPE_HIDDEN_NONE = 0;
 
 	public static final int DEFAULT_LINE_TYPE = LINE_TYPE_FULL;
 
-	public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
+public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 
 	// ggb3D 2008-10-27 : mode constants moved to EuclidianConstants.java
 	

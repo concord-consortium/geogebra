@@ -38,6 +38,7 @@ import geogebra.geogebramobile.client.kernel.parser.ParseException;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.main.MyError;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -370,7 +371,44 @@ public class AlgebraProcessor {
 	 * Parses given String str and tries to evaluate it to a GeoPoint.
 	 * Returns null if something went wrong.
 	 */
-	public GeoPointInterface evaluateToPoint(String str) {
+	public GeoPointND evaluateToPoint(String str) {
+		boolean oldMacroMode = cons.isSuppressLabelsActive();
+		cons.setSuppressLabelCreation(true);
+
+		GeoPointND p = null;
+		GeoElement [] temp = null;;
+		try {
+			ValidExpression ve = parser.parseGeoGebraExpression(str);
+			if (ve instanceof ExpressionNode) {
+				ExpressionNode en = (ExpressionNode) ve;
+				en.setForcePoint();	
+			}
+			 
+			 temp = processValidExpression(ve);
+			 p = (GeoPointND) temp[0];
+		} catch (CircularDefinitionException e) {
+			Application.debug("CircularDefinition");
+			app.showError("CircularDefinition");
+		} catch (Exception e) {		
+			e.printStackTrace();
+			app.showError("InvalidInput");
+		} catch (MyError e) {
+			e.printStackTrace();
+			app.showError(e);
+		} catch (Error e) {
+			e.printStackTrace();
+			app.showError("InvalidInput");
+		} 
+		
+		cons.setSuppressLabelCreation(oldMacroMode);
+		return p;
+	}
+/*
+	/**
+	 * Parses given String str and tries to evaluate it to a GeoPoint.
+	 * Returns null if something went wrong.
+	 */
+	/*ARpublic GeoPointInterface evaluateToPoint(String str) {
 		boolean oldMacroMode = cons.isSuppressLabelsActive();
 		cons.setSuppressLabelCreation(true);
 
@@ -401,7 +439,7 @@ public class AlgebraProcessor {
 		
 		cons.setSuppressLabelCreation(oldMacroMode);
 		return p;
-	}
+	}*/
 	
 	/**
 	 * Parses given String str and tries to evaluate it to a GeoText.

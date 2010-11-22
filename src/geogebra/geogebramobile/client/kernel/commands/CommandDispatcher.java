@@ -194,7 +194,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("UpperSum", new CmdUpperSum(kernel));    	  
     	cmdTable.put("If", new CmdIf(kernel));
     	//AGcmdTable.put("Sequence", new CmdSequence(kernel));    	
-    	//AGcmdTable.put("CurveCartesian", new CmdCurveCartesian(kernel));
+    	cmdTable.put("CurveCartesian", new CmdCurveCartesian(kernel));
     	
     	// Victor Franco Espino 18-04-2007: New commands
     	//AGcmdTable.put("AffineRatio", new CmdAffineRatio(kernel));

@@ -3,12 +3,12 @@ package geogebra.geogebramobile.client.kernel;
 import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyStringBuffer;
 import geogebra.geogebramobile.client.kernel.arithmetic.TextValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
+import geogebra.geogebramobile.client.main.Application;
+import geogebra.geogebramobile.client.util.Util;
 import geogebra.geogebramobile.client.kernel.gawt.Font;
 import geogebra.geogebramobile.client.kernel.gawt.Rectangle2D;
-import geogebra.geogebramobile.client.main.Application;
-
 import java.util.Comparator;
-
 
 public class GeoText extends GeoElement
 implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
@@ -35,7 +35,8 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	public GeoText(Construction c) {
 		super(c);
 		// don't show in algebra view	
-		setAlgebraVisible(false); 	
+		//setAlgebraVisible(false); 
+		setAuxiliaryObject(true);
 	}  
 	
 	public GeoText(Construction c, String label, String value) {
@@ -124,15 +125,15 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	 * Sets the startpoint without performing any checks.
 	 * This is needed for macros.	 
 	 */
-	public void initStartPoint(GeoPointInterface p, int number) {
+	public void initStartPoint(GeoPointND p, int number) {
 		startPoint = (GeoPoint) p;
 	}
 	
-	public void setStartPoint(GeoPointInterface p, int number)  throws CircularDefinitionException {
+	public void setStartPoint(GeoPointND p, int number)  throws CircularDefinitionException {
 		setStartPoint(p);
 	}
 	
-	public void removeStartPoint(GeoPointInterface p) {    
+	public void removeStartPoint(GeoPointND p) {    
 		if (startPoint == p) {
 			try {
 				setStartPoint(null);
@@ -140,7 +141,7 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		}
 	}
 			
-	public void setStartPoint(GeoPointInterface p) throws CircularDefinitionException { 
+	public void setStartPoint(GeoPointND p) throws CircularDefinitionException { 
 		// don't allow this if it's eg Text["hello",(2,3)]
 		if (alwaysFixed) return;		
 		
@@ -180,12 +181,12 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		if (startPoint != null) startPoint.getLocateableList().unregisterLocateable(this);
 	}
 	
-	public GeoPointInterface getStartPoint() {
+	public GeoPointND getStartPoint() {
 		return startPoint;
 	}
 	
 	
-	public GeoPointInterface [] getStartPoints() {
+	public GeoPointND [] getStartPoints() {
 		if (startPoint == null)
 			return null;
 	
@@ -265,7 +266,7 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	private StringBuilder sbToString = new StringBuilder(80);
 
 	public boolean showInAlgebraView() {
-		return false;
+		return true;
 	}
 
 	protected boolean showInEuclidianView() {		
@@ -294,13 +295,8 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 	// used for eg Text["text",(1,2)]
 	// to stop it being editable
 	boolean isTextCommand = false;
-
+	
 	public void setIsTextCommand(boolean isCommand) {
-		this.isTextCommand = isCommand;
-	}
-
-	//arpad: deprecated 
-	public void setIsCommand(boolean isCommand) {
 		this.isTextCommand = isCommand;
 	}
 	
@@ -355,11 +351,11 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		else
 			return new MyStringBuffer("");
 	}	
-		
+		/*
 	/**
 	   * save object in XML format
 	   */ 
-	  public final void getXML(StringBuilder sb) {
+	 /*AR public final void getXML(StringBuilder sb) {
 	 
 		 // an independent text needs to add
 		 // its expression itself
@@ -382,15 +378,15 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		  getXMLtags(sb);
 		  sb.append("</element>\n");
 
-	  }
+	  }*/
 
 	/**
 	* returns all class-specific xml tags for getXML
 	*/
 		protected void getXMLtags(StringBuilder sb) {
-	   	getXMLvisualTags(false);			
+	   	getXMLvisualTags(sb, false);			
 		
-	   	getXMLfixedTag();
+	   	getXMLfixedTag(sb);
 		
 		if (isLaTeX) {
 			sb.append("\t<isLaTeX val=\"true\"/>\n");	
@@ -421,7 +417,9 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 			sb.append("\"/>\n");
 		}
 						
-		getBreakpointXML();
+		getBreakpointXML(sb);
+		
+		getAuxiliaryXML(sb);
 
 		// store location of text (and possible labelOffset)
 		sb.append(getXMLlocation());			
@@ -569,6 +567,8 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		return fontSize;
 	}
 	public void setFontSize(int size) {
+		/*ARif (size < MIN_FONTSIZE) size = -MIN_FONTSIZE;
+		else if (size > MAX_FONTSIZE) size = MAX_FONTSIZE;*/
 		fontSize = size;
 	}
 	public int getFontStyle() {
@@ -748,6 +748,22 @@ implements Locateable, AbsoluteScreenLocateable, TextValue, TextProperties {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	final public boolean isAuxiliaryObjectByDefault() {
+		return true;
+	}
+
+	public boolean justFontSize() {
+		return false;
+	}
+	
+	public boolean isRedefineable() {
+		return true;
+	}
+	
+	
+	
+
 
 
 }

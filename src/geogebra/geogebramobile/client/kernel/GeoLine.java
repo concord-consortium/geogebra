@@ -18,8 +18,10 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.Matrix.GgbMatrix;
 import geogebra.geogebramobile.client.Matrix.GgbVector;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 public class GeoLine extends GeoVec3D 
 implements Path, 
@@ -109,11 +111,11 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 			return Math.abs(x * P.inhomX + y * P.inhomY + z) < eps * simplelength;
 		}
 	}		  
-	
+
     /**
      * Returns whether this point lies on this line, segment or ray.     
      */
-    final public boolean isOnPath(GeoPointInterface PI, double eps) {  
+    final public boolean isOnPath(GeoPointND PI, double eps) {  
     	
     	GeoPoint P = (GeoPoint) PI;
     	
@@ -167,6 +169,64 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 		
 		return result;
     }
+
+    /**
+     * Returns whether this point lies on this line, segment or ray.     
+     */
+    /*ARfinal public boolean isOnPath(GeoPointInterface PI, double eps) {  
+    	
+    	GeoPoint P = (GeoPoint) PI;
+    	
+    	if (P.getPath() == this)
+			return true;
+    	
+    	// check if P lies on line first
+  		if (!isOnFullLine(P, eps))
+    		return false;    	
+    	
+    	// for a line we are done here: the point is on the line
+    	// for rays and segments we need to continue
+    	int classType = getGeoClassType();
+    	if (classType == GEO_CLASS_LINE)
+    		return true;
+    	
+    	// idea: calculate path parameter and check
+		// if it is in [0, 1] for a segment or greater than 0 for a ray
+		
+		// remember the old point coordinates
+		double px = P.x, py = P.y, pz = P.z;
+		PathParameter tempPP = getTempPathParameter();
+		PathParameter pp = P.getPathParameter();
+		tempPP.set(pp);
+		
+		// make sure we use point changed for a line to get parameters on 
+		// the entire line when this is a segment or ray
+		doPointChanged(P);		
+		
+		boolean result;
+		switch (classType) {
+			case GEO_CLASS_SEGMENT:
+				// segment: parameter in [0,1]
+				result =   pp.t >= -eps && 
+							pp.t <= 1 + eps;				
+				break;
+				
+			case GEO_CLASS_RAY:
+				// ray: parameter > 0
+				result =   pp.t >= -eps;					
+				break;
+				
+			default:
+				// line: any parameter
+				result = true;
+		}
+	
+		// restore old values
+		P.x = px; P.y = py; P.z = pz;
+		pp.set(tempPP);
+		
+		return result;
+    }*/
     
     private PathParameter tempPP;
     private PathParameter getTempPathParameter() {
@@ -609,7 +669,7 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
         StringBuilder sb = new StringBuilder();
         //AGsb.append(super.getXMLtags());
 		//	line thickness and type  
-		sb.append(getLineStyleXML());	  
+		getLineStyleXML(sb);	  
         
         // prametric, explicit or implicit mode
         switch(toStringMode) {
@@ -641,11 +701,44 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 	public boolean isClosedPath() {
 		return false;
 	}
-	 
-	public void pointChanged(GeoPointInterface P) {
-		doPointChanged((GeoPoint) P);
+
+	public void pointChanged(GeoPointND P) {
+		doPointChanged(P);
 	}
+
+	/*ARpublic void pointChanged(GeoPointInterface P) {
+		doPointChanged((GeoPoint) P);
+	}*/
+
+	private void doPointChanged(GeoPointND P) {
 		
+		GgbVector coords = P.getCoordsInD(2);
+		
+		
+	
+		// project P on line
+		double px = coords.getX()/coords.getZ();
+		double py = coords.getY()/coords.getZ();
+		// param of projection point on perpendicular line
+		double t = -(z + x*px + y*py) / (x*x + y*y); 
+		// calculate projection point using perpendicular line
+		px += t * x;
+		py += t * y;
+		P.setCoords2D(px, py, 1);
+		P.updateCoordsFrom2D(false);
+						
+		// set path parameter
+		if (startPoint != null) {
+			PathParameter pp = P.getPathParameter();
+			if (Math.abs(x) <= Math.abs(y)) {	
+				pp.t = (startPoint.z * px - startPoint.x) / (y * startPoint.z);								
+			} 
+			else {		
+				pp.t = (startPoint.y - startPoint.z * py) / (x * startPoint.z);			
+			}
+		}		
+	}
+
 	private void doPointChanged(GeoPoint P) {
 		// project P on line
 		double px = P.x/P.z;
@@ -669,6 +762,21 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 		}		
 	}				
 
+	public void pathChanged(GeoPointND PI) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		// calc point for given parameter
+		if (startPoint != null) {
+			PathParameter pp = P.getPathParameter();
+			P.x = startPoint.inhomX + pp.t * y;
+			P.y = startPoint.inhomY - pp.t * x;
+			P.z = 1.0;		
+		} else  {
+			pointChanged(P);		
+		}
+	}
+/*AR
 	public void pathChanged(GeoPointInterface PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
@@ -683,6 +791,7 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 			pointChanged(P);		
 		}
 	}
+*/
     
 	public boolean isPath() {
 		return true;
@@ -709,7 +818,76 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 	public double getMaxParameter() {
 		return Double.POSITIVE_INFINITY;
 	}
+
+	public PathMover createPathMover() {
+		return new PathMoverLine();
+	}		
+		
 	
+	private class PathMoverLine extends PathMoverGeneric {
+				
+		private GeoPoint moverStartPoint;	
+		
+		public PathMoverLine() {
+			super(GeoLine.this);
+		}
+		
+		public void init(GeoPoint p) {	
+			// we need a start point for pathChanged() to work correctly
+			// with our path parameters
+			if (startPoint == null) {
+				moverStartPoint = new GeoPoint(cons);
+				setStartPoint(moverStartPoint);				
+			}
+			
+			if (moverStartPoint != null) {
+				moverStartPoint.setCoords(p);
+				// point p is on the line and we use it's location
+				// as the startpoint, thus p needs to get path parameter 0
+				PathParameter pp = p.getPathParameter();
+				pp.t = 0;	
+			}
+			
+			super.init(p);
+						
+//			//	we need a point on the line:		
+//			// p is a point on the line ;-)
+//			moverStartPoint.setCoords(p);
+//			PathParameter pp = p.getPathParameter();
+//			pp.t = 0;												
+//			start_param = 0;						
+//			
+//			min_param = -1 + PathMover.OPEN_BORDER_OFFSET;
+//			max_param =  1 - PathMover.OPEN_BORDER_OFFSET;			
+//			
+//			param_extent = max_param - min_param;
+//			max_step_width = param_extent / MIN_STEPS;		
+//			posOrientation = true; 											
+//			
+//			resetStartParameter();
+		}							
+		
+//		protected void calcPoint(GeoPoint p) {
+//			PathParameter pp = p.getPathParameter();
+//			pp.t = PathMoverGeneric.infFunction(curr_param);	
+//			p.x = moverStartPoint.inhomX + pp.t * y;
+//			p.y = moverStartPoint.inhomY - pp.t * x;
+//			p.z = 1.0;	
+//			p.updateCoords();
+//		}
+//		
+//		public boolean hasNext() {						
+//			// check if we pass the start parameter 0:
+//			// i.e. check if the sign will change from 
+//			// last_param to the next parameter curr_param	
+//			double next_param = curr_param + step_width;	
+//			if (posOrientation)
+//				return !(curr_param < 0 && next_param >= 0);
+//			else
+//				return !(curr_param > 0 && next_param <= 0);
+//		}					
+	}
+
 	/*AGpublic PathMover createPathMover() {
 		return new PathMoverLine();
 	}*/		
@@ -811,6 +989,35 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
 		return false;
 	}
 
+  	public GgbVector getPointInD(int dimension, double lambda){
+
+  		if (dimension<2 || dimension>3)
+  			return null;
+  		
+  		GgbVector startCoords;
+  		 
+  		//TODO merge with getPointOnLine
+		// point defined by parent algorithm
+		if (startPoint != null && startPoint.isFinite()) {
+			startCoords=startPoint.getCoordsInD(dimension);
+		} 
+		// point on axis
+		else {
+			startCoords = new GgbVector(dimension+1);
+			if (Math.abs(x) > Math.abs(y)) {
+				startCoords.setX(-z / x);
+			} else {
+				startCoords.setY(-z / y);
+			}   
+			startCoords.set(dimension+1, 1); //last homogeneous coord
+		}  
+		
+		GgbVector direction = new GgbVector(dimension+1);
+		direction.setX(y*lambda);direction.setY(-x*lambda);
+		
+  		return startCoords.add(direction);
+	}
+	
 	
 	 /** returns true if this line and g are parallel (signed)*/
     final public boolean isSameDirection(GeoLine g) {        
@@ -819,8 +1026,16 @@ Translateable,PointRotateable, Mirrorable, Dilateable, LineProperties {
         return (g.x * x >= 0) && (g.y * y >= 0) && isParallel(g);        
     }
 
-	
-	
+	public GgbVector getCartesianEquationVector(GgbMatrix m){
+		return new GgbVector(x, y, z);
+	}
     
+	public GgbVector getStartInhomCoords(){
+		return startPoint.getInhomCoords();
+	}
+    
+	public GgbVector getEndInhomCoords(){
+		return getEndPoint().getInhomCoords();
+	}
 
 }

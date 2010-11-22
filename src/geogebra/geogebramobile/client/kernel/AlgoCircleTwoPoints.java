@@ -18,6 +18,9 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.euclidian.EuclidianConstants;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoQuadricND;
+
 
 /**
  *
@@ -47,12 +50,15 @@ public class AlgoCircleTwoPoints extends AlgoSphereNDTwoPoints {
         return circle;
     }
 
-    protected String getClassName() {
+    public String getClassName() {
         return "AlgoCircleTwoPoints";
     }
 
-
-
+    public int getRelatedModeID() {
+    	return EuclidianConstants.MODE_CIRCLE_TWO_POINTS;
+    }
+    
+    
     public GeoConic getCircle() {
         return (GeoConic) getSphereND();
     }
@@ -73,11 +79,10 @@ public class AlgoCircleTwoPoints extends AlgoSphereNDTwoPoints {
     */
 
     final public String toString() {
-        // Michael Borcherds 2008-03-30
-        // simplified to allow better Chinese translation
+
         return bApp.getPlain("CircleThroughAwithCenterB",
-        		((GeoElement) getM()).getLabel(),
-        		((GeoElement) getP()).getLabel());
+        		((GeoElement) getP()).getLabel(),
+        		((GeoElement) getM()).getLabel());
 
     }
 }

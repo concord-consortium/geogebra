@@ -18,9 +18,9 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.kernel;
 
+import geogebra.geogebramobile.client.euclidian.EuclidianConstants;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
-
-
+import geogebra.geogebramobile.client.kernel.kernelND.GeoQuadricND;
 
 /**
  *
@@ -73,10 +73,14 @@ public class AlgoCirclePointRadius extends AlgoSphereNDPointRadius {
     }
     
 
-    protected String getClassName() {
+    public String getClassName() {
         return "AlgoCirclePointRadius";
     }
 
+    public int getRelatedModeID() {
+    	return EuclidianConstants.MODE_CIRCLE_POINT_RADIUS;
+    }
+        
     public GeoConic getCircle() {
         return (GeoConic) getSphereND();
     }

@@ -5,7 +5,7 @@ http://www.geogebra.org
 This file is part of GeoGebra.
 
 This program is free software; you can redistribute it and/or modify it 
-under the terms of the GNU General Public License v2 as published by 
+under the terms of the GNU General Public License as published by 
 the Free Software Foundation.
 
 */
@@ -17,13 +17,11 @@ package geogebra.geogebramobile.client.kernel;
 import geogebra.geogebramobile.client.euclidian.EuclidianView;
 import geogebra.geogebramobile.client.euclidian.GeneralPathClipped;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoSegmentND;
 import geogebra.geogebramobile.client.kernel.gawt.Area;
 import geogebra.geogebramobile.client.kernel.gawt.PathIterator;
 
 import java.util.ArrayList;
-
-
-
 
 /**
  * 
@@ -57,7 +55,7 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
 		
 		super(cons);
 
-		ev = cons.getBaseApplication().getEuclidianView();
+		ev = cons.getApplication().getEuclidianView();
 		this.opType = opType;
 		this.inPoly0 = inPoly0;
 		this.inPoly1 = inPoly1;
@@ -88,7 +86,7 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
 	}
 
 	
-    protected String getClassName() {
+    public String getClassName() {
         return "AlgoPolygonOperation";
     }
 
@@ -129,7 +127,7 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
 		// otherwise: points and segments are also output objects
 		else {
 			// size = poly + points + segments
-			GeoSegmentInterface[] segments = poly.getSegments();
+			GeoSegmentND[] segments = poly.getSegments();
 			GeoPoint[] points = poly.getPoints();
 			int size = 1 + segments.length + points.length;
 
@@ -174,9 +172,7 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
 
         return new Area(gp);	
 	}
-    
-      
-    
+
 	protected final void compute() {
 
 		// Convert input polygons to Area objects
@@ -262,7 +258,94 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
     	if (n != oldPointNumber) {
     		updateSegmentsAndPointsLabels(oldPointNumber);
     	}    	    	
-    }         
+    }
+    
+	/*ARprotected final void compute() {
+
+		// Convert input polygons to Area objects
+		Area a1 = getArea(inPoly0.getPoints());
+		Area a2 = getArea(inPoly1.getPoints());
+
+		// Perform operation on the Areas
+		switch ((int) opType.getDouble()) {
+		case 1:
+			a1.intersect(a2);
+			break;
+		case 2:
+			a1.add(a2);
+			break;
+		case 3:
+			a1.subtract(a2);
+			break;
+		}
+
+		
+		// Iterate through the path of the result 
+		// and recover the polygon vertices.
+		ArrayList<Double> xcoord = new ArrayList<Double>();
+		ArrayList<Double> ycoord = new ArrayList<Double>();
+		double[] coords = new double[6];
+		double[] oldCoords = new double[6];
+				
+		if (a1.isEmpty()) {			
+			poly.setUndefined();
+						
+		} else {
+
+			PathIterator it = a1.getPathIterator(null);
+
+			int type = it.currentSegment(coords);
+			it.next();
+			oldCoords = coords.clone();
+			double epsilon = 1E-10;
+
+			while (!it.isDone()) {
+				type = it.currentSegment(coords);
+				if (type == PathIterator.SEG_CLOSE) {
+					break;
+				}
+				// Sometimes the Path iterator gives two almost identical points and 
+				// we only want one of them. 
+				// TODO: Why does this happen???
+				if ((double) Math.abs(oldCoords[0] - coords[0]) > epsilon
+						|| (double) Math.abs(oldCoords[1] - coords[1]) > epsilon) {
+					xcoord.add(coords[0]);
+					ycoord.add(coords[1]);
+				}
+				oldCoords = coords.clone();
+
+				it.next();
+
+			}
+
+		}
+		
+		// Update the points array to the correct size
+		int n = xcoord.size();
+		//System.out.println("number of points: " + n);
+		int oldPointNumber = points.length;
+		if (n != oldPointNumber) {
+			updatePointsArray(n);
+			poly.setPoints(points);
+			setOutput();
+		}
+
+		// Set the points to the new polgon vertices
+		for (int k = 0; k < n; k++) {
+			points[k].setCoords(xcoord.get(k), ycoord.get(k), 1);
+			//System.out.println("vertices: " + xcoord.get(k) + " , " + ycoord.get(k));
+
+		}
+
+		// Compute area of poly (this will also set our poly geo to be defined)
+		poly.calcArea();
+			
+		
+		// update new points and segments 
+    	if (n != oldPointNumber) {
+    		updateSegmentsAndPointsLabels(oldPointNumber);
+    	}    	    	
+    }*/      
     
     
     private void updateSegmentsAndPointsLabels(int oldPointNumber) {
@@ -294,7 +377,7 @@ public class AlgoPolygonOperation extends AlgoIntersectAbstract {
 		}
 		
 		// update all segments and set labels for new segments
-		GeoSegmentInterface[] segments = poly.getSegments();    	           
+		GeoSegmentND[] segments = poly.getSegments();    	           
 		for (int i=0; i < segments.length; i++) {   
 			GeoElement seg = (GeoElement) segments[i];
 			if (labelPointsAndSegments) {				

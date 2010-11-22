@@ -233,10 +233,11 @@ implements FunctionalNVar, CasEvaluableFunction {
 		}
 		return label;
 	}*/
-	
+	/*
 	/**
 	   * save object in xml format
 	   */ 
+	/*AR
 	  public final void getXML(StringBuilder sb) {
 		 
 		 // an indpendent function needs to add
@@ -261,7 +262,7 @@ implements FunctionalNVar, CasEvaluableFunction {
 		  //AGsb.append(getCaptionXML());
 		  sb.append("</element>\n");
 
-	  }
+	  }*/
 
 	final public boolean isCasEvaluableFunction() {
 		return true;

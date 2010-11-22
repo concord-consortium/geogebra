@@ -13,6 +13,7 @@ the Free Software Foundation.
 package geogebra.geogebramobile.client.kernel;
 
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 
 
@@ -82,11 +83,27 @@ final public class GeoRay extends GeoLine implements LimitedPath {
 			allowOutlyingIntersections = ray.allowOutlyingIntersections;
 		}
 	}
-	
+
 	/* 
 	 * Path interface
 	 */	 
-	public void pointChanged(GeoPointInterface PI) {
+	public void pointChanged(GeoPointND P) {
+		super.pointChanged(P);
+		
+		// ensure that the point doesn't get outside the ray
+		// i.e. ensure 0 <= t 
+		PathParameter pp = P.getPathParameter();
+		if (pp.t < 0.0) {
+			P.setCoords2D(startPoint.x, startPoint.y,startPoint.z);
+			P.updateCoordsFrom2D(false);
+			pp.t = 0.0;
+		} 
+	}
+
+	/* 
+	 * Path interface
+	 */	 
+	/*ARpublic void pointChanged(GeoPointInterface PI) {
 		super.pointChanged(PI);
 		
 		GeoPoint P = (GeoPoint) PI;
@@ -100,7 +117,7 @@ final public class GeoRay extends GeoLine implements LimitedPath {
 			P.z = startPoint.z; 
 			pp.t = 0.0;
 		} 
-	}
+	}*/
 
 	public void pathChanged(GeoPointInterface PI) {
 		

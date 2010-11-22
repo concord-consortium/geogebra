@@ -18,6 +18,7 @@ package geogebra.geogebramobile.client.kernel;
 import geogebra.geogebramobile.client.kernel.arithmetic.MyDouble;
 import geogebra.geogebramobile.client.kernel.arithmetic.NumberValue;
 import geogebra.geogebramobile.client.kernel.integration.EllipticArcLength;
+import geogebra.geogebramobile.client.kernel.kernelND.GeoPointND;
 
 
 /**
@@ -304,11 +305,11 @@ implements LimitedPath, NumberValue, LineProperties {
 		else
 			return isOnPath(p, eps);
     }
-	
+
 	/** 
 	 * states wheter P lies on this conic part or not 
 	 */
-	public boolean isOnPath(GeoPointInterface PI, double eps) {
+	public boolean isOnPath(GeoPointND PI, double eps) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -363,6 +364,65 @@ implements LimitedPath, NumberValue, LineProperties {
 		
 		return result;
 	}
+
+	/** 
+	 * states wheter P lies on this conic part or not 
+	 */
+	/*ARpublic boolean isOnPath(GeoPointInterface PI, double eps) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		if (P.getPath() == this)
+			return true;
+		
+		// check if P lies on conic first
+    	if (!isOnFullConic(P, eps))
+    		return false;
+    		
+		// idea: calculate path parameter and check
+		//       if it is in [0, 1]
+		
+		// remember the old values
+		double px = P.x, py = P.y, pz = P.z;
+		PathParameter tempPP = getTempPathParameter();
+		PathParameter pPP = P.getPathParameter();
+		tempPP.set(pPP);
+		
+		switch (type) {
+			case CONIC_CIRCLE:
+			case CONIC_ELLIPSE:
+				setEllipseParameter(P);
+			break;
+			
+			// degenerate case: two rays or one segment
+			case CONIC_PARALLEL_LINES: 		
+				if (posOrientation) {
+					// segment
+					lines[0].pointChanged(P);
+				} else {
+					// two rays: no point should lie on them
+					P.getPathParameter().t = -1;
+				}
+			break;
+
+			default:
+				pPP.t = -1;
+				//Application.debug("GeoConicPart.isIncident: unsupported conic part for conic type: " + type);
+		}					
+	
+		// adapt eps for very large circles (almost line)
+		if (halfAxes[0] > 100)
+    		eps = Math.max(Kernel.MAX_PRECISION, eps / halfAxes[0]);    	    		    		   
+		
+		boolean result = 	pPP.t >= -eps && 
+							pPP.t <= 1 + eps;
+		
+		// restore old values
+		P.x = px; P.y = py; P.z = pz;
+		pPP.set(tempPP);
+		
+		return result;
+	}*/
 	
 	private PathParameter tempPP;
 	private PathParameter getTempPathParameter() {
@@ -378,8 +438,52 @@ implements LimitedPath, NumberValue, LineProperties {
 	public boolean isClosedPath() {
 		return false;
 	}
-	
-	public void pointChanged(GeoPointInterface PI) {
+
+	public void pointChanged(GeoPointND PI) {
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		PathParameter pp = P.getPathParameter(); 
+		pp.setPathType(type);
+
+		switch (type) {
+			case CONIC_CIRCLE:
+			case CONIC_ELLIPSE:
+				setEllipseParameter(P);
+				clipEllipseParameter(P);		
+			break;
+			
+			// degenerate case: two rays or one segment
+			case CONIC_PARALLEL_LINES: 		
+				if (posOrientation) {
+					// segment
+					lines[0].pointChanged(P);
+					
+					// make sure we don't get outside [0,1]
+					if (pp.t < 0) {
+						pp.t = 0;
+						pathChanged(P);
+					}
+					else if (pp.t > 1) {
+						pp.t = 1;
+						pathChanged(P);
+					}
+				} else {
+					// two rays
+					// we take point at infinty
+					P.x = -lines[0].y;
+					P.y = lines[0].x;
+					P.z = 0.0;
+				}
+			break;
+
+			default:
+				pp.t = Double.NaN;
+				//Application.debug("GeoConicPart.pointChanged(): unsupported conic part for conic type: " + type);
+		}	
+	}
+
+	/*ARpublic void pointChanged(GeoPointInterface PI) {
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -421,7 +525,7 @@ implements LimitedPath, NumberValue, LineProperties {
 				pp.t = Double.NaN;
 				//Application.debug("GeoConicPart.pointChanged(): unsupported conic part for conic type: " + type);
 		}	
-	}
+	}*/
 	
 	private void setEllipseParameter(GeoPoint P) {
 		// let GeoConic do the work
@@ -464,8 +568,72 @@ implements LimitedPath, NumberValue, LineProperties {
 			pp.t = 1.0 - pp.t;
 		}	
 	}
-	
-	public void pathChanged(GeoPointInterface PI) {	
+
+	public void pathChanged(GeoPointND PI) {	
+		
+		GeoPoint P = (GeoPoint) PI;
+		
+		PathParameter pp = P.getPathParameter();						
+		if (pp.getPathType() != type || Double.isNaN(pp.t)) {		
+			pointChanged(P);
+			return;
+		}
+
+		if (pp.t < 0.0) {
+			pp.t = 0;
+		} 
+		else if (pp.t > 1.0) {
+			pp.t = 1;
+		}
+		
+		// handle conic types	
+		switch (type) {
+			case CONIC_CIRCLE:	
+			case CONIC_ELLIPSE:	
+				// if type of path changed (other conic) then we
+				// have to recalc the parameter with pointChanged()
+				if (pp.getPathType() != type) {					
+					pointChanged(P);
+					return;
+				}		
+				
+				// calc Point on conic using this parameter (in eigenvector space)
+				double t = posOrientation ?
+						pp.t:
+						1.0 - pp.t;
+				double angle = paramStart + t * paramExtent;
+				P.x = halfAxes[0] * Math.cos(angle);	
+				P.y = halfAxes[1] * Math.sin(angle);
+				P.z = 1.0;
+				
+				//	transform to real world coord system
+				coordsEVtoRW(P);								
+			break;	
+			
+			case CONIC_PARALLEL_LINES:
+				if (posOrientation) { // segment
+					// if type of path changed (other conic) then we
+					// have to recalc the parameter with pointChanged()
+					if (pp.getPathType() != type) {					
+						pointChanged(P);						
+					}	else {
+						lines[0].pathChanged(P);
+					}
+				} else {
+					// two rays
+					// we take point at infinty
+					P.x = -lines[0].y;
+					P.y = lines[0].x;
+					P.z = 0.0;
+				}
+			break;
+
+			default:
+				//Application.debug("GeoConicPart.pathChanged(): unsupported conic part for conic type: " + type);
+		}
+	}
+
+	/*ARpublic void pathChanged(GeoPointInterface PI) {	
 		
 		GeoPoint P = (GeoPoint) PI;
 		
@@ -527,7 +695,7 @@ implements LimitedPath, NumberValue, LineProperties {
 			default:
 				//Application.debug("GeoConicPart.pathChanged(): unsupported conic part for conic type: " + type);
 		}
-	}
+	}*/
 	
 	/**
 	 * Returns the smallest possible parameter value for this

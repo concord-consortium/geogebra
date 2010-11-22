@@ -219,6 +219,21 @@ public class GgbMatrix
 		
 	}
 
+	/** returns diagonal matrix 
+	 * @param vals
+	 * @return diagonal matrix*/
+	public static final GgbMatrix DiagonalMatrix(double vals[]){
+		
+		int n = vals.length;
+		GgbMatrix m = new GgbMatrix(n,n);
+		
+		for (int i=1;i<=n;i++){
+			m.set(i,i,vals[i-1]);
+		}
+		
+		return m;
+		
+	}
 	
 	/** returns translation homogenic matrix, dim v.length+1  
 	 * @param v translation vector
