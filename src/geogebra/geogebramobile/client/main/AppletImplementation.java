@@ -12,6 +12,8 @@ the Free Software Foundation.
 
 package geogebra.geogebramobile.client.main;
 
+import java.io.IOException;
+
 import com.google.gwt.widgetideas.graphics.client.Color;
 
 import geogebra.geogebramobile.client.AppletImplementationInterface;
@@ -53,8 +55,9 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	//public boolean showAlgebraView = false;
 	boolean showResetIcon = false;	
 	Color bgColor, borderColor;
+	*/
 	private String fileStr, customToolBar;	
-	private int maxIconSize;
+	/*AGprivate int maxIconSize;
 	public boolean showFrame = true;
 	private JFrame wnd;
 	private JSObject browserWindow;
@@ -742,29 +745,30 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 		app.setOnTheFlyPointCreationActive(flag);
 	}
 
-	/*AGpublic synchronized void setUndoPoint() {
+	public synchronized void setUndoPoint() {
 		app.getKernel().getConstruction().storeUndoInfo();
-	}*/
+	}
 
 	/**
 	 * Turns showing of error dialogs on (true) or (off). 
 	 * Note: this is especially useful together with evalCommand().
 	 */
-/*AG	public synchronized void setErrorDialogsActive(boolean flag) {
+	public synchronized void setErrorDialogsActive(boolean flag) {
 		app.setErrorDialogsActive(flag);
 	}
 
 	/**
 	 * Resets the initial construction (given in filename parameter) of this applet.	 
 	 */
-/*AG	public synchronized void reset() {	
+	public synchronized void reset() {	
+		//we falling back only for the filestring stored in Application
+		//AGif (fileStr == null) return;
 		
-		if (fileStr == null) return;
-		
-		if (fileStr.startsWith("base64://")) {
-			byte[] zipFile;
+		/*AGif (fileStr.startsWith("base64://")) {
+			//AGbyte[] zipFile;
+			String zipFile;
 			try {
-				zipFile = geogebra.util.Base64.decode(fileStr
+				zipFile = geogebra.geogebramobile.client.util.Base64.decode(fileStr
 						.substring(9));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -801,14 +805,15 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 			ev.zoomAroundCenter(zoomFactor);
 			ev.setTemporarySize(-1, -1);
 		}
-
+       */
+		app.loadXML();
 	}
 
 	/**
 	 * Refreshs all views. Note: clears traces in
 	 * geometry window.
 	 */
-/*AG	public synchronized void refreshViews() {
+	public synchronized void refreshViews() {
 		app.refreshViews();		 				
 	}
 
@@ -895,7 +900,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	/**
 	 * Shows or hides the object with the given name in the geometry window.
 	 */
-/*AG	public synchronized void setVisible(String objName, boolean visible) {
+	public synchronized void setVisible(String objName, boolean visible) {
 		ggbApi.setVisible(objName, visible);
 	}
 
@@ -907,7 +912,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Sets the layer of the object with the given name in the geometry window.
 	 * Michael Borcherds 2008-02-27
 	 */
-/*AG	public synchronized void setLayer(String objName, int layer) {
+	public synchronized void setLayer(String objName, int layer) {
 		ggbApi.setLayer(objName, layer);
 
 	}
@@ -917,7 +922,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * returns layer, or -1 if object doesn't exist
 	 * Michael Borcherds 2008-02-27
 	 */
-/*AG	public synchronized int getLayer(String objName) {
+	public synchronized int getLayer(String objName) {
 		return ggbApi.getLayer(objName);
 	}
 
@@ -925,7 +930,7 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Shows or hides a complete layer
 	 * Michael Borcherds 2008-02-27
 	 */
-/*AG	public synchronized void setLayerVisible(int layer, boolean visible) {
+	public synchronized void setLayerVisible(int layer, boolean visible) {
 		ggbApi.setLayerVisible(layer,visible);
 	}
 
@@ -941,14 +946,14 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	/**
 	 * Turns the trace of the object with the given name on or off.
 	 */
-/*AG	public synchronized void setTrace(String objName, boolean flag) {
+	public synchronized void setTrace(String objName, boolean flag) {
 		ggbApi.setTrace(objName, flag);
 	}
 
 	/**
 	 * Shows or hides the label of the object with the given name in the geometry window.
 	 */
-/*AG	public synchronized void setLabelVisible(String objName, boolean visible) {
+	public synchronized void setLabelVisible(String objName, boolean visible) {
 		ggbApi.setLabelVisible(objName, visible);
 	}
 
@@ -956,21 +961,21 @@ public class AppletImplementation /*AGimplements AppletImplementationInterface*/
 	 * Sets the label style of the object with the given name in the geometry window.
 	 * Possible label styles are NAME = 0, NAME_VALUE = 1 and VALUE = 2.
 	 */
-/*AG	public synchronized void setLabelStyle(String objName, int style) {
+	public synchronized void setLabelStyle(String objName, int style) {
 		ggbApi.setLabelStyle(objName, style);
 	}
 
 	/**
 	 * Shows or hides the label of the object with the given name in the geometry window.
 	 */
-/*AG	public synchronized void setLabelMode(String objName, boolean visible) {
+	public synchronized void setLabelMode(String objName, boolean visible) {
 		ggbApi.setLabelMode(objName, visible);
 	}
 
 	/**
 	 * Sets the color of the object with the given name.
 	 */
-/*AG	public synchronized void setColor(String objName, int red, int green, int blue) {
+	public synchronized void setColor(String objName, int red, int green, int blue) {
 		ggbApi.setColor(objName, red, green, blue);
 	}	
 

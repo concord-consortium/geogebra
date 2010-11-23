@@ -103,5 +103,47 @@ public class MyXMLio {
 		doParseXML(/*rs*/str, clearAll, isGGTfile);
 		//AGrs.close();
 	}
+	
+	/**
+	 * Returns XML representation of all settings and construction needed for
+	 * undo.
+	 */
+	public static synchronized StringBuilder getUndoXML(Construction c) {
+		Application app = c.getApplication();
+
+		StringBuilder sb = new StringBuilder();
+		addXMLHeader(sb);
+		addGeoGebraHeader(sb, false);
+		//sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+		//sb.append("<geogebra format=\"" + GeoGebra.XML_FILE_FORMAT + "\">\n");
+
+		// save euclidianView settings
+		app.getEuclidianView().getXML(sb);
+		
+		// save kernel settings
+		c.getKernel().getKernelXML(sb);
+
+		// save construction
+		c.getConstructionXML(sb);
+
+		// save cas session
+		//AGif (app.hasFullGui() && app.getGuiManager().hasCasView()) {
+		//AG	app.getGuiManager().getCasView().getSessionXML(sb);
+		//AG}
+		
+		// save spreadsheetView settings
+		//AGapp.getGuiManager().getSpreadsheetViewXML(sb);
+		
+
+		sb.append("</geogebra>");
+
+		/*
+		 * Application.debug("*******************");
+		 * Application.debug(sb.toString());
+		 * Application.debug("*******************");
+		 */
+
+		return sb;
+	}
 
 }

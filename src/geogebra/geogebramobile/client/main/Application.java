@@ -63,6 +63,8 @@ public class Application extends BaseApplication {
 	private MyXMLio myXMLio;
 	private AppletImplementation appletImpl;
 	private boolean isOnTheFlyPointCreationActive;
+	private boolean isErrorDialogsActive;
+	private String Base64DecodedFile;
 	
 	public Application() {
 		super();
@@ -107,9 +109,9 @@ public class Application extends BaseApplication {
 
 			//log("inited: "+decodedBase64String);
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
-				String Base64DecodedFile = decodedBase64String;
+			    Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
-//				ggbOnInit();
+				ggbOnInit();
 			}
 		} else {
 			//We will use it as an js library, so don't init anything for now
@@ -143,6 +145,23 @@ public class Application extends BaseApplication {
 		$wnd.ggbApplet.setOnTheFlyPointCreationActive = function(flag) {
 			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setOnTheFlyPointCreationActive(Z)(flag);
 		};
+		
+		$wnd.ggbApplet.setUndoPoint = function() {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setUndoPoint()();
+		};
+		
+		$wnd.ggbApplet.setErrorDialogsActive = function(flag) {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::setErrorDialogsActive(Z)(flag);
+		};
+		
+		$wnd.ggbApplet.reset = function() {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::reset()();
+		};
+		
+		$wnd.ggbApplet.refreshViews = function() {
+			appletImpl.@geogebra.geogebramobile.client.main.AppletImplementation::refreshViews()();
+		};
+		
 		
 	}-*/;
 
@@ -1746,6 +1765,25 @@ public class Application extends BaseApplication {
 
 	public final void setOnTheFlyPointCreationActive(boolean isOnTheFlyPointCreationActive) {
 		this.isOnTheFlyPointCreationActive = isOnTheFlyPointCreationActive;
+	}
+
+	public boolean isUndoActive() {
+		// TODO Auto-generated method stub
+		GWT.log("App.isUndoActive must be implemented");
+		return false;
+	}
+	
+	public final void setErrorDialogsActive(boolean isErrorDialogsActive) {
+		this.isErrorDialogsActive = isErrorDialogsActive;
+	}
+
+	public void loadXML() {
+		JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
+	}
+	
+	public void refreshViews() {
+		euclidianview.updateBackground();
+		kernel.notifyRepaint();
 	}
 	
 	

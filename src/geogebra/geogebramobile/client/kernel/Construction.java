@@ -19,6 +19,7 @@ package geogebra.geogebramobile.client.kernel;
 //import geogebra.main.MyError;
 //import geogebra.util.Util;
 
+import geogebra.geogebramobile.client.io.MyXMLio;
 import geogebra.geogebramobile.client.kernel.arithmetic.ExpressionNode;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Util;
@@ -87,7 +88,7 @@ public class Construction {
 	private ArrayList euclidianViewAlgos;
 
 	// UndoManager
-	//protected UndoManager undoManager;
+	protected UndoManager undoManager;
 
 	// current construction step (-1 ... ceList.size() - 1)
 	// step == -1 shows empty construction
@@ -981,7 +982,7 @@ public class Construction {
 	 * Clears the undo info list of this construction and adds the current
 	 * construction state to the undo info list.
 	 */
-	/*AGpublic void initUndoInfo() {
+	public void initUndoInfo() {
 		if (undoManager == null)
 			undoManager = new UndoManager(this);
 		undoManager.initUndoInfo();
@@ -1030,7 +1031,6 @@ public class Construction {
 
 		return undoManager != null && undoManager.redoPossible();
 	}
-	*/
 
 	/**
 	 * Replaces oldGeo by newGeo in the current construction.
@@ -1073,7 +1073,7 @@ public class Construction {
 		}			
 		
 		// get current construction XML
-		StringBuilder consXML = null; //AGgetCurrentUndoXML();
+		StringBuilder consXML = getCurrentUndoXML();
 							
 		// 3) replace oldGeo by newGeo in XML
 		doReplaceInXML(consXML, oldGeo, newGeo);
@@ -1190,7 +1190,7 @@ public class Construction {
 			return;
 		
 		// get current construction XML
-		StringBuilder consXML = null; //getCurrentUndoXML();
+		StringBuilder consXML = getCurrentUndoXML();
 		
 		// replace all oldGeo -> newGeo pairs in XML
 		Iterator it = redefineMap.keySet().iterator();			
@@ -1479,9 +1479,9 @@ public class Construction {
 	/**
 	 * Returns undo xml string of this construction.
 	 */
-	/*AGpublic StringBuilder getCurrentUndoXML() {
+	public StringBuilder getCurrentUndoXML() {
 		return MyXMLio.getUndoXML(this);
-	}*/
+	}
 
 	public String getAuthor() {
 		return (author != null) ? author : "";
