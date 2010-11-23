@@ -35,6 +35,7 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoProduct;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
 
@@ -3464,11 +3465,11 @@ public class Kernel {
 	 * Variance[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Variance(String label, GeoList list) {
+	final public GeoNumeric Variance(String label, GeoList list) {
 		AlgoVariance algo = new AlgoVariance(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SD[list]

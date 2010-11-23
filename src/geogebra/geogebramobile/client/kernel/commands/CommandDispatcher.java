@@ -225,7 +225,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Sum", new CmdSum(kernel));
     	cmdTable.put("Product", new CmdProduct(kernel));
     	cmdTable.put("Mean", new CmdMean(kernel));
-    	//AGcmdTable.put("Variance", new CmdVariance(kernel));
+    	cmdTable.put("Variance", new CmdVariance(kernel));
     	//AGcmdTable.put("SD", new CmdSD(kernel));
     	//AGcmdTable.put("SampleVariance", new CmdSampleVariance(kernel));
     	//AGcmdTable.put("SampleSD", new CmdSampleSD(kernel));
