@@ -33,7 +33,10 @@ import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoProduct;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoQ1;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoQ3;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoShuffle;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
@@ -3306,11 +3309,11 @@ public class Kernel {
 	 * Mode[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoList Mode(String label, GeoList list) {
+	final public GeoList Mode(String label, GeoList list) {
 		AlgoMode algo = new AlgoMode(cons, label, list);
 		GeoList list2 = algo.getResult();
 		return list2;
-	}*/
+	}
 
 	/** 
 	 * PrimeFactors[list]
@@ -3536,21 +3539,21 @@ public class Kernel {
 	 * Q1[list] lower quartile
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Q1(String label, GeoList list) {
+	final public GeoNumeric Q1(String label, GeoList list) {
 		AlgoQ1 algo = new AlgoQ1(cons, label, list);
 		GeoNumeric num = algo.getQ1();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Q3[list] upper quartile
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Q3(String label, GeoList list) {
+	final public GeoNumeric Q3(String label, GeoList list) {
 		AlgoQ3 algo = new AlgoQ3(cons, label, list);
 		GeoNumeric num = algo.getQ3();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Iteration[ f(x), x0, n ] 
