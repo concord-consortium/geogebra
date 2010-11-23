@@ -393,7 +393,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Denominator", new CmdDenominator(kernel)); 
     	
     	//AGcmdTable.put("PointList", new CmdPointList(kernel));   
-    	//AGcmdTable.put("RootList", new CmdRootList(kernel));   
+    	cmdTable.put("RootList", new CmdRootList(kernel));   
  
      	                  	
     	
