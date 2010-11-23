@@ -233,7 +233,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Q1", new CmdQ1(kernel));
     	//AGcmdTable.put("Q3", new CmdQ3(kernel));
     	//AGcmdTable.put("Mode", new CmdMode(kernel));
-    	//AGcmdTable.put("Reverse", new CmdReverse(kernel));
+    	cmdTable.put("Reverse", new CmdReverse(kernel));
     	//AGcmdTable.put("SigmaXX", new CmdSigmaXX(kernel));
     	//AGcmdTable.put("SigmaXY", new CmdSigmaXY(kernel));
     	//AGcmdTable.put("SigmaYY", new CmdSigmaYY(kernel));

@@ -3334,11 +3334,11 @@ public class Kernel {
 	 * Reverse[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoList Reverse(String label, GeoList list) {
+	final public GeoList Reverse(String label, GeoList list) {
 		AlgoReverse algo = new AlgoReverse(cons, label, list);
 		GeoList list2 = algo.getResult();
 		return list2;
-	}*/
+	}
 	
 	/** 
 	 * Product[list]
