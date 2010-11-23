@@ -1589,6 +1589,17 @@ public class Construction {
 	}
 
 	/**
+	 * Adds a number to the set of random numbers of this construction.
+	 * @param num Element to be added
+	 */
+	public void addRandomGeo(GeoElement num) {
+		if (randomElements == null) 
+			randomElements = new TreeSet<GeoElement>();
+		randomElements.add(num);
+		num.setRandomGeo(true);
+	}
+
+	/**
 	 * Removes a number from the set of random numbers of this construction.
 	 * @param num Element to be removed
 	 */

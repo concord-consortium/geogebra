@@ -263,7 +263,11 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Element", new CmdElement(kernel));
     	//AGcmdTable.put("Iteration", new CmdIteration(kernel));
     	//AGcmdTable.put("IterationList", new CmdIterationList(kernel));
-    	
+
+    	//ARcmdTable.put("Sample", new CmdSample(kernel));	  
+    	//ARcmdTable.put("Rank", new CmdRank(kernel));
+    	cmdTable.put("Shuffle", new CmdShuffle(kernel));
+
     	//AGcmdTable.put("Name", new CmdName(kernel));
     	
     	// cell range for spreadsheet like A1:A5

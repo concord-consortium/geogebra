@@ -35,6 +35,7 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoProduct;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoShuffle;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
@@ -3125,12 +3126,32 @@ public class Kernel {
 	 * Sort[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoList Sort(String label, GeoList list) {
+	final public GeoList Sort(String label, GeoList list) {
 		AlgoSort algo = new AlgoSort(cons, label, list);
 		GeoList list2 = algo.getResult();
 		return list2;
-	}*/
+	}
+
+	/** 
+	 * Rank[list]
+	 * Michael Borcherds
+	 */
+	final public GeoList Rank(String label, GeoList list) {
+		AlgoRank algo = new AlgoRank(cons, label, list);
+		GeoList list2 = algo.getResult();
+		return list2;
+	}
 	
+	/** 
+	 * Shuffle[list]
+	 * Michael Borcherds
+	 */
+	final public GeoList Shuffle(String label, GeoList list) {
+		AlgoShuffle algo = new AlgoShuffle(cons, label, list);
+		GeoList list2 = algo.getResult();
+		return list2;
+	}
+
 	/** 
 	 * First[list,n]
 	 * Michael Borcherds
@@ -6740,29 +6761,4 @@ final public ExpressionNode handleTrigPower(String image, ExpressionNode en, int
 		//AGreturn nf.getMaximumFractionDigits();
 		return 2; //ONly for debug!
 	}
-	
-
-	/** 
-	 * Rank[list]
-	 * Michael Borcherds
-	 */
-	final public GeoList Rank(String label, GeoList list) {
-		AlgoRank algo = new AlgoRank(cons, label, list);
-		GeoList list2 = algo.getResult();
-		return list2;
-	}
-	
-	/** 
-	 * Sort[list]
-	 * Michael Borcherds
-	 */
-	final public GeoList Sort(String label, GeoList list) {
-		AlgoSort algo = new AlgoSort(cons, label, list);
-		GeoList list2 = algo.getResult();
-		return list2;
-	}
-	
-	
-
-
 }
