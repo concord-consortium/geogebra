@@ -31,8 +31,9 @@ import geogebra.geogebramobile.client.kernel.kernelND.GeoConicND;
 import geogebra.geogebramobile.client.kernel.commands.AlgebraProcessor;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
-import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
 
@@ -3502,11 +3503,11 @@ public class Kernel {
 	 * Median[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Median(String label, GeoList list) {
+	final public GeoNumeric Median(String label, GeoList list) {
 		AlgoMedian algo = new AlgoMedian(cons, label, list);
 		GeoNumeric num = algo.getMedian();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Q1[list] lower quartile
