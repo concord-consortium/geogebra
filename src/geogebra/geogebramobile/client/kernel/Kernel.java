@@ -3146,16 +3146,26 @@ public class Kernel {
 		GeoList list2 = algo.getResult();
 		return list2;
 	}*/
+
+	/** 
+	 * First[string,n]
+	 * Michael Borcherds
+	 */
+	final public GeoText Take(String label, GeoText list, GeoNumeric m, GeoNumeric n) {
+		AlgoTakeString algo = new AlgoTakeString(cons, label, list, m, n);
+		GeoText list2 = algo.getResult();
+		return list2;
+	}
 	
 	/** 
 	 * Take[list,m,n]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoList Take(String label, GeoList list, GeoNumeric m, GeoNumeric n) {
+	final public GeoList Take(String label, GeoList list, GeoNumeric m, GeoNumeric n) {
 		AlgoTake algo = new AlgoTake(cons, label, list, m, n);
 		GeoList list2 = algo.getResult();
 		return list2;
-	}*/
+	}
 	
 	/** 
 	 * Append[list,object]

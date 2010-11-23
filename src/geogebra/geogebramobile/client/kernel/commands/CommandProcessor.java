@@ -166,6 +166,19 @@ public abstract class CommandProcessor  {
 		return new MyError(app, strs);
 	}
 
+	/**
+	 * Returns bad argument (according to ok array) and throws error if no
+	 * was found.
+	 * @param ok
+	 * @param arg
+	 * @return bad argument
+	 */
+	protected static GeoElement getBadArg(boolean[] ok, GeoElement[] arg) {
+		for (int i = 0 ; i < ok.length ; i++) {
+			if (!ok[i]) return arg[i];
+		}
+		throw new Error("no bad arg");
+	}
 
 	/**
 	 * Creates a dependent list with all GeoElement objects from the given array.

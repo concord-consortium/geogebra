@@ -219,7 +219,7 @@ public class CommandDispatcher {
     	cmdTable.put("Sort", new CmdSort(kernel));
     	//AGcmdTable.put("First", new CmdFirst(kernel));
     	//AGcmdTable.put("Last", new CmdLast(kernel));
-    	//AGcmdTable.put("Take", new CmdTake(kernel));
+    	cmdTable.put("Take", new CmdTake(kernel));
     	//AGcmdTable.put("RemoveUndefined", new CmdRemoveUndefined(kernel));
     	//AGcmdTable.put("Defined", new CmdDefined(kernel));
     	//AGcmdTable.put("Sum", new CmdSum(kernel));
