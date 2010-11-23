@@ -33,6 +33,7 @@ import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoProduct;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
@@ -3343,11 +3344,11 @@ public class Kernel {
 	 * Product[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Product(String label, GeoList list) {
+	final public GeoNumeric Product(String label, GeoList list) {
 		AlgoProduct algo = new AlgoProduct(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Sum[list]

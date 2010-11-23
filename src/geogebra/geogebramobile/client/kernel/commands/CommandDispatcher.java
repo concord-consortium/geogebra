@@ -223,7 +223,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("RemoveUndefined", new CmdRemoveUndefined(kernel));
     	//AGcmdTable.put("Defined", new CmdDefined(kernel));
     	//AGcmdTable.put("Sum", new CmdSum(kernel));
-    	//AGcmdTable.put("Product", new CmdProduct(kernel));
+    	cmdTable.put("Product", new CmdProduct(kernel));
     	cmdTable.put("Mean", new CmdMean(kernel));
     	//AGcmdTable.put("Variance", new CmdVariance(kernel));
     	//AGcmdTable.put("SD", new CmdSD(kernel));
