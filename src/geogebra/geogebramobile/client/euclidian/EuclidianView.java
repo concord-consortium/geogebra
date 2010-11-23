@@ -10,6 +10,7 @@ import geogebra.geogebramobile.client.kernel.GeoAngle;
 import geogebra.geogebramobile.client.kernel.GeoBoolean;
 import geogebra.geogebramobile.client.kernel.GeoConic;
 import geogebra.geogebramobile.client.kernel.GeoConicPart;
+import geogebra.geogebramobile.client.kernel.GeoCurveCartesian;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.GeoLine;
 import geogebra.geogebramobile.client.kernel.GeoNumeric;
@@ -1744,11 +1745,11 @@ final public void setHits(Point p){
 		case GeoElement.GEO_CLASS_LOCUS:
 			d = new DrawLocus(this, (GeoLocus) geo);
 			break;
-
+*/
 		case GeoElement.GEO_CLASS_CURVE_CARTESIAN:
 			d = new DrawParametricCurve(this, (GeoCurveCartesian) geo);
 			break;
-
+/*AR
 		case GeoElement.GEO_CLASS_LIST:
 			d = new DrawList(this, (GeoList) geo);
 			break;*/

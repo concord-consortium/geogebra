@@ -109,7 +109,7 @@ public class Application extends BaseApplication {
 			if (decodedBase64String != null && !decodedBase64String.equals("")) {
 				String Base64DecodedFile = decodedBase64String;
 				JSXReadBase64AsFile(Base64DecodedFile,xmlhandler);
-				ggbOnInit();
+//				ggbOnInit();
 			}
 		} else {
 			//We will use it as an js library, so don't init anything for now
