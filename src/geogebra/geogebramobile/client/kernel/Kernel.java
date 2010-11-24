@@ -37,6 +37,11 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoProduct;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoQ1;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoQ3;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRandom;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomBinomial;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomNormal;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomPoisson;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomUniform;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoShuffle;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
@@ -2935,51 +2940,61 @@ public class Kernel {
 	 * Binomial[n,r]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Binomial(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Binomial(String label, NumberValue a, NumberValue b) {
 		AlgoBinomial algo = new AlgoBinomial(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * RandomNormal[mean,variance]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric RandomNormal(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric RandomNormal(String label, NumberValue a, NumberValue b) {
 		AlgoRandomNormal algo = new AlgoRandomNormal(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Random[max,min]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Random(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric Random(String label, NumberValue a, NumberValue b) {
 		AlgoRandom algo = new AlgoRandom(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
-	
+	}
+
+	/** 
+	 * RandomUniform[max,min]
+	 * Michael Borcherds
+	 */
+	final public GeoNumeric RandomUniform(String label, NumberValue a, NumberValue b) {
+		AlgoRandomUniform algo = new AlgoRandomUniform(cons, label, a, b);
+		GeoNumeric num = algo.getResult();
+		return num;
+	}
+
 	/** 
 	 * RandomBinomial[n,p]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric RandomBinomial(String label, NumberValue a, NumberValue b) {
+	final public GeoNumeric RandomBinomial(String label, NumberValue a, NumberValue b) {
 		AlgoRandomBinomial algo = new AlgoRandomBinomial(cons, label, a, b);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * RandomPoisson[lambda]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric RandomPoisson(String label, NumberValue a) {
+	final public GeoNumeric RandomPoisson(String label, NumberValue a) {
 		AlgoRandomPoisson algo = new AlgoRandomPoisson(cons, label, a);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	
 	/** 
@@ -3151,6 +3166,16 @@ public class Kernel {
 	 */
 	final public GeoList Shuffle(String label, GeoList list) {
 		AlgoShuffle algo = new AlgoShuffle(cons, label, list);
+		GeoList list2 = algo.getResult();
+		return list2;
+	}
+
+	/** 
+	 * PointList[list]
+	 * Michael Borcherds
+	 */
+	final public GeoList PointList(String label, GeoList list) {
+		AlgoPointList algo = new AlgoPointList(cons, label, list);
 		GeoList list2 = algo.getResult();
 		return list2;
 	}

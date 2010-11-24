@@ -37,7 +37,7 @@ import geogebra.geogebramobile.client.kernel.gawt.Shape;
  * @author  Markus
  * @version 
  */
-public abstract class Drawable {
+public abstract class Drawable extends DrawableND {
 	BasicStroke objStroke = EuclidianView.getDefaultStroke();
 	BasicStroke selStroke = EuclidianView.getDefaultSelectionStroke();
 	BasicStroke decoStroke = EuclidianView.getDefaultStroke();

@@ -47,7 +47,14 @@ public final class DrawLine extends Drawable implements Previewable {
     private static final int RIGHT = 1;
     private static final int TOP = 2;
     private static final int BOTTOM = 3;           
-    
+   
+    public static final int PREVIEW_NONE = -1;           
+    public static final int PREVIEW_LINE = 0;           
+    public static final int PREVIEW_PARALLEL = 1;           
+    public static final int PREVIEW_PERPENDICULAR = 2;           
+    public static final int PREVIEW_PERPENDICULAR_BISECTOR = 3;           
+    public static final int PREVIEW_ANGLE_BISECTOR = 4;
+
     private GeoLine g;    
     //private double [] coeffs = new double[3];
     
@@ -57,7 +64,7 @@ public final class DrawLine extends Drawable implements Previewable {
     private int x, y;    
     private boolean isVisible, labelVisible;
     
-    private ArrayList points; // for preview
+    private ArrayList points, lines; // for preview
     private GeoPoint startPoint;
    
     // clipping attributes
@@ -84,8 +91,39 @@ public final class DrawLine extends Drawable implements Previewable {
 		}
 		g = new GeoLine(view.getKernel().getConstruction());
 		updatePreview();
-	} 
-    
+	}
+
+	/**
+	 * Creates a new DrawLine for preview.     
+	 */
+	DrawLine(EuclidianView view, ArrayList points, int previewMode) {
+		this.previewMode = previewMode;
+		this.view = view; 
+		this.points = points;
+		if (points.size() == 2) {
+		GeoPoint p = (GeoPoint)points.get(1);
+		p.setCoords(p.inhomX, Math.round(p.inhomY), 1);
+		}
+		g = new GeoLine(view.getKernel().getConstruction());
+		updatePreview();
+	}
+
+	int previewMode = PREVIEW_NONE;
+
+	/**
+	 * Creates a new DrawLine for preview of parallel tool  
+	 */
+    public DrawLine(EuclidianView view, ArrayList points,
+			ArrayList lines, boolean parallel) {
+    	if (parallel) previewMode = PREVIEW_PARALLEL;
+    	else previewMode = PREVIEW_PERPENDICULAR;
+		this.view = view; 
+		this.points = points;
+		this.lines = lines;
+		g = new GeoLine(view.getKernel().getConstruction());
+		updatePreview();
+	}
+
     final public void update() {  
 		//	take line g here, not geo this object may be used for conics too
         isVisible = g.isEuclidianVisible(); 

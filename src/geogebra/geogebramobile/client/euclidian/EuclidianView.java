@@ -2,6 +2,7 @@ package geogebra.geogebramobile.client.euclidian;
 
 
 
+import geogebra.geogebramobile.client.euclidian.EuclidianViewInterface;
 import geogebra.geogebramobile.client.euclidian.DrawableList.DrawableIterator;
 import geogebra.geogebramobile.client.kernel.AlgoElement;
 import geogebra.geogebramobile.client.kernel.BaseApplication;
@@ -40,6 +41,7 @@ import geogebra.geogebramobile.client.kernel.gawt.Shape;
 import geogebra.geogebramobile.client.kernel.gawt.Timer;
 import geogebra.geogebramobile.client.main.Application;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -75,7 +77,7 @@ import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 import com.google.gwt.widgetideas.graphics.client.ImageLoader;
 
 
-public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasMouseDownHandlers, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseWheelHandlers,HasMouseUpHandlers, HasMouseMoveHandlers, View {
+public class EuclidianView extends GWTCanvas implements EuclidianConstants, HasMouseDownHandlers, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseWheelHandlers,HasMouseUpHandlers, HasMouseMoveHandlers, View, EuclidianViewInterface {
 	
 	protected static final long serialVersionUID = 1L;
 	protected Application app;
@@ -297,6 +299,7 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 	protected boolean antiAliasing = true;
 
 	boolean showMouseCoords = false;
+	boolean allowShowMouseCoords = true;
 	boolean showAxesRatio = false;
 	private boolean highlightAnimationButtons = false;
 
@@ -609,29 +612,20 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 	public double getYZero() {
 		return yZero;
 	}
-	
-	public double getInvXscale(){
-		return invXscale;
+
+	/** remembers the origins values (xzero, ...) */
+	public void rememberOrigins(){
+		xZeroOld = xZero;
+		yZeroOld = yZero;
 	}
-	
-	public double getInvYscale(){
-		return invYscale;
-	}
-	
+
 	final public int getPointCapturingMode() {
 		return pointCapturingMode;
-	}
-	
-	public Previewable getPreviewDrawable(){
-		return previewDrawable;
 	}
 	
 	public void updatePreviewable(){
 		Point mouseLoc = getEuclidianController().mouseLoc;
 		getPreviewDrawable().updateMousePos(mouseLoc.x, mouseLoc.y);
-	}
-	public boolean getShowMouseCoords(){
-		return showMouseCoords;
 	}
 
 	public final boolean isGridOrAxesShown() {
@@ -657,10 +651,6 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 	 */
 	public void setGridType(int type) {
 		gridType = type;
-	}
-	
-	public double getGridDistances(int i){
-		return gridDistances[i];
 	}
 	
 	public void setSelectionRectangle(Rectangle selectionRectangle) {
@@ -712,7 +702,12 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 			//app.updateStatusLabelAxesRatio();
 		}
 	}
-	
+
+	/** Sets coord system from mouse move */
+	final public void setCoordSystemFromMouseMove(int dx, int dy, int mode) {		
+		setCoordSystem(xZeroOld + dx, yZeroOld + dy, getXscale(), getYscale());		
+	}
+
 	final void drawGrid(/*AGGraphics2D g2*/) {
 		setColor(gridColor);
 		setStroke(gridStroke);
@@ -1075,7 +1070,7 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 		return (yZero - y) * invYscale;
 	}
 	
-final public void setHits(Point p){
+	final public void setHits(Point p){
 		
 		hits.init();
 				
@@ -1114,8 +1109,26 @@ final public void setHits(Point p){
 		
 		
 	}
+
+	/**
+	 * sets array of GeoElements whose visual representation is inside of
+	 * the given screen rectangle
+	 */
+	final public void setHits(Rectangle rect) {
+		hits.init();		
 	
+		if (rect == null) return;
 	
+		DrawableIterator it = allDrawableList.getIterator();
+		while (it.hasNext()) {
+			Drawable d = it.next();
+			GeoElement geo = d.getGeoElement();
+			if (geo.isEuclidianVisible() && d.isInside(rect)) {				
+				hits.add(geo);
+			}
+		}
+	}
+		
 	protected static int SCREEN_BORDER = 10;
 	// new global vars to control axes (should be set from options menu)
 	private double xCross = 0.0;
@@ -1498,12 +1511,12 @@ final public void setHits(Point p){
 		
 	}
 	
-	public void setShowMouseCoords(boolean b){
-		showMouseCoords=b;
-	}
-	
 	final Drawable getDrawable(GeoElement geo) {
 		return (Drawable) DrawableMap.get(geo);
+	}
+
+	final public DrawableND getDrawableND(GeoElement geo) {
+		return getDrawable(geo);
 	}
 	
 	final public Drawable getDrawableFor(GeoElement geo) {
@@ -1628,7 +1641,11 @@ final public void setHits(Point p){
 			allDrawableList.add(d);			
 		}
 	}
-	
+
+	public DrawableND createDrawableND(GeoElement geo) {
+		return createDrawable(geo);
+	}
+
 	protected Drawable createDrawable(GeoElement geo) {
 		Drawable d = null;
 
@@ -2587,6 +2604,10 @@ final public void setHits(Point p){
 		this.axesTickStyles = axesTickStyles;
 	}
 
+	public boolean[] getShowAxesNumbers() {
+		return showAxesNumbers;
+	}
+
 	public void setShowAxesNumbers(boolean[] showAxesNumbers) {
 		this.showAxesNumbers = showAxesNumbers;
 	}
@@ -2617,7 +2638,25 @@ final public void setHits(Point p){
 		setShowAxis(AXIS_X, flag, false);
 		setShowAxis(AXIS_Y, flag, true);
 	}
-	
+
+	/**
+	 * says if the axis is shown or not
+	 * @param axis id of the axis
+	 * @return if the axis is shown
+	 */
+	public boolean getShowAxis(int axis){
+		return showAxes[axis];
+	}
+
+	public boolean getShowXaxis() {
+		//return showAxes[0];
+		return getShowAxis(AXIS_X);
+	}
+
+	public boolean getShowYaxis() {
+		return getShowAxis(AXIS_Y);
+	}
+
 	public void showGrid(boolean show) {
 		if (show == showGrid)
 			return;
@@ -2771,7 +2810,19 @@ final public void setHits(Point p){
 		}
 	}
 
-	
+	public String[] getAxesLabels() {
+		return axesLabels;
+	}
+
+	public void setAxesLabels(String[] axesLabels) {
+		this.axesLabels = axesLabels;
+		for (int i = 0; i < 2; i++) {
+			if (axesLabels[i] != null && axesLabels[i].length() == 0) {
+				axesLabels[i] = null;
+			}
+		}
+	}
+
 	protected MyMover mover;
 	
 	/**
@@ -3038,10 +3089,118 @@ final public void setHits(Point p){
 
 		sb.append("</euclidianView>\n");
 	}
-	
-	
-	
 
 	
+	/**
+	 * 
+	 * setters and getters for EuclidianViewInterface
+	 * 
+	 */
 
+	public void setShowMouseCoords(boolean b){
+		showMouseCoords=b;
+	}
+	
+	public boolean getAllowShowMouseCoords() {
+		return allowShowMouseCoords;
+	}
+
+	public void setAllowShowMouseCoords(boolean neverShowMouseCoords) {
+		this.allowShowMouseCoords = neverShowMouseCoords;
+	}
+	
+	
+	public boolean getShowMouseCoords(){
+		return showMouseCoords;
+	}
+	
+	public void setShowAxesRatio(boolean b){
+		showAxesRatio=b;
+	}
+
+	public Previewable getPreviewDrawable(){
+		return previewDrawable;
+	}
+	
+	
+	public double getGridDistances(int i){
+		return gridDistances[i];
+	}
+	
+	
+	public double getInvXscale(){
+		return invXscale;
+	}
+	
+	public double getInvYscale(){
+		return invYscale;
+	}
+	
+	
+	public int getViewWidth(){
+		return width;
+	}
+	
+	public int getViewHeight(){
+		return height;
+	}
+
+	/////////////////////////////////////////
+	// previewables
+	
+	
+	public Previewable createPreviewLine(ArrayList selectedPoints){
+		
+		return new DrawLine(this, selectedPoints, DrawLine.PREVIEW_LINE);
+	}
+
+	public Previewable createPreviewAngleBisector(ArrayList selectedPoints){
+		
+		return new DrawLine(this, selectedPoints, DrawLine.PREVIEW_ANGLE_BISECTOR);
+	}
+
+	public Previewable createPreviewPerpendicularBisector(ArrayList selectedPoints){
+		
+		return new DrawLine(this, selectedPoints, DrawLine.PREVIEW_PERPENDICULAR_BISECTOR);
+	}
+
+	public Previewable createPreviewSegment(ArrayList selectedPoints){
+		return new DrawSegment(this, selectedPoints);
+	}	
+	
+	
+	public Previewable createPreviewRay(ArrayList selectedPoints){
+		return new DrawRay(this, selectedPoints);
+	}	
+	
+	public Previewable createPreviewVector(ArrayList selectedPoints){
+		return new DrawVector(this, selectedPoints);
+	}
+	
+	
+	public Previewable createPreviewPolygon(ArrayList selectedPoints){
+		return new DrawPolygon(this, selectedPoints);
+	}	
+	
+	public Previewable createPreviewPolyLine(ArrayList selectedPoints){
+		return null;//AR new DrawPolyLine(this, selectedPoints);
+	}
+
+	public void mouseEntered(){
+		
+	}
+	
+	public void mouseExited(){
+		
+	}
+
+	public Previewable createPreviewParallelLine(ArrayList selectedPoints,
+			ArrayList selectedLines) {
+		return new DrawLine(this, selectedPoints, selectedLines, true);
+	}
+
+	public Previewable createPreviewPerpendicularLine(ArrayList selectedPoints,
+			ArrayList selectedLines) {
+		return new DrawLine(this, selectedPoints, selectedLines, false);
+	}
 }

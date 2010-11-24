@@ -255,7 +255,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("RandomNormal", new CmdRandomNormal(kernel));
     	//AGcmdTable.put("ConstructionStep", new CmdConstructionStep(kernel));
     	//AGcmdTable.put("Normal", new CmdNormal(kernel));
-    	//AGcmdTable.put("Binomial", new CmdBinomial(kernel));
+    	cmdTable.put("Binomial", new CmdBinomial(kernel));
     	//AGcmdTable.put("InverseNormal", new CmdInverseNormal(kernel));
     	cmdTable.put("Expand", new CmdExpand(kernel));
     	//AGcmdTable.put("Factor", new CmdFactor(kernel));
@@ -304,9 +304,11 @@ public class CommandDispatcher {
     	
     	cmdTable.put("IsInteger", new CmdIsInteger(kernel));
     	
-    	//cmdTable.put("Random", new CmdRandom(kernel));   
-    	//AGcmdTable.put("RandomBinomial", new CmdRandomBinomial(kernel));   
-    	//AGcmdTable.put("RandomPoisson", new CmdRandomPoisson(kernel));   
+    	cmdTable.put("Random", new CmdRandom(kernel));   
+    	cmdTable.put("RandomNormal", new CmdRandomNormal(kernel));
+    	cmdTable.put("RandomUniform", new CmdRandomUniform(kernel));  
+    	cmdTable.put("RandomBinomial", new CmdRandomBinomial(kernel));   
+    	cmdTable.put("RandomPoisson", new CmdRandomPoisson(kernel));   
     	
     	//AGcmdTable.put("FractionText", new CmdFractionText(kernel));   
     	
@@ -392,7 +394,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("Numerator", new CmdNumerator(kernel));   
     	//AGcmdTable.put("Denominator", new CmdDenominator(kernel)); 
     	
-    	//AGcmdTable.put("PointList", new CmdPointList(kernel));   
+    	cmdTable.put("PointList", new CmdPointList(kernel));   
     	cmdTable.put("RootList", new CmdRootList(kernel));   
  
      	                  	

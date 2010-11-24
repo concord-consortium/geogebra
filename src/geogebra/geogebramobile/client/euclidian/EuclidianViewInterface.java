@@ -40,9 +40,9 @@ public interface EuclidianViewInterface {
 	// ??
 	/*AGboolean hitAnimationButton(MouseEvent e);
 	void setPreview(Previewable previewDrawable);
-	public Drawable getDrawableFor(GeoElement geo);
+	public Drawable getDrawableFor(GeoElement geo);*/
 	public DrawableND getDrawableND(GeoElement geo);
-	public DrawableND createDrawableND(GeoElement geo);
+	public DrawableND createDrawableND(GeoElement geo);/*AR
 	void setToolTipText(String plain);
 
 	/**

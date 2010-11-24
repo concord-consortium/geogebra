@@ -4544,7 +4544,7 @@ class CmdTableText extends CommandProcessor {
 
    }
 
-/*AG
+
  class CmdRandomPoisson extends CommandProcessor {
 
 	 public CmdRandomPoisson(Kernel kernel) {
@@ -4574,7 +4574,7 @@ class CmdTableText extends CommandProcessor {
 	 }
 
  }
-
+/*AG
  class CmdFractionText extends CommandProcessor {
 
 	 public CmdFractionText(Kernel kernel) {
