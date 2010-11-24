@@ -6,6 +6,7 @@ import geogebra.geogebramobile.client.euclidian.EuclidianViewInterface;
 import geogebra.geogebramobile.client.euclidian.DrawableList.DrawableIterator;
 import geogebra.geogebramobile.client.kernel.AlgoElement;
 import geogebra.geogebramobile.client.kernel.AlgoIntegralDefinite;
+import geogebra.geogebramobile.client.kernel.AlgoIntegralFunctions;
 import geogebra.geogebramobile.client.kernel.BaseApplication;
 import geogebra.geogebramobile.client.kernel.ConstructionDefaults;
 import geogebra.geogebramobile.client.kernel.GeoAngle;
@@ -937,6 +938,38 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 	final public double toScreenCoordYd(double yRW) {
 		return yZero - yRW * yscale;
 	}
+
+	/**
+	 * convert real world coordinate x to screen coordinate x. If the value is
+	 * outside the screen it is clipped to one pixel outside.
+	 * 
+	 * @param xRW
+	 * @return
+	 */
+	final public int toClippedScreenCoordX(double xRW) {
+		if (xRW > xmax)
+			return width + 1;
+		else if (xRW < xmin)
+			return -1;
+		else
+			return toScreenCoordX(xRW);
+	}
+
+	/**
+	 * convert real world coordinate y to screen coordinate y. If the value is
+	 * outside the screen it is clipped to one pixel outside.
+	 * 
+	 * @param yRW
+	 * @return
+	 */
+	final public int toClippedScreenCoordY(double yRW) {
+		if (yRW > ymax)
+			return -1;
+		else if (yRW < ymin)
+			return height + 1;
+		else
+			return toScreenCoordY(yRW);
+	}
 	
 	final public boolean toScreenCoords(double[] inOut) {
 		// convert to screen coords
@@ -1712,8 +1745,8 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 				d = new DrawSlope(this, (GeoNumeric) geo);*/
 			} else if (algo instanceof AlgoIntegralDefinite) {
 				d = new DrawIntegral(this, (GeoNumeric) geo);
-			/*AR} else if (algo instanceof AlgoIntegralFunctions) {
-				d = new DrawIntegralFunctions(this, (GeoNumeric) geo);
+			} else if (algo instanceof AlgoIntegralFunctions) {
+				d = new DrawIntegralFunctions(this, (GeoNumeric) geo);/*AR
 			} else if (algo instanceof AlgoFunctionAreaSums) {
 				d = new DrawUpperLowerSum(this, (GeoNumeric) geo);*/
 			}
