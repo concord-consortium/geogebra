@@ -74,6 +74,14 @@ final public class GeoSegment extends GeoLine implements LimitedPath, NumberValu
 		setStartPoint(A);
 		setEndPoint(B);
 	}
+
+	/**
+	 * common constructor
+	 * @param c
+	 */
+	public GeoSegment(Construction c){
+		super(c);
+	}
 	
 	protected String getClassName() {	
 		return "GeoSegment";
@@ -412,5 +420,30 @@ final public class GeoSegment extends GeoLine implements LimitedPath, NumberValu
     public void setZero() {
     	setCoords(0, 1, 0);
     }
-	
+
+  	/**
+  	 * returns the paramter for the closest point to P on the Segment (extrapolated)
+  	 * so answers can be returned outside the range [0,1]
+  	 * @param px 
+  	 * @param py 
+  	 * @return closest parameter
+  	 */
+  	final public double getParameter(double px, double py){
+		// project P on line
+		// param of projection point on perpendicular line
+		double t = -(z + x*px + y*py) / (x*x + y*y); 
+		// calculate projection point using perpendicular line
+		px += t * x;
+		py += t * y;
+						
+		// calculate parameter
+		if (Math.abs(x) <= Math.abs(y)) {	
+			return (startPoint.z * px - startPoint.x) / (y * startPoint.z);								
+		} 
+		else {		
+			return (startPoint.y - startPoint.z * py) / (x * startPoint.z);			
+		}
+  		
+  	}
+
 }

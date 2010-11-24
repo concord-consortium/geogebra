@@ -1293,7 +1293,7 @@ class CmdSemicircle extends CommandProcessor {
 /*
  * Locus[ <GeoPoint Q>, <GeoPoint P> ]
  */
-/*AG
+
 class CmdLocus extends CommandProcessor {
 
 	public CmdLocus(Kernel kernel) {

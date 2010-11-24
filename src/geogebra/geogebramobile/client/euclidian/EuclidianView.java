@@ -17,6 +17,7 @@ import geogebra.geogebramobile.client.kernel.GeoCurveCartesian;
 import geogebra.geogebramobile.client.kernel.GeoElement;
 import geogebra.geogebramobile.client.kernel.GeoLine;
 import geogebra.geogebramobile.client.kernel.GeoList;
+import geogebra.geogebramobile.client.kernel.GeoLocus;
 import geogebra.geogebramobile.client.kernel.GeoNumeric;
 import geogebra.geogebramobile.client.kernel.GeoPoint;
 import geogebra.geogebramobile.client.kernel.GeoPolygon;
@@ -1793,11 +1794,11 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 		case GeoElement.GEO_CLASS_IMAGE:
 			d = new DrawImage(this, (GeoImage) geo);
 			break;
-
+*/
 		case GeoElement.GEO_CLASS_LOCUS:
 			d = new DrawLocus(this, (GeoLocus) geo);
 			break;
-*/
+
 		case GeoElement.GEO_CLASS_CURVE_CARTESIAN:
 			d = new DrawParametricCurve(this, (GeoCurveCartesian) geo);
 			break;

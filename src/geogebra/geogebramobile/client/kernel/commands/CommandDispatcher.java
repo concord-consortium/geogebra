@@ -180,7 +180,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("RigidPolygon", new CmdRigidPolygon(kernel));
     	cmdTable.put("Segment", new CmdSegment(kernel));	   
     	cmdTable.put("Sector", new CmdSector(kernel));	   
-    	//AGcmdTable.put("Locus", new CmdLocus(kernel));	   
+    	cmdTable.put("Locus", new CmdLocus(kernel));	   
     	cmdTable.put("Centroid", new CmdCentroid(kernel));	   
     	//AGcmdTable.put("Vertex", new CmdVertex(kernel));
     	cmdTable.put("Conic", new CmdConic(kernel));	   
@@ -397,7 +397,7 @@ public class CommandDispatcher {
     	cmdTable.put("PointList", new CmdPointList(kernel));   
     	cmdTable.put("RootList", new CmdRootList(kernel));   
  
-     	                  	
+    	//ARcmdTable.put("ConvexHull", new CmdConvexHull(kernel));
     	
     	//Mathieu Blossier
     	//AGcmdTable.put("PointIn", new CmdPointIn(kernel));   

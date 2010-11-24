@@ -19,9 +19,9 @@ import geogebra.geogebramobile.client.main.MyError;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.TreeSet;
 import geogebra.geogebramobile.client.util.Util;
-
 
 
 
@@ -304,7 +304,36 @@ public class Macro {
 	   		consElementSet.add(geo);
 	   	 }
 	}
-	
+
+	/**
+	 * Adds the geo, its parent algorithm and all its siblings to the consElementSet
+	 * and its id to used AlgoIds
+	 * @param geo Element to be added (with parent and siblings)
+	 * @param consElementSet Set of geos & algos used in macro construction
+	 * @param usedAlgoIds Set of IDs of algorithms used in macro construction
+	 */	
+	public static void addDependentElement(GeoElement geo, Set<ConstructionElement> consElementSet,Set<Long> usedAlgoIds) {		 
+		 AlgoElement algo = geo.getParentAlgorithm();
+		 if (algo.isInConstructionList()) {
+	   		// STANDARD case
+	   		// add algorithm
+			Long algoID = new Long(algo.getID()); 
+	   		if(!usedAlgoIds.contains(algoID))consElementSet.add(algo);
+	   			usedAlgoIds.add(algoID);
+	   		
+	   		// add all output elements including geo
+	   		GeoElement [] algoOutput = algo.getOutput();
+	   		for (int i=0; i < algoOutput.length; i++) {
+	   			consElementSet.add(algoOutput[i]);
+	   		}	   		
+	   	 } else {
+			// HELPER algorithm, e.g. segment of polygon
+	   		// we only add the geo because it is output 
+	   		// of some other algorithm in construction list
+	   		consElementSet.add(geo);
+	   	 }
+	}
+
 	/**
 	 * Adds the geo, its parent algorithm and all input of the parent algorithm to the consElementSet.
 	 * This is used for e.g. a segment that is used as an input object of a macro. We also need to

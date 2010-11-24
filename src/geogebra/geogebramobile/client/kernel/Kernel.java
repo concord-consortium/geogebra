@@ -856,7 +856,7 @@ public class Kernel {
     			else if (type.equals("list"))
     				return new GeoList(cons);    			
     			else 
-    				return null; //AGnew GeoLocus(cons);
+    				return new GeoLocus(cons);
     		
     		case 'n': // numeric
     			return new GeoNumeric(cons);
@@ -3999,13 +3999,13 @@ public class Kernel {
 	 * locus line for Q dependent on P. Note: P must be a point
 	 * on a path.
 	 */
-	/*AGfinal public GeoLocus Locus(String label, GeoPoint Q, GeoPoint P) {		
+	final public GeoLocus Locus(String label, GeoPoint Q, GeoPoint P) {		
 		if (P.getPath() == null || 
 			Q.getPath() != null || 
 			!P.isParentOf(Q)) return null;
 		AlgoLocus algo = new AlgoLocus(cons, label, Q, P);
 		return algo.getLocus();
-	}*/
+	}
 
 	/** 
 	 * circle with through points A, B, C
