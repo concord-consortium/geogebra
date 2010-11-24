@@ -31,6 +31,8 @@ import geogebra.geogebramobile.client.kernel.kernelND.GeoConicND;
 import geogebra.geogebramobile.client.kernel.commands.AlgebraProcessor;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListCovariance;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
@@ -2711,11 +2713,11 @@ public class Kernel {
 	 * Covariance[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Covariance(String label, GeoList list) {
+	final public GeoNumeric Covariance(String label, GeoList list) {
 		AlgoListCovariance algo = new AlgoListCovariance(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SXX[list]
@@ -2822,11 +2824,11 @@ public class Kernel {
 	 * Covariance[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric Covariance(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric Covariance(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListCovariance algo = new AlgoDoubleListCovariance(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SXX[list,list]

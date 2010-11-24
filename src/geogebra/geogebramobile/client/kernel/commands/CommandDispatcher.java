@@ -237,7 +237,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("SigmaXX", new CmdSigmaXX(kernel));
     	//AGcmdTable.put("SigmaXY", new CmdSigmaXY(kernel));
     	//AGcmdTable.put("SigmaYY", new CmdSigmaYY(kernel));
-    	//AGcmdTable.put("Covariance", new CmdCovariance(kernel));
+    	cmdTable.put("Covariance", new CmdCovariance(kernel));
     	//AGcmdTable.put("SXY", new CmdSXY(kernel));
     	//AGcmdTable.put("SXX", new CmdSXX(kernel));
     	//AGcmdTable.put("SYY", new CmdSYY(kernel));
