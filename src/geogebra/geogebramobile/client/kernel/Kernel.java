@@ -33,6 +33,8 @@ import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListPMCC;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSXX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSXY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaXX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaXY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaYY;
@@ -43,6 +45,9 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoListPMCC;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaXX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaXY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaYY;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSXX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSXY;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSYY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
@@ -57,6 +62,7 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomUniform;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoShuffle;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoSigmaXX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoSXX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
@@ -2734,7 +2740,7 @@ public class Kernel {
 	 * SXX[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SXX(String label, GeoList list) {
+	final public GeoNumeric SXX(String label, GeoList list) {
 		GeoNumeric num;
 		GeoElement geo = list.get(0);
 		if (geo.isNumberValue())
@@ -2749,28 +2755,28 @@ public class Kernel {
 		}
 		return num;
 	}
-	*/
+
 	
 	/** 
 	 * SXY[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SXY(String label, GeoList list) {
+	final public GeoNumeric SXY(String label, GeoList list) {
 		AlgoListSXY algo = new AlgoListSXY(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
 	}
-	*/
+
 	/** 
 	 * SYY[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SYY(String label, GeoList list) {
+	final public GeoNumeric SYY(String label, GeoList list) {
 		AlgoListSYY algo = new AlgoListSYY(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
 	}
-	*/
+
 	/** 
 	 * MeanX[list]
 	 * Michael Borcherds
@@ -2845,21 +2851,21 @@ public class Kernel {
 	 * SXX[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SXX(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric SXX(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListSXX algo = new AlgoDoubleListSXX(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SXY[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SXY(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric SXY(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListSXY algo = new AlgoDoubleListSXY(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * PMCC[list,list]

@@ -238,9 +238,9 @@ public class CommandDispatcher {
     	cmdTable.put("SigmaXY", new CmdSigmaXY(kernel));
     	cmdTable.put("SigmaYY", new CmdSigmaYY(kernel));
     	cmdTable.put("Covariance", new CmdCovariance(kernel));
-    	//AGcmdTable.put("SXY", new CmdSXY(kernel));
-    	//AGcmdTable.put("SXX", new CmdSXX(kernel));
-    	//AGcmdTable.put("SYY", new CmdSYY(kernel));
+    	cmdTable.put("SXY", new CmdSXY(kernel));
+    	cmdTable.put("SXX", new CmdSXX(kernel));
+    	cmdTable.put("SYY", new CmdSYY(kernel));
     	cmdTable.put("MeanX", new CmdMeanX(kernel));
     	cmdTable.put("MeanY", new CmdMeanY(kernel));
     	cmdTable.put("PMCC", new CmdPMCC(kernel));
