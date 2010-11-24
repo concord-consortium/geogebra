@@ -33,10 +33,16 @@ import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListPMCC;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaXX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaXY;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListSigmaYY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListPMCC;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaXX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaXY;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListSigmaYY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
@@ -50,6 +56,7 @@ import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomPoisson;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRandomUniform;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoRank;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoShuffle;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoSigmaXX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoVariance;
 import geogebra.geogebramobile.client.main.Application;
 import geogebra.geogebramobile.client.util.Unicode;
@@ -2697,21 +2704,21 @@ public class Kernel {
 	 * SigmaXY[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaXY(String label, GeoList list) {
+	final public GeoNumeric SigmaXY(String label, GeoList list) {
 		AlgoListSigmaXY algo = new AlgoListSigmaXY(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SigmaYY[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaYY(String label, GeoList list) {
+	final public GeoNumeric SigmaYY(String label, GeoList list) {
 		AlgoListSigmaYY algo = new AlgoListSigmaYY(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Covariance[list]
@@ -2798,31 +2805,31 @@ public class Kernel {
 	 * SigmaXY[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaXY(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric SigmaXY(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListSigmaXY algo = new AlgoDoubleListSigmaXY(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SigmaXX[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaXX(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric SigmaXX(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListSigmaXX algo = new AlgoDoubleListSigmaXX(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SigmaYY[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaYY(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric SigmaYY(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListSigmaYY algo = new AlgoDoubleListSigmaYY(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Covariance[list,list]
@@ -3550,7 +3557,7 @@ public class Kernel {
 	 * SigmaXX[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric SigmaXX(String label, GeoList list) {
+	final public GeoNumeric SigmaXX(String label, GeoList list) {
 		GeoNumeric num;
 		GeoElement geo = list.get(0);
 		if (geo.isNumberValue())
@@ -3564,7 +3571,7 @@ public class Kernel {
 			num = algo.getResult();
 		}
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * Median[list]
