@@ -5,6 +5,7 @@ package geogebra.geogebramobile.client.euclidian;
 import geogebra.geogebramobile.client.euclidian.EuclidianViewInterface;
 import geogebra.geogebramobile.client.euclidian.DrawableList.DrawableIterator;
 import geogebra.geogebramobile.client.kernel.AlgoElement;
+import geogebra.geogebramobile.client.kernel.AlgoIntegralDefinite;
 import geogebra.geogebramobile.client.kernel.BaseApplication;
 import geogebra.geogebramobile.client.kernel.ConstructionDefaults;
 import geogebra.geogebramobile.client.kernel.GeoAngle;
@@ -1708,10 +1709,10 @@ public static final float SELECTION_ADD = .5f; //AG2.0f is too thick;
 				// independent number may be shown as slider
 				d = new DrawSlider(this, (GeoNumeric) geo);
 			/*AG} else if (algo instanceof AlgoSlope) {
-				d = new DrawSlope(this, (GeoNumeric) geo);
+				d = new DrawSlope(this, (GeoNumeric) geo);*/
 			} else if (algo instanceof AlgoIntegralDefinite) {
 				d = new DrawIntegral(this, (GeoNumeric) geo);
-			} else if (algo instanceof AlgoIntegralFunctions) {
+			/*AR} else if (algo instanceof AlgoIntegralFunctions) {
 				d = new DrawIntegralFunctions(this, (GeoNumeric) geo);
 			} else if (algo instanceof AlgoFunctionAreaSums) {
 				d = new DrawUpperLowerSum(this, (GeoNumeric) geo);*/
