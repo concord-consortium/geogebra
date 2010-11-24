@@ -33,6 +33,8 @@ import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListCovariance;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanX;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanY;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
@@ -2764,21 +2766,21 @@ public class Kernel {
 	 * MeanX[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric MeanX(String label, GeoList list) {
+	final public GeoNumeric MeanX(String label, GeoList list) {
 		AlgoListMeanX algo = new AlgoListMeanX(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * MeanY[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric MeanY(String label, GeoList list) {
+	final public GeoNumeric MeanY(String label, GeoList list) {
 		AlgoListMeanY algo = new AlgoListMeanY(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * PMCC[list]

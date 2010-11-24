@@ -241,8 +241,8 @@ public class CommandDispatcher {
     	//AGcmdTable.put("SXY", new CmdSXY(kernel));
     	//AGcmdTable.put("SXX", new CmdSXX(kernel));
     	//AGcmdTable.put("SYY", new CmdSYY(kernel));
-    	//AGcmdTable.put("MeanX", new CmdMeanX(kernel));
-    	//AGcmdTable.put("MeanY", new CmdMeanY(kernel));
+    	cmdTable.put("MeanX", new CmdMeanX(kernel));
+    	cmdTable.put("MeanY", new CmdMeanY(kernel));
     	//AGcmdTable.put("PMCC", new CmdPMCC(kernel));
     	//AGcmdTable.put("FitLineY", new CmdFitLineY(kernel));
     	//AGcmdTable.put("FitLineX", new CmdFitLineX(kernel));
