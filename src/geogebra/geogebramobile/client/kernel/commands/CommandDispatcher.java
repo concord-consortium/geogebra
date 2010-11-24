@@ -243,7 +243,7 @@ public class CommandDispatcher {
     	//AGcmdTable.put("SYY", new CmdSYY(kernel));
     	cmdTable.put("MeanX", new CmdMeanX(kernel));
     	cmdTable.put("MeanY", new CmdMeanY(kernel));
-    	//AGcmdTable.put("PMCC", new CmdPMCC(kernel));
+    	cmdTable.put("PMCC", new CmdPMCC(kernel));
     	//AGcmdTable.put("FitLineY", new CmdFitLineY(kernel));
     	//AGcmdTable.put("FitLineX", new CmdFitLineX(kernel));
     	//AGcmdTable.put("FitPoly", new CmdFitPoly(kernel));

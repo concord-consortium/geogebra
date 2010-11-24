@@ -32,9 +32,11 @@ import geogebra.geogebramobile.client.kernel.commands.AlgebraProcessor;
 import geogebra.geogebramobile.client.kernel.optimization.ExtremumFinder;
 import geogebra.geogebramobile.client.kernel.parser.Parser;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListCovariance;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoDoubleListPMCC;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListCovariance;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanX;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoListMeanY;
+import geogebra.geogebramobile.client.kernel.statistics.AlgoListPMCC;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMean;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMedian;
 import geogebra.geogebramobile.client.kernel.statistics.AlgoMode;
@@ -2786,11 +2788,11 @@ public class Kernel {
 	 * PMCC[list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric PMCC(String label, GeoList list) {
+	final public GeoNumeric PMCC(String label, GeoList list) {
 		AlgoListPMCC algo = new AlgoListPMCC(cons, label, list);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * SigmaXY[list,list]
@@ -2856,11 +2858,11 @@ public class Kernel {
 	 * PMCC[list,list]
 	 * Michael Borcherds
 	 */
-	/*AGfinal public GeoNumeric PMCC(String label, GeoList listX, GeoList listY) {
+	final public GeoNumeric PMCC(String label, GeoList listX, GeoList listY) {
 		AlgoDoubleListPMCC algo = new AlgoDoubleListPMCC(cons, label, listX, listY);
 		GeoNumeric num = algo.getResult();
 		return num;
-	}*/
+	}
 	
 	/** 
 	 * FitLineY[list of coords]
